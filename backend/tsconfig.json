@@ -2,7 +2,7 @@
   "compilerOptions": {
     "sourceMap": true,
     "target": "ES5",
-    "outDir": "dist",
+    "outDir": "../backend/dist",
     "baseUrl": "./src",
     "types": ["reflect-metadata"],
     "alwaysStrict": true,
