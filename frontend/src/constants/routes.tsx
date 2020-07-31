@@ -1,5 +1,4 @@
-
-import Register from "../pages/index";
+import {Register} from "../pages/Register";
 
 export const routes = [
     {
