@@ -1,6 +1,7 @@
 import * as HttpStatus from 'http-status-codes';
 import {User, UserDoc, UserModel} from "../models/User";
 import uniqueString from "unique-string";
+import * as jwt from 'jsonwebtoken';
 import * as bcrypt from "bcryptjs";
 import {Request, Response} from "express";
 
@@ -10,6 +11,15 @@ type RegisterReqBody = {
     confirmPassword: string;
 };
 
+type LoginReqBody = {
+    email: string;
+    password: string;
+};
+
+type LoginResSuccess = {
+    message: string;
+    token: string;
+}
 type UserResSuccess = {
     message: string;
 };
@@ -107,6 +117,68 @@ class UserController {
         return res.status(HttpStatus.OK).json({
             message: "Đăng kí thành công. Vui lòng kiểm tra email để xác thực"
         });
+    };
+
+    async userLogin(req: Request<any, any, LoginReqBody>, res: Response<LoginResSuccess | UserResError>): Promise<any> {
+        const {email, password} = req.body;
+        if (!email || !password) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Email hoặc mật khẩu không đúng"
+            });
+
+            return;
+        }
+
+        if (!validateEmailAddress(email)) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Email không hợp lệ"
+            });
+
+            return;
+        }
+
+        if (!isAlphabetAndNumber(password)) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Password không hợp lệ"
+            });
+
+            return;
+        }
+
+        const user: User | null = await UserModel.findOne({email: email})
+            .lean();
+
+        if (user === null) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Không tìm thấy tài khoản"
+            });
+
+            return;
+        }
+
+        if (bcrypt.compareSync(password, user.hashedPassword) === false) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Password không đúng"
+            });
+
+            return;
+        }
+
+        if (user.status === 2) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Không tìm thấy tài khoản"
+            });
+
+            return;
+        }
+
+        const token: string = jwt.sign({email: user.email}, process.env.private_key);
+        res.status(HttpStatus.OK).json({
+            message: "Đăng nhập thành công",
+            token: token
+        });
+
+        return;
     };
 }
 
