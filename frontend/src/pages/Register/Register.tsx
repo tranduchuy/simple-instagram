@@ -1,10 +1,12 @@
 import React from 'react';
 import * as API from '../../constants/api';
 import {Container, Row, Col, Form, Button} from 'react-bootstrap';
-import {Link} from 'react-router-dom';
+import {Link, RouteComponentProps} from 'react-router-dom';
 import axios, {AxiosResponse} from 'axios';
 
-type RegisterProps = {};
+interface RegisterProps extends RouteComponentProps{
+
+};
 
 type RegisterState = {
     email: string;
@@ -40,29 +42,29 @@ export class Register extends React.Component<RegisterProps, RegisterState> {
     }
 
     onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        const {email, password, confirmPassword, name} = this.state;
         event.preventDefault();
-        console.log(email);
+        const {email, password, confirmPassword, name} = this.state;
         const formData: RegisterFormData = {
             email: email,
             password: password,
             confirmPassword: confirmPassword,
             name: name
-        }
+        };
 
         axios.post<RegisterResSuccess, AxiosResponse<RegisterResSuccess | RegisterResError>>(API.Register, formData)
             .then((res) => {
-                console.log(res);
+                alert(res.data.message);
+                this.props.history.push('/');
             })
             .catch((err) => {
-                console.log(err);
-                // if(err.response.data.message) {
-                //     alert(err.response.data.message);
-                // } else {
-                //     alert(err);
-                // }
+                if(err.response.data.message) {
+                    alert(err.response.data.message);
+
+                } else {
+                    alert(err);
+                }
             })
-    }
+    };
 
     onClickedReset = () => {
         this.setState({
@@ -129,14 +131,14 @@ export class Register extends React.Component<RegisterProps, RegisterState> {
 
                             <div className="text-center">
                                 <Button variant="secondary"
-                                >
+                                        onClick={this.onClickedReset}>
                                     Reset
                                 </Button>
 
                                 <Button variant="primary"
                                         className="ml-5"
                                         type="submit">
-                                    Submit
+                                    Register
                                 </Button>
                             </div>
 
