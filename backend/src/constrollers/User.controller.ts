@@ -3,6 +3,7 @@ import {User, UserDoc, UserModel} from "../models/User";
 import uniqueString from "unique-string";
 import * as bcrypt from "bcryptjs";
 import {Request, Response} from "express";
+import {sendMailVerify} from '../middleware/sendMailVerify';
 
 type RegisterReqBody = {
     email: string;
@@ -62,7 +63,6 @@ class UserController {
             password,
             confirmPassword
         } = req.body;
-
         if (!email || !password || !confirmPassword) {
             res.status(HttpStatus.BAD_REQUEST).json({
                 message: "Vui lòng điền đủ thông tin"
@@ -104,6 +104,17 @@ class UserController {
         });
 
         await userDoc.save();
+
+        const mailOptions = {
+            from: process.env.config_user,
+            subject: 'Verification Email',
+            to: email,
+            html: `Token Register: ${tokenRegister}
+            </br>
+            <a href="http://localhost:3000/confirm">Click here to verify email</a>`
+        };
+
+        await sendMailVerify(mailOptions);
         return res.status(HttpStatus.OK).json({
             message: "Đăng kí thành công. Vui lòng kiểm tra email để xác thực"
         });
