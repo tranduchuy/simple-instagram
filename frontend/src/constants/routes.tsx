@@ -11,6 +11,11 @@ export const routes = [
         path: '/login',
         name: 'Login',
         component: Login
+    },
+    {
+        path: '/confirm',
+        name: 'Confirm',
+        component: Confirm
     }
 ];
 
