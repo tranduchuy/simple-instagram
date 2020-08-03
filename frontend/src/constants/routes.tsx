@@ -1,5 +1,6 @@
 import {Register} from "../pages/Register";
 import {Login} from "../pages/Login";
+import {Confirm} from "../pages/Confirm";
 
 export const routes = [
     {
