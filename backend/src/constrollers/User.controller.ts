@@ -35,6 +35,11 @@ type ValidatorPass = {
     confirmPassword: string;
 };
 
+type UpdateConfirm = {
+    tokenRegister: string;
+    status: number;
+};
+
 const validateEmailAddress = (email: string): boolean => {
     const filter = new RegExp('^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$', 'i');
     return filter.test(email);
@@ -176,6 +181,37 @@ class UserController {
         res.status(HttpStatus.OK).json({
             message: "Đăng nhập thành công",
             token: token
+        });
+
+        return;
+    };
+
+    async confirmUser(req: Request<any, any, {tokenRegister: string}>, res: Response<UserResSuccess | UserResError>): Promise<any> {
+        const {tokenRegister} = req.body;
+        if (!tokenRegister) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Yêu cầu không hợp lệ"
+            });
+
+            return;
+        }
+
+        const fieldUpdate: UpdateConfirm = {
+            tokenRegister: "",
+            status: 1
+        };
+        const user: User | null = await UserModel.findOneAndUpdate({tokenRegister: tokenRegister}, fieldUpdate)
+            .lean();
+        if (!user) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Yêu cầu không hợp lệ"
+            });
+
+            return;
+        }
+
+        res.status(HttpStatus.OK).json({
+            message: "Xác thực thành công"
         });
 
         return;
