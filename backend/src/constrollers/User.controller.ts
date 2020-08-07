@@ -39,7 +39,7 @@ const isValidatorPassword = (validatorPass: ValidatorPass, res: Response<UserRes
     const {password, confirmPassword} = validatorPass;
     if (!isAlphabetAndNumber(password) && !isAlphabetAndNumber(confirmPassword)) {
         res.status(HttpStatus.BAD_REQUEST).json({
-            message: "Password không hợp lệ"
+            message: "Password Invalid !"
         });
 
         return false;
@@ -47,7 +47,7 @@ const isValidatorPassword = (validatorPass: ValidatorPass, res: Response<UserRes
 
     if (password !== confirmPassword) {
         res.status(HttpStatus.BAD_REQUEST).json({
-            message: "Hai mật khẩu không giống nhau"
+            message: "Passwords do not match !"
         });
 
         return false;
