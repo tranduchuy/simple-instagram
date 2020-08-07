@@ -3,7 +3,7 @@ import {User, UserDoc, UserModel} from "../models/User";
 import uniqueString from "unique-string";
 import * as bcrypt from "bcryptjs";
 import {Request, Response} from "express";
-import {sendMailVerify} from '../middleware/sendMailVerify';
+import {sendMailVerify} from '../services/sendMailVerify';
 
 type RegisterReqBody = {
     email: string;
