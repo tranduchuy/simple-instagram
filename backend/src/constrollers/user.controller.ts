@@ -119,9 +119,7 @@ class UserController {
             from: process.env.config_user,
             subject: 'Verification Email',
             to: email,
-            html: `Token Register: ${tokenRegister}
-            </br>
-            <a href="http://localhost:3000/confirm">Click here to verify email</a>`
+            html: `<a href="http://localhost:3000/confirm?token=${tokenRegister}">Click here to verify email</a>`
         };
 
         await sendMailVerify(mailOptions);
