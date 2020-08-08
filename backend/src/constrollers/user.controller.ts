@@ -1,9 +1,10 @@
 import * as HttpStatus from 'http-status-codes';
-import {User, UserDoc, UserModel} from "../models/User";
+import {User, UserDoc, UserModel} from "../models/user.model";
 import uniqueString from "unique-string";
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from "bcryptjs";
 import {Request, Response} from "express";
+import {sendMailVerify} from '../services/sendMailVerify';
 
 type RegisterReqBody = {
     email: string;
@@ -48,7 +49,7 @@ const isValidatorPassword = (validatorPass: ValidatorPass, res: Response<UserRes
     const {password, confirmPassword} = validatorPass;
     if (!isAlphabetAndNumber(password) && !isAlphabetAndNumber(confirmPassword)) {
         res.status(HttpStatus.BAD_REQUEST).json({
-            message: "Password không hợp lệ"
+            message: "Password Invalid !"
         });
 
         return false;
@@ -56,7 +57,7 @@ const isValidatorPassword = (validatorPass: ValidatorPass, res: Response<UserRes
 
     if (password !== confirmPassword) {
         res.status(HttpStatus.BAD_REQUEST).json({
-            message: "Hai mật khẩu không giống nhau"
+            message: "Passwords do not match !"
         });
 
         return false;
@@ -72,7 +73,6 @@ class UserController {
             password,
             confirmPassword
         } = req.body;
-
         if (!email || !password || !confirmPassword) {
             res.status(HttpStatus.BAD_REQUEST).json({
                 message: "Vui lòng điền đủ thông tin"
@@ -114,6 +114,17 @@ class UserController {
         });
 
         await userDoc.save();
+
+        const mailOptions = {
+            from: process.env.config_user,
+            subject: 'Verification Email',
+            to: email,
+            html: `Token Register: ${tokenRegister}
+            </br>
+            <a href="http://localhost:3000/confirm">Click here to verify email</a>`
+        };
+
+        await sendMailVerify(mailOptions);
         return res.status(HttpStatus.OK).json({
             message: "Đăng kí thành công. Vui lòng kiểm tra email để xác thực"
         });
