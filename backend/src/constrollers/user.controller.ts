@@ -1,5 +1,5 @@
 import * as HttpStatus from 'http-status-codes';
-import {User, UserDoc, UserModel} from "../models/User";
+import {User, UserDoc, UserModel} from "../models/user.model";
 import uniqueString from "unique-string";
 import * as bcrypt from "bcryptjs";
 import {Request, Response} from "express";
