@@ -1,6 +1,6 @@
 import React from 'react';
-import {Link, RouteComponentProps} from "react-router-dom";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import {RouteComponentProps} from "react-router-dom";
+import {Container} from "react-bootstrap";
 import axios, {AxiosResponse} from "axios";
 import *as API from "../../constants/api";
 import queryString from 'query-string';
@@ -22,8 +22,11 @@ export class Confirm extends React.Component<ConfirmProps, any> {
         super(props);
     };
 
-    onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    componentDidMount(): void {
+        this.handleVerifyEmail();
+    }
+
+    handleVerifyEmail = () => {
         const value = queryString.parse(this.props.location.search);
         const query: string = value.tokenRegister as string;
 
@@ -50,30 +53,6 @@ export class Confirm extends React.Component<ConfirmProps, any> {
     render(): React.ReactElement {
         return (
             <Container fluid={true}>
-                <Row>
-                    <Col sm={{offset: 4, span: 4}}>
-
-                        <div className="text-center mt-5">
-                            <Form onSubmit={this.onSubmit}>
-                                <Form.Row className="align-items-center text">
-                                    <Col xs="auto" className="my-1">
-                                        <Button type="submit">Confirm</Button>
-                                    </Col>
-                                </Form.Row>
-                            </Form>
-                        </div>
-
-                        <div>
-                            <Link to="/register" className="pr-4 text-decoration-none">
-                                Go to register page.
-                            </Link>
-                            <Link to="/Login" className="text-decoration-none">
-                                Go to login page.
-                            </Link>
-                        </div>
-
-                    </Col>
-                </Row>
             </Container>
         );
     }
