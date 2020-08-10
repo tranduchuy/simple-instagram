@@ -29,7 +29,6 @@ export class Confirm extends React.Component<ConfirmProps, any> {
     handleVerifyEmail = () => {
         const value = queryString.parse(this.props.location.search);
         const query: string = value.tokenRegister as string;
-
         const formData: ConfirmFormData = {
             tokenRegister: query
         };
