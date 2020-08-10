@@ -109,7 +109,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
                                               placeholder="Password"/>
                             </Form.Group>
 
-                            <div className="text-center">
+                            <div>
                                 <Button variant="secondary"
                                         onClick={onClickedReset}>
                                     Reset
@@ -122,9 +122,12 @@ export class Login extends React.Component<LoginProps, LoginState> {
                                 </Button>
                             </div>
 
-                            <div className="text-center">
-                                <Link to="/register">
+                            <div className="mt-2">
+                                <Link to="/register" className="pr-3 text-decoration-none">
                                     Go to register page.
+                                </Link>
+                                <Link to="/forgot" className="pr-3 text-decoration-none">
+                                    Forgot Password !
                                 </Link>
                             </div>
                         </Form>
