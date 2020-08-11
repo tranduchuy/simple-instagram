@@ -29,6 +29,10 @@ export class Confirm extends React.Component<ConfirmProps, any> {
     handleVerifyEmail = () => {
         const value = queryString.parse(this.props.location.search);
         const query: string = value.tokenRegister as string;
+        if(!query) {
+            this.props.history.push('/');
+        }
+
         const formData: ConfirmFormData = {
             tokenRegister: query
         };
@@ -52,6 +56,7 @@ export class Confirm extends React.Component<ConfirmProps, any> {
     render(): React.ReactElement {
         return (
             <Container fluid={true}>
+
             </Container>
         );
     }
