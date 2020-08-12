@@ -17,7 +17,6 @@ export const sendMailVerify = async (mailOptions: MailOptions) => {
     });
 
     await transporter.sendMail(mailOptions, function (error, info) {
-        console.log("check inside function: ", mailOptions);
         if (error) {
             return error;
         } else {
