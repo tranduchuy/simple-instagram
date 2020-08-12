@@ -199,7 +199,7 @@ class UserController {
         const {tokenRegister} = req.body;
         if (!tokenRegister) {
             res.status(HttpStatus.BAD_REQUEST).json({
-                message: "Yêu cầu không hợp lệ"
+                message: "Token is invalid."
             });
 
             return;
@@ -213,14 +213,14 @@ class UserController {
             .lean();
         if (!user) {
             res.status(HttpStatus.BAD_REQUEST).json({
-                message: "Yêu cầu không hợp lệ"
+                message: "Token is invalid."
             });
 
             return;
         }
 
         res.status(HttpStatus.OK).json({
-            message: "Xác thực thành công"
+            message: "Verify Successful."
         });
 
         return;
