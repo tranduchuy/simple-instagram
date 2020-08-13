@@ -54,15 +54,15 @@
 }
 
 .form-login .logo {
-    background-image: url("../../images/instagram-new-logo.png");
+    background-image: url("../../images/instagram-logo.png");
     margin: 22px auto 12px;
     background-repeat: no-repeat;
-    background-position: -9px -15px;
-    height: 49px;
-    width: 165px;
+    background-position: 0 -130px;
+    height: 51px;
+    width: 175px;
 }
 
-.input-login {
+.form-login-child {
     margin-bottom: 10px;
     max-width: 350px;
     width: 100%;
@@ -81,7 +81,7 @@
     margin: 0 40px 6px;
 }
 
-.example1 {
+.input-login {
     align-items: center;
     background: #fafafa;
     border: 1px solid #dbdbdb;
@@ -109,29 +109,77 @@
     margin: 8px 40px;
     background: #fff;
     border: 0;
-    display: flex;
     flex-direction: column;
+    display: inline-flex;
+    width: 268px;
+    height: auto;
 }
 
-button {
+.btn-login-submit {
     color: white;
     border: none;
     background: #3897f0;
     border-radius: 3px;
-    font-weight: bold;
-    font-size: 16px;
-    padding: 6px;
-    margin-bottom: 10px;
+    font-weight: 600;
+    padding: 5px 9px;
+    font-size: 14px;
+
 }
 
-button:hover {
+.btn-login-submit:hover {
     background-color: rgba(0,149,246,.3);
+}
+
+.btn-login-submit:active {
+    border: none;
 }
 
 .submit-bottom {
     margin: 10px 40px 18px;
     display: flex;
     flex-direction: row;
+}
+
+.fb-login {
+    margin: 8px 40px;
+    text-align: center;
+    display: inline-flex;
+}
+
+.fb-login-btn {
+    background: 0 0;
+    border: none;
+    display: inline;
+    position: relative;
+    padding: 0;
+    margin: 0;
+    width: 268px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.fb-login-btn:hover {
+    background-color: unset;
+}
+
+.fb-login-btn:active {
+    opacity: .7;
+}
+
+.fb-logo {
+    background-image: url("../../images/instagram-logo.png");
+    background-repeat: no-repeat;
+    background-position: -414px -259px;
+    height: 16px;
+    width: 16px;
+    display: inline-block;
+    margin-right: 8px;
+    position: relative;
+    top: 3px;
+}
+
+.fb-login-text {
+    color: #385185;
 }
 
 .break-line {
@@ -165,21 +213,20 @@ button:hover {
 }
 
 .forgot-pass {
+    display: inherit;
     text-align: center;
-}
-
-.forgot-pass a {
     color: #00376b;
     font-size: 12px;
     line-height: 14px;
     margin-top: 12px;
 }
 
-a:hover {
+.forgot-pass:hover {
+    color: #00376b;
     text-decoration: none;
 }
 
-a:active {
+.forgot-pass:active {
     opacity: .5;
     text-decoration: none;
 }
@@ -227,6 +274,7 @@ a:active {
 .ios-logo {
     margin-right: 8px;
     width: 136px;
+    height: 40px;
 }
 
 .android-logo {

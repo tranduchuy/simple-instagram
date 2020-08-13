@@ -95,11 +95,11 @@ export class Login extends React.Component<LoginProps, LoginState> {
                         <div className="right-content">
                             <div className="form-login">
                                 <div className="logo"></div>
-                                <div className="input-login">
+                                <div className="form-login-child">
                                     <form className="form-input" onSubmit={onSubmit}>
                                         <div className="form-input-child">
                                             <div className="mg-input">
-                                                <div className="example1">
+                                                <div className="input-login">
                                                     <input aria-label="Phone number, username, or email"
                                                            placeholder="Phone number, username, or email"
                                                            name="username"
@@ -108,7 +108,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
                                                 </div>
                                             </div>
                                             <div className="mg-input">
-                                                <div className="example1">
+                                                <div className="input-login">
                                                     <input placeholder="Password"
                                                            name="username"
                                                            type="password" className="input-text" value={state.password}
@@ -116,16 +116,17 @@ export class Login extends React.Component<LoginProps, LoginState> {
                                                 </div>
                                             </div>
                                             <div className="btn-login">
-                                                <button type="submit">Login</button>
+                                                <button type="submit" className="btn-login-submit">Log in</button>
                                             </div>
                                             <div className="submit-bottom">
                                                 <div className="break-line"></div>
                                                 <div className="or-text">or</div>
                                                 <div className="break-line"></div>
                                             </div>
-                                            <div className="btn-login">
-                                                <button type="button">
-                                                    <span >Login with Facebook</span>
+                                            <div className="fb-login">
+                                                <button type="button" className="fb-login-btn">
+                                                    <span className="fb-logo"></span>
+                                                    <span className="fb-login-text" >Login with Facebook</span>
                                                 </button>
                                             </div>
                                             {
@@ -135,9 +136,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
                                                     </div>
                                                 ) : (<div></div>)
                                             }
-                                            <div className="forgot-pass">
-                                                <a href="">Forgot password?</a>
-                                            </div>
+                                            <a href="" className="forgot-pass">Forgot password?</a>
                                         </div>
                                     </form>
                                 </div>
@@ -165,7 +164,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
                                        target="_blank">
                                         <img alt="Available on Google Play"
                                              className="android-logo "
-                                             src="https://www.instagram.com/static/images/appstore-install-badges/english_get.png/74c874cf7dc5.png"/>
+                                             src="https://www.instagram.com/static/images/appstore-install-badges/badge_android_english-en.png/e9cd846dc748.png"/>
                                     </a>
                                 </div>
                             </div>
