@@ -1,0 +1,295 @@
+.main {
+    background-color: #fafafa;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    justify-content: center;
+    margin: 30px auto 0;
+    max-width: 935px;
+    padding-bottom: 44px;
+    width: 100%;
+}
+
+.wrapper .left-content {
+    background-repeat: no-repeat;
+    background-image: url("../../images/instagramBackground.png");
+    background-size: 454px 618px;
+    flex-basis: 454px;
+    height: 618px;
+    margin-left: -35px;
+    margin-right: -15px;
+}
+
+.wrapper .left-content .slide-images {
+    margin: 99px 0 0 151px;
+    position: relative;
+}
+
+.wrapper .left-content .slide-images .list-img {
+    height: 427px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 240px;
+}
+
+.wrapper .right-content {
+    flex-grow: 1;
+    justify-content: center;
+    margin-top: 12px;
+    max-width: 350px;
+    padding-top: 21px;
+}
+
+.form-login {
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #dbdbdb;
+    border-radius: 1px;
+    margin: 0 0 10px;
+    padding: 10px 0;
+}
+
+.form-login .logo {
+    background-image: url("../../images/instagram-new-logo.png");
+    margin: 22px auto 12px;
+    background-repeat: no-repeat;
+    background-position: -9px -15px;
+    height: 49px;
+    width: 165px;
+}
+
+.input-login {
+    margin-bottom: 10px;
+    max-width: 350px;
+    width: 100%;
+}
+
+.form-input {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-input-child {
+    margin-top: 24px;
+}
+
+.mg-input {
+    margin: 0 40px 6px;
+}
+
+.example1 {
+    align-items: center;
+    background: #fafafa;
+    border: 1px solid #dbdbdb;
+    border-radius: 3px;
+    box-sizing: border-box;
+    color: #262626;
+    display: flex;
+    flex-direction: row;
+    font-size: 14px;
+    position: relative;
+    width: 100%;
+}
+
+.input-text {
+    border: 0;
+    padding: 9px 0 7px 8px;
+    width: 260px;
+}
+
+.input-text:focus {
+    outline: 0;
+}
+
+.btn-login {
+    margin: 8px 40px;
+    background: #fff;
+    border: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+button {
+    color: white;
+    border: none;
+    background: #3897f0;
+    border-radius: 3px;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 6px;
+    margin-bottom: 10px;
+}
+
+button:hover {
+    background-color: rgba(0,149,246,.3);
+}
+
+.submit-bottom {
+    margin: 10px 40px 18px;
+    display: flex;
+    flex-direction: row;
+}
+
+.break-line {
+    background-color: rgba(219,219,219,1);
+    height: 1px;
+    position: relative;
+    top: .45em;
+    flex-grow: 1;
+}
+
+.or-text {
+    color: #8e8e8e;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 15px;
+    margin: 0 18px;
+    text-transform: uppercase;
+    flex-grow: 0;
+}
+
+.err-message {
+    color: #ed4956;
+    margin: 10px 40px;
+    font-size: 14px;
+    line-height: 18px;
+    text-align: center;
+}
+
+.forgot-pass {
+    text-align: center;
+}
+
+.forgot-pass a {
+    color: #00376b;
+    font-size: 12px;
+    line-height: 14px;
+    margin-top: 12px;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+a:active {
+    opacity: .5;
+    text-decoration: none;
+}
+
+.register-form {
+    display: flex;
+    text-align: center;
+    font-size: 14px;
+    line-height: 18px;
+    margin: -3px 60px -4px;
+    font-weight: 300;
+    width: 232px;
+    height: 48px;
+}
+
+.quest-sign-up {
+    color: #262626;
+    font-size: 14px;
+    margin: 15px;
+    text-align: center;
+}
+
+.sign-up {
+    color: #0095f6;
+    font-weight: 600;
+    margin-left: 4px;
+}
+
+.get-app {
+    text-align: center;
+}
+
+.get-app-text {
+    display: inline-block;
+    font-size: 14px;
+    line-height: 18px;
+    margin: 10px 20px 10px 20px;
+    width: 310px;
+}
+
+.app-logo {
+    margin: 10px 0;
+}
+
+.ios-logo {
+    margin-right: 8px;
+    width: 136px;
+}
+
+.android-logo {
+    height: 40px;
+    width: 134px;
+}
+
+.footer {
+    background-color: #fafafa;
+    order: 5;
+    margin: 0 20px;
+}
+
+.list-footer {
+    display: flex;
+    max-width: 1012px;
+    height: 104px;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 38px 0;
+    margin: 0 auto;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    width: 100%;
+}
+
+.list-footer-nav {
+    max-width: 100%;
+}
+
+.list-footer-nav ul {
+    list-style: none;
+}
+
+.list-footer-ul {
+    margin: 0 16px 3px 0;
+    padding: 0;
+}
+
+.list-footer-li {
+    display: inline-block;
+    margin: 0 16px 7px 0;
+}
+
+.list-footer-li a {
+    color: #00376b;
+}
+
+.li-language {
+    color: #00376b;
+    display: inline-block;
+    font-weight: 600;
+    position: relative;
+    text-transform: uppercase;
+    vertical-align: top;
+}
+
+.switch-language {
+    height: 100%;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.DINPA {
+    color: #8e8e8e;
+}
