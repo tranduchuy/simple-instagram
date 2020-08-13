@@ -160,6 +160,10 @@ button:hover {
     text-align: center;
 }
 
+.err-message p {
+    display: block;
+}
+
 .forgot-pass {
     text-align: center;
 }
