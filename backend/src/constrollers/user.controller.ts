@@ -36,6 +36,11 @@ type ValidatorPass = {
     confirmPassword: string;
 };
 
+type UpdateConfirm = {
+    tokenRegister: string;
+    status: number;
+};
+
 const validateEmailAddress = (email: string): boolean => {
     const filter = new RegExp('^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$', 'i');
     return filter.test(email);
@@ -75,14 +80,14 @@ class UserController {
         } = req.body;
         if (!email || !password || !confirmPassword) {
             res.status(HttpStatus.BAD_REQUEST).json({
-                message: "Vui lòng điền đủ thông tin"
+                message: "This field is require."
             });
             return;
         }
 
         if (!validateEmailAddress(email)) {
             res.status(HttpStatus.BAD_REQUEST).json({
-                message: "Email không hợp lệ"
+                message: "Email address is invalid."
             });
             return;
         }
@@ -97,7 +102,7 @@ class UserController {
 
         if (user !== null) {
             return res.status(HttpStatus.BAD_REQUEST).json({
-                message: "Email đã được sử dụng"
+                message: "That Email is taken. Try another."
             });
         }
 
@@ -119,12 +124,12 @@ class UserController {
             from: process.env.config_user,
             subject: 'Verification Email',
             to: email,
-            html: `<a href="http://localhost:3000/confirm?token=${tokenRegister}">Click here to verify email</a>`
+            html: `<a href="http://localhost:3000/confirm?tokenRegister=${tokenRegister}">Click here to verify email</a>`
         };
 
         await sendMailVerify(mailOptions);
         return res.status(HttpStatus.OK).json({
-            message: "Đăng kí thành công. Vui lòng kiểm tra email để xác thực"
+            message: "Successful. Please check email to verify."
         });
     };
 
@@ -132,7 +137,7 @@ class UserController {
         const {email, password} = req.body;
         if (!email || !password) {
             res.status(HttpStatus.BAD_REQUEST).json({
-                message: "Email hoặc mật khẩu không đúng"
+                message: "This field is require."
             });
 
             return;
@@ -140,7 +145,7 @@ class UserController {
 
         if (!validateEmailAddress(email)) {
             res.status(HttpStatus.BAD_REQUEST).json({
-                message: "Email không hợp lệ"
+                message: "Email is invalid."
             });
 
             return;
@@ -148,7 +153,7 @@ class UserController {
 
         if (!isAlphabetAndNumber(password)) {
             res.status(HttpStatus.BAD_REQUEST).json({
-                message: "Password không hợp lệ"
+                message: "Password is invalid"
             });
 
             return;
@@ -159,7 +164,7 @@ class UserController {
 
         if (user === null) {
             res.status(HttpStatus.BAD_REQUEST).json({
-                message: "Không tìm thấy tài khoản"
+                message: "Email does not exist."
             });
 
             return;
@@ -167,7 +172,7 @@ class UserController {
 
         if (bcrypt.compareSync(password, user.hashedPassword) === false) {
             res.status(HttpStatus.BAD_REQUEST).json({
-                message: "Password không đúng"
+                message: "Incorrect Email or Password. Please try again."
             });
 
             return;
@@ -175,7 +180,7 @@ class UserController {
 
         if (user.status === 2) {
             res.status(HttpStatus.BAD_REQUEST).json({
-                message: "Không tìm thấy tài khoản"
+                message: "Email does not exist."
             });
 
             return;
@@ -183,8 +188,39 @@ class UserController {
 
         const token: string = jwt.sign({email: user.email}, process.env.private_key);
         res.status(HttpStatus.OK).json({
-            message: "Đăng nhập thành công",
+            message: "Successful.",
             token: token
+        });
+
+        return;
+    };
+
+    async confirmUser(req: Request<any, any, {tokenRegister: string}>, res: Response<UserResSuccess | UserResError>): Promise<any> {
+        const {tokenRegister} = req.body;
+        if (!tokenRegister) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Token is invalid."
+            });
+
+            return;
+        }
+
+        const fieldUpdate: UpdateConfirm = {
+            tokenRegister: "",
+            status: 1
+        };
+        const user: User | null = await UserModel.findOneAndUpdate({tokenRegister: tokenRegister}, fieldUpdate)
+            .lean();
+        if (!user) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Token is invalid."
+            });
+
+            return;
+        }
+
+        res.status(HttpStatus.OK).json({
+            message: "Verify Successful."
         });
 
         return;
