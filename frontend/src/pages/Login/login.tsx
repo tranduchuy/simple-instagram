@@ -13,6 +13,7 @@ interface LoginProps extends RouteComponentProps {
 type LoginState = {
     email: string;
     password: string;
+    errMessage: string
 };
 
 type LoginFormData = {
@@ -31,7 +32,8 @@ export class Login extends React.Component<LoginProps, LoginState> {
         super(props);
         this.state = {
             email: '',
-            password: ''
+            password: '',
+            errMessage: ''
         };
     }
 
@@ -45,13 +47,14 @@ export class Login extends React.Component<LoginProps, LoginState> {
 
         axios.post<LoginResSuccess>(API.Login, formData)
             .then((res: AxiosResponse) => {
-                console.log(res);
                 this.saveCookieToken(res.data.token);
                 this.props.history.push('/');
             })
             .catch(err => {
                 if (err.response.data.message) {
-                    alert(err.response.data.message);
+                    this.setState({
+                        errMessage: err.response.data.message
+                    })
                 } else {
                     alert(err);
                 }
@@ -125,6 +128,13 @@ export class Login extends React.Component<LoginProps, LoginState> {
                                                     <span >Login with Facebook</span>
                                                 </button>
                                             </div>
+                                            {
+                                                state.errMessage ? (
+                                                    <div className="err-message">
+                                                        <p aria-atomic="true" role="alert">{state.errMessage}</p>
+                                                    </div>
+                                                ) : (<div></div>)
+                                            }
                                             <div className="forgot-pass">
                                                 <a href="">Forgot password?</a>
                                             </div>
