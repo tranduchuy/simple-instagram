@@ -1,0 +1,268 @@
+.main {
+    background-color: #fafafa;
+}
+
+.wrapper-sign-up {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    justify-content: center;
+    margin: 0 auto 0;
+    max-width: 935px;
+    padding-bottom: 44px;
+    width: 100%;
+}
+
+.wrapper-sign-up .right-content {
+    flex-grow: 1;
+    justify-content: center;
+    margin-top: 12px;
+    max-width: 350px;
+}
+
+.form-sign-up {
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #dbdbdb;
+    border-radius: 1px;
+    margin: 0 0 10px;
+    padding: 10px 0;
+}
+
+.form-sign-up .logo {
+    background-image: url("../../images/instagram-logo.png");
+    margin: 22px auto 12px;
+    background-repeat: no-repeat;
+    background-position: 0 -130px;
+    height: 51px;
+    width: 175px;
+}
+
+.description-sign-up {
+    color: #8e8e8e;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 20px;
+    margin: 0 40px 10px;
+    text-align: center;
+}
+
+.form-sign-up-child {
+    margin-bottom: 10px;
+    max-width: 350px;
+    width: 100%;
+}
+
+.form-input {
+    display: flex;
+    flex-direction: column;
+}
+
+.mg-input {
+    margin: 0 40px 6px;
+}
+
+.input-sign-up {
+    align-items: center;
+    background: #fafafa;
+    border: 1px solid #dbdbdb;
+    border-radius: 3px;
+    box-sizing: border-box;
+    color: #262626;
+    display: flex;
+    flex-direction: row;
+    font-size: 14px;
+    position: relative;
+    width: 100%;
+}
+
+.input-text {
+    border: 0;
+    padding: 9px 0 7px 8px;
+    width: 260px;
+}
+
+.input-text:focus {
+    outline: 0;
+}
+
+.btn-sign-up {
+    margin: 8px 40px;
+    background: #fff;
+    border: 0;
+    flex-direction: column;
+    display: inline-flex;
+    width: 268px;
+    height: auto;
+}
+
+.btn-sign-up-submit {
+    color: white;
+    border: none;
+    background: #3897f0;
+    border-radius: 3px;
+    font-weight: 600;
+    padding: 5px 9px;
+    font-size: 14px;
+}
+
+.btn-sign-up-submit:hover {
+    background-color: rgba(0,149,246,.3);
+}
+
+.btn-sign-up-submit:visited {
+    border: none;
+}
+
+.submit-bottom {
+    margin: 10px 40px 18px;
+    display: flex;
+    flex-direction: row;
+}
+
+.fb-login {
+    margin: 8px 40px;
+    text-align: center;
+    display: inline-flex;
+}
+
+.fb-login-btn {
+    background: 0 0;
+    border: none;
+    display: inline;
+    position: relative;
+    padding: 0;
+    margin: 0;
+    width: 268px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.fb-login-btn:hover {
+    background-color: unset;
+}
+
+.fb-login-btn:active {
+    opacity: .7;
+}
+
+.fb-logo-sign-up {
+    background-image: url("../../images/instagram-logo.png");
+    background-repeat: no-repeat;
+    background-position: -414px -300px;
+    height: 16px;
+    width: 16px;
+    display: inline-block;
+    margin-right: 8px;
+    position: relative;
+    top: 3px;
+}
+
+.break-line {
+    background-color: rgba(219,219,219,1);
+    height: 1px;
+    position: relative;
+    top: .45em;
+    flex-grow: 1;
+}
+
+.or-text {
+    color: #8e8e8e;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 15px;
+    margin: 0 18px;
+    text-transform: uppercase;
+    flex-grow: 0;
+}
+
+.err-message {
+    color: #ed4956;
+    margin: 10px 40px;
+    font-size: 14px;
+    line-height: 18px;
+    text-align: center;
+}
+
+.err-message p {
+    display: block;
+}
+
+.policy {
+    display: inherit;
+    text-align: center;
+    color: #8e8e8e;
+    font-size: 12px;
+    line-height: 16px;
+    margin: 10px 40px;
+}
+
+.policy a {
+    color: #8e8e8e;
+    font-weight: 600;
+}
+
+.policy a:hover {
+    color: #8e8e8e;
+    text-decoration: none;
+}
+
+.policy a:active {
+    opacity: .5;
+    text-decoration: none;
+}
+
+.register-form {
+    display: flex;
+    text-align: center;
+    font-size: 14px;
+    line-height: 18px;
+    margin: -3px 60px -4px;
+    font-weight: 300;
+    width: 232px;
+    height: 48px;
+}
+
+.quest-log-in {
+    color: #262626;
+    font-size: 14px;
+    margin: 15px;
+    text-align: center;
+}
+
+.quest-log-in a:hover {
+    text-decoration: none;
+}
+
+.log-in {
+    color: #0095f6;
+    font-weight: 600;
+    margin-left: 4px;
+}
+
+.get-app {
+    text-align: center;
+}
+
+.get-app-text {
+    display: inline-block;
+    font-size: 14px;
+    line-height: 18px;
+    margin: 10px 20px 10px 20px;
+    width: 310px;
+}
+
+.app-logo {
+    margin: 10px 0;
+}
+
+.ios-logo {
+    margin-right: 8px;
+    width: 136px;
+    height: 40px;
+}
+
+.android-logo {
+    height: 40px;
+    width: 134px;
+}
