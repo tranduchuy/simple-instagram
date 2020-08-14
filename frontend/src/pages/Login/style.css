@@ -249,6 +249,10 @@
     text-align: center;
 }
 
+.quest-sign-up a:hover {
+    text-decoration: none;
+}
+
 .sign-up {
     color: #0095f6;
     font-weight: 600;
