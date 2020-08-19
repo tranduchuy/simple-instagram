@@ -1,12 +1,19 @@
-import React from 'react';
+import React, {ChangeEvent} from 'react';
+import axios from 'axios';
 import './forgotPassword.css';
+import * as API from '../../constants/api';
 import {RouteComponentProps} from 'react-router-dom';
 import {Footer} from "../../components";
+import {AxiosResponse} from "axios";
 
 interface ForgotPasswordProps extends RouteComponentProps {
 
-}type ForgotPasswordState = {
+}
+
+type ForgotPasswordState = {
     email: string;
+    successMessage: string;
+    errorMessage: string;
 };
 
 type ForgotPasswordFormData = {
@@ -22,21 +29,48 @@ type ForgotPasswordError = {
 };
 
 
-export class ForgotPassword extends React.Component<ForgotPasswordProps, any> {
+export class ForgotPassword extends React.Component<ForgotPasswordProps, ForgotPasswordState> {
     constructor(props: ForgotPasswordProps) {
         super(props);
         this.state = {
-            email: ''
+            email: '',
+            successMessage: '',
+            errorMessage: ''
         }
     }
 
-    onSubmit = () => {
+    onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const formData: ForgotPasswordFormData = {
+            email: this.state.email
+        };
 
+        axios.post<ForgotPasswordResSuccess, AxiosResponse<ForgotPasswordResSuccess | ForgotPasswordError>>(API.ForgotPass, formData)
+            .then((res) => {
+                this.setState({
+                    successMessage: res.data.message
+                });
+
+                setTimeout(() => this.props.history.push('/'), 3000)
+            })
+            .catch((err) => {
+                if (err) {
+                    this.setState({
+                       errorMessage: err.response.data.message
+                    });
+                } else {
+                    alert(err);
+                }
+            })
     };
 
-    handleChangeEmailInput = () => {
 
+    handleChangeEmailInput = (event: ChangeEvent<HTMLInputElement>) => {
+        this.setState({
+            email: event.target.value
+        })
     };
+
     render(): React.ReactElement {
         const {onSubmit, handleChangeEmailInput, state} = this;
         return (
@@ -52,7 +86,8 @@ export class ForgotPassword extends React.Component<ForgotPasswordProps, any> {
                                     <form className="form-forgot-input" onSubmit={onSubmit}>
                                         <h4 className="trouble-log-in">Trouble Logging In?</h4>
                                         <div className="description-forgot">
-                                            Enter your username or email and we'll send you a link to get back into your account.
+                                            Enter your username or email and we'll send you a link to get back into your
+                                            account.
                                         </div>
                                         <div className="mg-input">
                                             <div className="input-forgot-pass">
@@ -67,7 +102,8 @@ export class ForgotPassword extends React.Component<ForgotPasswordProps, any> {
                                             </div>
                                         </div>
                                         <div className="btn-forgot-pass">
-                                            <button type="submit" className="btn-forgot-pass-submit">Send Login Link</button>
+                                            <button type="submit" className="btn-forgot-pass-submit">Send Login Link
+                                            </button>
                                         </div>
                                         <div className="submit-bottom">
                                             <div className="break-line"></div>
