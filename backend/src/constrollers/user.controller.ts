@@ -267,6 +267,14 @@ class UserController {
             return;
         }
 
+        const mailOptions = {
+            from: process.env.config_user,
+            subject: 'no-reply email',
+            to: email,
+            html: `<a href="http://localhost:3000/reset?forgetPasswordToken=${user.forgetPasswordToken}">Hi ${user.name},We got a request to reset your Instagram password.</a>`
+        };
+
+        await sendMailVerify(mailOptions);
         res.status(HttpStatus.OK).json({
             message: `Thanks! Please check ${user.email} for a link to reset your password.`
         });
