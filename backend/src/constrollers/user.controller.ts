@@ -245,7 +245,7 @@ class UserController {
             return;
         }
 
-        if (validateEmailAddress(email)) {
+        if (!validateEmailAddress(email)) {
             res.status(HttpStatus.BAD_REQUEST).json({
                 message: "Email is invalid."
             });
