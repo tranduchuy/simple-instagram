@@ -105,6 +105,15 @@ export class ForgotPassword extends React.Component<ForgotPasswordProps, ForgotP
                                             <button type="submit" className="btn-forgot-pass-submit">Send Login Link
                                             </button>
                                         </div>
+                                        {
+                                            state.errorMessage ? (
+                                                <div className="err-message">
+                                                    <p aria-atomic="true" role="alert">{state.errorMessage}</p>
+                                                </div>
+                                            ) : (<div className="success-message">
+                                                <p aria-atomic="true" role="alert">{state.successMessage}</p>
+                                            </div>)
+                                        }
                                         <div className="submit-bottom">
                                             <div className="break-line"></div>
                                             <div className="or-text">or</div>
