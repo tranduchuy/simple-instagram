@@ -1,6 +1,6 @@
 import React, {ChangeEvent} from 'react';
 import './register.css';
-import {Footer} from "../../components";
+import {Footer} from "../../components/footer";
 import * as API from '../../constants/api';
 import {RouteComponentProps} from 'react-router-dom';
 import axios, {AxiosResponse} from 'axios';
