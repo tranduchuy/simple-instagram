@@ -3,7 +3,6 @@ module.exports = {
         browser: true,
         es6: true,
     },
-    extends: ['plugin:react/recommended', 'airbnb', 'plugin:import/errors', 'plugin:import/warnings'],
     parser: '@typescript-eslint/parser',
     parserOptions: {
         ecmaFeatures: {
@@ -36,6 +35,7 @@ module.exports = {
         'react/jsx-indent-props': ['error', 4],
         'react/jsx-filename-extension': ['error', { extensions: ['.ts', '.tsx'] }],
         'react/state-in-constructor': ['warn', 'never'],
+        'react/prefer-stateless-function': ['warn'],
         'react/destructuring-assignment': ['warn', 'always', { ignoreClassFields: true }],
         'import/prefer-default-export': 'off',
         'import/default': 'off',
