@@ -1,6 +1,6 @@
 import React from 'react';
 import './style.css';
-import {Footer} from '../../components/';
+import {Footer} from '../../components/footer';
 import {RouteComponentProps} from 'react-router-dom';
 import * as API from '../../constants/api';
 import axios, {AxiosResponse} from "axios";
