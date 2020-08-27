@@ -41,6 +41,15 @@ type UpdateConfirm = {
     status: number;
 };
 
+type ForgotPasswordReqBody = {
+    email: string;
+};
+
+type UpdateForgetPassword = {
+    forgetPasswordToken: string;
+    status: number;
+};
+
 const validateEmailAddress = (email: string): boolean => {
     const filter = new RegExp('^[a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$', 'i');
     return filter.test(email);
@@ -195,7 +204,7 @@ class UserController {
         return;
     };
 
-    async confirmUser(req: Request<any, any, {tokenRegister: string}>, res: Response<UserResSuccess | UserResError>): Promise<any> {
+    async confirmUser(req: Request<any, any, { tokenRegister: string }>, res: Response<UserResSuccess | UserResError>): Promise<any> {
         const {tokenRegister} = req.body;
         if (!tokenRegister) {
             res.status(HttpStatus.BAD_REQUEST).json({
@@ -225,6 +234,53 @@ class UserController {
 
         return;
     };
+
+    async forgotPassword(req: Request<any, any, ForgotPasswordReqBody>, res: Response<UserResSuccess | UserResError>): Promise<any> {
+        const {email} = req.body;
+        if (!email) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Email field is require."
+            });
+
+            return;
+        }
+
+        if (!validateEmailAddress(email)) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Email is invalid."
+            });
+        }
+
+        const updateForgetPassword: UpdateForgetPassword = {
+            forgetPasswordToken: uniqueString(),
+            status: 2
+        };
+
+        const user: User | null = await UserModel.findOneAndUpdate({email: email}, updateForgetPassword)
+            .lean();
+
+        if (!user) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: "No users found."
+            });
+
+            return;
+        }
+
+        const mailOptions = {
+            from: process.env.config_user,
+            subject: 'no-reply email',
+            to: email,
+            html: `<a href="http://localhost:3000/reset?forgetPasswordToken=${user.forgetPasswordToken}">Hi ${user.name},We got a request to reset your Instagram password.</a>`
+        };
+
+        await sendMailVerify(mailOptions);
+        res.status(HttpStatus.OK).json({
+            message: `Thanks! Please check ${user.email} for a link to reset your password.`
+        });
+
+        return;
+    }
 }
 
 export const userCtrl = new UserController();
