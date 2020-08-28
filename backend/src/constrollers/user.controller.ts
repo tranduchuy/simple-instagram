@@ -123,7 +123,7 @@ class UserController {
 
         const userDoc: UserDoc = new UserModel({
             email: email,
-            name: name,
+            name: name || '',
             passwordSalt: saltRounds,
             hashedPassword: hashedPassword,
             tokenRegister: tokenRegister,
