@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import Cookies from 'js-cookie';
 import React from 'react';
 import './style.css';
-import { RouteComponentProps } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { Footer } from '../../components/footer';
 import * as API from '../../constants/api';
 import * as CookieNames from '../../constants/cookie';
@@ -26,16 +26,13 @@ type LoginResSuccess = {
 };
 
 export class Login extends React.Component<LoginProps, LoginState> {
-    constructor(props: LoginProps) {
-        super(props);
-        this.state = {
-            email: '',
-            password: '',
-            errMessage: '',
-        };
-    }
+    state = {
+        email: '',
+        password: '',
+        errMessage: '',
+    };
 
-    onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    onSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
         event.preventDefault();
         const { email, password } = this.state;
         const formData: LoginFormData = {
@@ -53,23 +50,24 @@ export class Login extends React.Component<LoginProps, LoginState> {
                     this.setState({
                         errMessage: err.response.data.message,
                     });
-                } else {
-                    alert(err);
                 }
+                this.setState({
+                    errMessage: 'Something error',
+                });
             });
     };
 
-    saveCookieToken = (token: string) => {
+    saveCookieToken = (token: string): void => {
         Cookies.set(CookieNames.Token, token, { expires: 1 });
     };
 
-    handleEmailInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    handleEmailInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState({
             email: event.target.value,
         });
     };
 
-    handlePasswordInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    handlePasswordInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState({
             password: event.target.value,
         });
@@ -131,12 +129,6 @@ export class Login extends React.Component<LoginProps, LoginState> {
                                                 <div className="or-text">or</div>
                                                 <div className="break-line" />
                                             </div>
-                                            <div className="fb-login">
-                                                <button type="button" className="fb-login-btn">
-                                                    <span className="fb-logo" />
-                                                    <span className="fb-login-text">Login with Facebook</span>
-                                                </button>
-                                            </div>
                                             {
                                                 state.errMessage ? (
                                                     <div className="err-message">
@@ -144,7 +136,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
                                                     </div>
                                                 ) : (<div />)
                                             }
-                                            <a href="/" className="forgot-pass">Forgot password?</a>
+                                            <Link to="/forgot-password" className="forgot-pass">Forgot password?</Link>
                                         </div>
                                     </form>
                                 </div>
@@ -153,9 +145,9 @@ export class Login extends React.Component<LoginProps, LoginState> {
                                 <div className="register-form">
                                     <p className="quest-sign-up">
                                         Don&apos;t have an account?
-                                        <a href="/register">
+                                        <Link to="/register">
                                             <span className="sign-up">Sign up</span>
-                                        </a>
+                                        </Link>
                                     </p>
                                 </div>
                             </div>

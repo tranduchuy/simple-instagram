@@ -1,9 +1,9 @@
 import axios, { AxiosResponse } from 'axios';
 import React, { ChangeEvent } from 'react';
 import './forgotPassword.css';
-import { RouteComponentProps } from 'react-router-dom';
-import * as API from '../../constants/api';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { Footer } from '../../components/footer';
+import * as API from '../../constants/api';
 
 type ForgotPasswordProps = RouteComponentProps
 
@@ -26,16 +26,13 @@ type ForgotPasswordError = {
 };
 
 export class ForgotPassword extends React.Component<ForgotPasswordProps, ForgotPasswordState> {
-    constructor(props: ForgotPasswordProps) {
-        super(props);
-        this.state = {
-            email: '',
-            successMessage: '',
-            errorMessage: '',
-        };
-    }
+    state = {
+        email: '',
+        successMessage: '',
+        errorMessage: '',
+    };
 
-    onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    onSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
         event.preventDefault();
         const formData: ForgotPasswordFormData = {
             email: this.state.email,
@@ -54,13 +51,11 @@ export class ForgotPassword extends React.Component<ForgotPasswordProps, ForgotP
                     this.setState({
                         errorMessage: err.response.data.message,
                     });
-                } else {
-                    alert(err);
                 }
             });
     };
 
-    handleChangeEmailInput = (event: ChangeEvent<HTMLInputElement>) => {
+    handleChangeEmailInput = (event: ChangeEvent<HTMLInputElement>): void => {
         this.setState({
             email: event.target.value,
         });
@@ -119,12 +114,12 @@ export class ForgotPassword extends React.Component<ForgotPasswordProps, ForgotP
                                             <div className="break-line" />
                                         </div>
                                         <div className="sign-up-link">
-                                            <a href="/register">Create New Account</a>
+                                            <Link to="/register">Create New Account</Link>
                                         </div>
                                     </form>
                                     <div className="back-log-in">
                                         <div className="back-log-in-child">
-                                            <a href="/login">Back To Login</a>
+                                            <Link to="/login">Back To Login</Link>
                                         </div>
                                     </div>
                                 </div>

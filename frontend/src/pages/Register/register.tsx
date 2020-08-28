@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import React, { ChangeEvent } from 'react';
 import './register.css';
-import { RouteComponentProps } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { Footer } from '../../components/footer';
 import * as API from '../../constants/api';
 
@@ -31,18 +31,15 @@ type RegisterResError = {
 };
 
 export class Register extends React.Component<RegisterProps, RegisterState> {
-    constructor(props: RegisterProps) {
-        super(props);
-        this.state = {
-            email: '',
-            password: '',
-            confirmPassword: '',
-            name: '',
-            errMessage: '',
-        };
-    }
+    state = {
+        email: '',
+        password: '',
+        confirmPassword: '',
+        name: '',
+        errMessage: '',
+    };
 
-    onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    onSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
         event.preventDefault();
         const {
             email, password, confirmPassword, name,
@@ -63,43 +60,24 @@ export class Register extends React.Component<RegisterProps, RegisterState> {
                     this.setState({
                         errMessage: err.response.data.message,
                     });
-                } else {
-                    alert(err);
                 }
+                this.setState({
+                    errMessage: 'Something error',
+                });
             });
     };
 
-    handleChangeEmailInput = (event: ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-            email: event.target.value,
-        });
-    };
-
-    handleChangePasswordInput = (event: ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-            password: event.target.value,
-        });
-    };
-
-    handleChangeConfirmPassInput = (event: ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-            confirmPassword: event.target.value,
-        });
-    };
-
-    handleChangeNameInput = (event: ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-            name: event.target.value,
-        });
+    handleInputChange = (key: keyof RegisterState, value: string): void => {
+        this.setState((prevState) => ({
+            ...prevState,
+            [key]: value,
+        }));
     };
 
     render(): React.ReactElement {
         const {
             onSubmit,
-            handleChangeEmailInput,
-            handleChangePasswordInput,
-            handleChangeConfirmPassInput,
-            handleChangeNameInput,
+            handleInputChange,
             state,
         } = this;
         return (
@@ -112,12 +90,6 @@ export class Register extends React.Component<RegisterProps, RegisterState> {
                                 <div className="form-sign-up-child">
                                     <form className="form-input" onSubmit={onSubmit}>
                                         <h2 className="description-sign-up">Sign up to see photos and videos from your friends.</h2>
-                                        <div className="btn-sign-up">
-                                            <button type="submit" className="btn-sign-up-submit">
-                                                <span className="fb-logo-sign-up" />
-                                                Login with Facebook
-                                            </button>
-                                        </div>
                                         <div className="submit-bottom">
                                             <div className="break-line" />
                                             <div className="or-text">or</div>
@@ -133,7 +105,11 @@ export class Register extends React.Component<RegisterProps, RegisterState> {
                                                         type="text"
                                                         className="input-text"
                                                         value={state.email}
-                                                        onChange={handleChangeEmailInput}
+                                                        onChange={
+                                                            (event: ChangeEvent<HTMLInputElement>): void => {
+                                                                handleInputChange('email', event.currentTarget.value);
+                                                            }
+                                                        }
                                                     />
                                                 </div>
                                             </div>
@@ -145,17 +121,11 @@ export class Register extends React.Component<RegisterProps, RegisterState> {
                                                         type="text"
                                                         className="input-text"
                                                         value={state.name}
-                                                        onChange={handleChangeNameInput}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="mg-input">
-                                                <div className="input-sign-up">
-                                                    <input
-                                                        placeholder="Username"
-                                                        name="username"
-                                                        type="text"
-                                                        className="input-text"
+                                                        onChange={
+                                                            (event: ChangeEvent<HTMLInputElement>): void => {
+                                                                handleInputChange('name', event.currentTarget.value);
+                                                            }
+                                                        }
                                                     />
                                                 </div>
                                             </div>
@@ -167,7 +137,11 @@ export class Register extends React.Component<RegisterProps, RegisterState> {
                                                         type="password"
                                                         className="input-text"
                                                         value={state.password}
-                                                        onChange={handleChangePasswordInput}
+                                                        onChange={
+                                                            (event: ChangeEvent<HTMLInputElement>): void => {
+                                                                handleInputChange('password', event.currentTarget.value);
+                                                            }
+                                                        }
                                                     />
                                                 </div>
                                             </div>
@@ -179,7 +153,11 @@ export class Register extends React.Component<RegisterProps, RegisterState> {
                                                         type="password"
                                                         className="input-text"
                                                         value={state.confirmPassword}
-                                                        onChange={handleChangeConfirmPassInput}
+                                                        onChange={
+                                                            (event: ChangeEvent<HTMLInputElement>): void => {
+                                                                handleInputChange('confirmPassword', event.currentTarget.value);
+                                                            }
+                                                        }
                                                     />
                                                 </div>
                                             </div>
@@ -191,7 +169,7 @@ export class Register extends React.Component<RegisterProps, RegisterState> {
                                                     <div className="err-message">
                                                         <p aria-atomic="true" role="alert">{state.errMessage}</p>
                                                     </div>
-                                                ) : (<div />)
+                                                ) : (<></>)
                                             }
                                             <p className="policy">
                                                 By signing up, you agree to our
@@ -215,9 +193,9 @@ export class Register extends React.Component<RegisterProps, RegisterState> {
                                 <div className="register-form">
                                     <p className="quest-log-in">
                                         Have an account?
-                                        <a href="/login">
+                                        <Link to="/login">
                                             <span className="log-in">Log in</span>
-                                        </a>
+                                        </Link>
                                     </p>
                                 </div>
                             </div>
