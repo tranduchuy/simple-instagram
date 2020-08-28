@@ -3,7 +3,7 @@ import axios from 'axios';
 import './forgotPassword.css';
 import * as API from '../../constants/api';
 import {RouteComponentProps} from 'react-router-dom';
-import {Footer} from "../../components";
+import {Footer} from "../../components/footer";
 import {AxiosResponse} from "axios";
 
 interface ForgotPasswordProps extends RouteComponentProps {
