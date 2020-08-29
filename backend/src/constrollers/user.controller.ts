@@ -8,6 +8,7 @@ import {sendMailVerify} from '../services/sendMailVerify';
 
 type RegisterReqBody = {
     email: string;
+    name?: string;
     password: string;
     confirmPassword: string;
 };
@@ -84,6 +85,7 @@ class UserController {
     async registerNewUser(req: Request<any, any, RegisterReqBody>, res: Response<UserResSuccess | UserResError>): Promise<any> {
         const {
             email,
+            name,
             password,
             confirmPassword
         } = req.body;
@@ -121,6 +123,7 @@ class UserController {
 
         const userDoc: UserDoc = new UserModel({
             email: email,
+            name: name || '',
             passwordSalt: saltRounds,
             hashedPassword: hashedPassword,
             tokenRegister: tokenRegister,
