@@ -1,14 +1,11 @@
-import React, {ChangeEvent} from 'react';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
+import React, { ChangeEvent } from 'react';
 import './forgotPassword.css';
+import { Link, RouteComponentProps } from 'react-router-dom';
+import { Footer } from '../../components/footer';
 import * as API from '../../constants/api';
-import {RouteComponentProps} from 'react-router-dom';
-import {Footer} from "../../components/footer";
-import {AxiosResponse} from "axios";
 
-interface ForgotPasswordProps extends RouteComponentProps {
-
-}
+type ForgotPasswordProps = RouteComponentProps
 
 type ForgotPasswordState = {
     email: string;
@@ -28,51 +25,44 @@ type ForgotPasswordError = {
     message: string;
 };
 
-
 export class ForgotPassword extends React.Component<ForgotPasswordProps, ForgotPasswordState> {
-    constructor(props: ForgotPasswordProps) {
-        super(props);
-        this.state = {
-            email: '',
-            successMessage: '',
-            errorMessage: ''
-        }
-    }
+    state = {
+        email: '',
+        successMessage: '',
+        errorMessage: '',
+    };
 
-    onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    onSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
         event.preventDefault();
         const formData: ForgotPasswordFormData = {
-            email: this.state.email
+            email: this.state.email,
         };
 
         axios.post<ForgotPasswordResSuccess, AxiosResponse<ForgotPasswordResSuccess | ForgotPasswordError>>(API.ForgotPass, formData)
             .then((res) => {
                 this.setState({
-                    successMessage: res.data.message
+                    successMessage: res.data.message,
                 });
 
-                setTimeout(() => this.props.history.push('/'), 3000)
+                setTimeout(() => this.props.history.push('/'), 3000);
             })
             .catch((err) => {
                 if (err) {
                     this.setState({
-                       errorMessage: err.response.data.message
+                        errorMessage: err.response.data.message,
                     });
-                } else {
-                    alert(err);
                 }
-            })
+            });
     };
 
-
-    handleChangeEmailInput = (event: ChangeEvent<HTMLInputElement>) => {
+    handleChangeEmailInput = (event: ChangeEvent<HTMLInputElement>): void => {
         this.setState({
-            email: event.target.value
-        })
+            email: event.target.value,
+        });
     };
 
     render(): React.ReactElement {
-        const {onSubmit, handleChangeEmailInput, state} = this;
+        const { onSubmit, handleChangeEmailInput, state } = this;
         return (
             <div>
                 <div className="main">
@@ -80,29 +70,31 @@ export class ForgotPassword extends React.Component<ForgotPasswordProps, ForgotP
                         <div className="right-content">
                             <div className="form-forgot-pass">
                                 <div className="logo">
-                                    <span className="block-logo"></span>
+                                    <span className="block-logo" />
                                 </div>
                                 <div className="form-forgot-pass-child">
                                     <form className="form-forgot-input" onSubmit={onSubmit}>
                                         <h4 className="trouble-log-in">Trouble Logging In?</h4>
                                         <div className="description-forgot">
-                                            Enter your username or email and we'll send you a link to get back into your
+                                            Enter your username or email and we&apos;ll send you a link to get back into your
                                             account.
                                         </div>
                                         <div className="mg-input">
                                             <div className="input-forgot-pass">
-                                                <input aria-label="Mobile number or email"
-                                                       placeholder="Email, Phone, or Username"
-                                                       name="email"
-                                                       type="text"
-                                                       className="input-text"
-                                                       value={state.email}
-                                                       onChange={handleChangeEmailInput}
+                                                <input
+                                                    aria-label="Mobile number or email"
+                                                    placeholder="Email, Phone, or Username"
+                                                    name="email"
+                                                    type="text"
+                                                    className="input-text"
+                                                    value={state.email}
+                                                    onChange={handleChangeEmailInput}
                                                 />
                                             </div>
                                         </div>
                                         <div className="btn-forgot-pass">
-                                            <button type="submit" className="btn-forgot-pass-submit">Send Login Link
+                                            <button type="submit" className="btn-forgot-pass-submit">
+                                                Send Login Link
                                             </button>
                                         </div>
                                         {
@@ -110,22 +102,24 @@ export class ForgotPassword extends React.Component<ForgotPasswordProps, ForgotP
                                                 <div className="err-message">
                                                     <p aria-atomic="true" role="alert">{state.errorMessage}</p>
                                                 </div>
-                                            ) : (<div className="success-message">
-                                                <p aria-atomic="true" role="alert">{state.successMessage}</p>
-                                            </div>)
+                                            ) : (
+                                                <div className="success-message">
+                                                    <p aria-atomic="true" role="alert">{state.successMessage}</p>
+                                                </div>
+                                            )
                                         }
                                         <div className="submit-bottom">
-                                            <div className="break-line"></div>
+                                            <div className="break-line" />
                                             <div className="or-text">or</div>
-                                            <div className="break-line"></div>
+                                            <div className="break-line" />
                                         </div>
                                         <div className="sign-up-link">
-                                            <a href="/register">Create New Account</a>
+                                            <Link to="/register">Create New Account</Link>
                                         </div>
                                     </form>
                                     <div className="back-log-in">
                                         <div className="back-log-in-child">
-                                            <a href="/login">Back To Login</a>
+                                            <Link to="/login">Back To Login</Link>
                                         </div>
                                     </div>
                                 </div>
@@ -133,7 +127,7 @@ export class ForgotPassword extends React.Component<ForgotPasswordProps, ForgotP
                         </div>
                     </div>
                 </div>
-                <Footer/>
+                <Footer />
             </div>
         );
     }
