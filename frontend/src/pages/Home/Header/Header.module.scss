@@ -1,0 +1,17 @@
+@import "../../../assets/style/variable";
+
+.wrap {
+  position: fixed;
+  background-color: rgba(255, 0, 0, 0.85);
+  height: 35px;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+
+  .content {
+    width: $content_width;
+    position: relative;
+    margin: auto;
+  }
+}

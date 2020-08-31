@@ -1,0 +1,12 @@
+.wrap {
+  background-color: blue;
+  width: 350px;
+  position: fixed;
+  right: calc(50% - 475px);
+}
+
+@media screen and (max-width: 999px) {
+  .wrap {
+    display: none;
+  }
+}
