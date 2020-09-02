@@ -7,6 +7,14 @@ import { AuthPageContainer } from '../../components/authPageContainer';
 import * as API from '../../constants/api';
 import * as CookieNames from '../../constants/cookie';
 
+const url = [
+    '/backgroundSlide_1.jpg',
+    '/backgroundSlide_2.jpg',
+    '/backgroundSlide_3.jpg',
+    '/backgroundSlide_4.jpg',
+    '/backgroundSlide_5.jpg',
+];
+
 type LoginProps = RouteComponentProps
 
 type LoginState = {
@@ -85,11 +93,9 @@ export class Login extends React.Component<LoginProps, LoginState> {
                 <div className="wrapper">
                     <div className="left-content">
                         <div className="slide-images">
-                            <img className="list-img" src="images/backgroundSlide_1.jpg" alt="" />
-                            <img className="list-img" src="images/backgroundSlide_2.jpg" alt="" />
-                            <img className="list-img" src="images/backgroundSlide_3.jpg" alt="" />
-                            <img className="list-img" src="images/backgroundSlide_4.jpg" alt="" />
-                            <img className="list-img" src="images/backgroundSlide_5.jpg" alt="" />
+                            {url.map((img) => (
+                                <img className="list-img" src={img} alt="" />
+                            ))}
                         </div>
                     </div>
                     <div className="right-content">
