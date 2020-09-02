@@ -6,7 +6,7 @@
   "scripts": {
     "start": "ts-node src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint src/**/*.ts"
+    "lint": "eslint --ext=ts --ext=tsx src"
   },
   "keywords": [],
   "author": "",
@@ -41,6 +41,8 @@
     "eslint-config-airbnb": "^18.1.0",
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.20.6",
+    "eslint-plugin-react-hooks": "^2.5.0",
     "prettier": "^2.0.5",
     "stylelint": "^13.3.0",
     "stylelint-junit-formatter": "^0.2.2",

@@ -1,4 +1,6 @@
-import {createSchema, ExtractDoc, ExtractProps, Type, typedModel} from "ts-mongoose";
+import {
+    createSchema, ExtractDoc, ExtractProps, Type, typedModel,
+} from 'ts-mongoose';
 
 export const UserSchema = createSchema({
     email: Type.string(),
@@ -13,9 +15,9 @@ export const UserSchema = createSchema({
     avatar: Type.string(),
     role: Type.number(),
     tokenRegister: Type.string(),
-    status: Type.number()
-}, {timestamps: true});
+    status: Type.number(),
+}, { timestamps: true });
 
-export const UserModel = typedModel("User", UserSchema, "users");
+export const UserModel = typedModel('User', UserSchema, 'users');
 export type UserDoc = ExtractDoc<typeof UserSchema>;
 export type User = ExtractProps<typeof UserSchema>;
