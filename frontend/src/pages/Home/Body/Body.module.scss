@@ -1,0 +1,14 @@
+.wrap {
+  background-color: gray;
+  flex: 1;
+  max-width: 600px;
+  height:  3000px;
+  position: relative;
+}
+
+@media screen and (max-width: 999px) {
+  .wrap {
+    margin: auto;
+  }
+}
+

@@ -1,0 +1,11 @@
+@import "../../assets/style/variable";
+
+.content {
+  position: relative;
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  width: $content_width;
+
+  display: flex;
+}
