@@ -1,15 +1,15 @@
-import React from 'react';
-import {RouteComponentProps} from "react-router-dom";
-import {Container, Alert, Col, Row, Form} from "react-bootstrap";
-import axios, {AxiosResponse} from "axios";
-import *as API from "../../constants/api";
+import axios, { AxiosResponse } from 'axios';
 import queryString from 'query-string';
+import React from 'react';
+import {
+    Container, Alert, Col, Form,
+} from 'react-bootstrap';
+import { RouteComponentProps } from 'react-router-dom';
+import * as API from '../../constants/api';
 
-interface ConfirmProps extends RouteComponentProps {
+type ConfirmProps = RouteComponentProps
 
-}
-
-type ResponseMessage = {
+type ResponseMessageState = {
     successMessage?: string;
     errorMessage?: string;
 }
@@ -22,62 +22,59 @@ type ConfirmResSuccess = {
     message: string;
 };
 
-export class Confirm extends React.Component<ConfirmProps, ResponseMessage> {
-    constructor(props: ConfirmProps) {
-        super(props);
-        this.state = {
-            successMessage: "",
-            errorMessage: ""
-        };
-    }
+export class Confirm extends React.Component<ConfirmProps, ResponseMessageState> {
+    state: ResponseMessageState = {
+        successMessage: '',
+        errorMessage: '',
+    };
 
     componentDidMount(): void {
         this.handleVerifyEmail();
     }
 
-    handleVerifyEmail = () => {
+    handleVerifyEmail = (): void => {
         const value = queryString.parse(this.props.location.search);
         const query: string = value.tokenRegister as string;
-        if(!query) {
+        if (!query) {
             this.props.history.push('/');
         }
 
         const formData: ConfirmFormData = {
-            tokenRegister: query
+            tokenRegister: query,
         };
 
         axios.post<ConfirmResSuccess, AxiosResponse<ConfirmResSuccess>>(API.Confirm, formData)
             .then((res) => {
                 this.setState({
-                    successMessage: res.data.message
+                    successMessage: res.data.message,
                 });
-                setTimeout(() => this.props.history.push('/'), 2000)
+                setTimeout(() => this.props.history.push('/'), 2000);
             })
             .catch((err) => {
-                if(err.response.data.message) {
+                if (err.response.data.message) {
                     this.setState({
-                        errorMessage: err.response.data.message
+                        errorMessage: err.response.data.message,
                     });
                 } else {
-                    alert(err);
+                    console.log(err);
                 }
-            })
-
+            });
     };
 
     render(): React.ReactElement {
+        const { successMessage, errorMessage } = this.state;
         return (
-            <Container fluid={true}>
+            <Container fluid>
                 <Form>
                     <Form.Row className="align-items-center">
-                        <Col sm={{ offset: 4, span: "auto" }} >
-                            {this.state.successMessage ? (
+                        <Col sm={{ offset: 4, span: 'auto' }}>
+                            {successMessage ? (
                                 <Alert variant="success" className="mt-5">
-                                    <p>{this.state.successMessage}</p>
+                                    <p>{successMessage}</p>
                                 </Alert>
-                            ): (
+                            ) : (
                                 <Alert variant="danger" className="mt-5">
-                                    <p>{this.state.errorMessage}</p>
+                                    <p>{errorMessage}</p>
                                 </Alert>
                             )}
                         </Col>

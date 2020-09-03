@@ -7,20 +7,19 @@ type MailOptions = {
     html: string;
 }
 
-export const sendMailVerify = async (mailOptions: MailOptions) => {
+export const sendMailVerify = async (mailOptions: MailOptions): Promise<any> => {
     const transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
             user: process.env.config_user,
-            pass: process.env.config_password
-        }
+            pass: process.env.config_password,
+        },
     });
 
-    await transporter.sendMail(mailOptions, function (error, info) {
+    await transporter.sendMail(mailOptions, (error) => {
         if (error) {
             return error;
-        } else {
-            return "Email verify success!";
         }
+        return 'Email verify success!';
     });
 };
