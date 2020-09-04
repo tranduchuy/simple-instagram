@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import React, { ChangeEvent } from 'react';
-import './register.css';
+import './Register.css';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { AuthPageContainer } from '../../components/authPageContainer';
 import * as API from '../../constants/api';
