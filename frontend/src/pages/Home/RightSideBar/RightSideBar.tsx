@@ -7,6 +7,6 @@ export class RightSideBar extends React.Component<{ }, { }> {
             <div className={styles.wrap}>
                 Side bar
             </div>
-        )
+        );
     }
 }
