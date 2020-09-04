@@ -1,15 +1,8 @@
-.main {
-    background-color: #fafafa;
-}
-
 .wrapper {
     display: flex;
     flex-direction: row;
-    flex-grow: 1;
     justify-content: center;
-    margin: 30px auto 0;
     max-width: 935px;
-    padding-bottom: 44px;
     width: 100%;
 }
 
@@ -21,6 +14,12 @@
     height: 618px;
     margin-left: -35px;
     margin-right: -15px;
+}
+
+@media only screen and (max-width: 875px) {
+    .wrapper .left-content {
+        display: none;
+    }
 }
 
 .wrapper .left-content .slide-images {

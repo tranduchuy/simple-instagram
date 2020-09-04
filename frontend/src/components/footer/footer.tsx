@@ -1,7 +1,7 @@
-import React, { Props } from 'react';
+import React from 'react';
 import './footer.css';
 
-export const Footer: React.FunctionComponent<Props<any>> = () => (
+export const Footer = (): JSX.Element => (
     <div className="footer">
         <div className="list-footer">
             <nav className="list-footer-nav">
