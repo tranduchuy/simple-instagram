@@ -7,6 +7,6 @@ export class Body extends React.Component<{ }, { }> {
             <div className={styles.wrap}>
                 Body
             </div>
-        )
+        );
     }
 }
