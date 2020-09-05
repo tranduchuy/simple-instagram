@@ -51,6 +51,18 @@ type UpdateForgetPassword = {
     status: number;
 };
 
+type ResetPassReqBody = {
+    token: string;
+    password: string;
+    confirmPassword: string;
+};
+
+type UpdateResetPassword = {
+    hashedPassword: string;
+    status: number;
+    forgetPasswordToken: string;
+};
+
 const validateEmailAddress = (email: string): boolean => {
     const filter = new RegExp('^[a-z0-9]+([_a-z0-9]+)*@[a-z0-9-]+([a-z0-9-]+)*([a-z]{2,15})$', 'i');
     return filter.test(email);
@@ -277,6 +289,44 @@ class UserController {
         await sendMailVerify(mailOptions);
         res.status(HttpStatus.OK).json({
             message: `Thanks! Please check ${user.email} for a link to reset your password.`,
+        });
+    }
+
+    async resetPassword(req: Request<any, any, ResetPassReqBody>, res: Response<UserResSuccess | UserResError>): Promise<any> {
+        const { token, password } = req.body;
+        const checkedPassword: boolean = isValidatorPassword(req.body, res);
+        if (checkedPassword === false) {
+            return;
+        }
+
+        const user: User | null = await UserModel.findOne({ forgetPasswordToken: token })
+            .lean();
+
+        if (!user) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: 'User not found.',
+            });
+            return;
+        }
+
+        if (user.status === 1) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: 'Reset Password token invalid.',
+            });
+            return;
+        }
+
+        const newHashedPassword: string = bcrypt.hashSync(password, user.passwordSalt);
+        const updateResetPassword: UpdateResetPassword = {
+            hashedPassword: newHashedPassword,
+            status: 1,
+            forgetPasswordToken: '',
+        };
+
+        await UserModel.update({ _id: user._id }, updateResetPassword);
+
+        res.status(HttpStatus.OK).json({
+            message: 'Successfully',
         });
     }
 }
