@@ -51,13 +51,13 @@ type UpdateForgetPassword = {
     status: number;
 };
 
-type ResetPassReqBody = {
+type ChangePasswordReqBody = {
     token: string;
     password: string;
     confirmPassword: string;
 };
 
-type UpdateResetPassword = {
+type ChangeNewPassword = {
     hashedPassword: string;
     status: number;
     forgetPasswordToken: string;
@@ -291,7 +291,7 @@ class UserController {
         });
     }
 
-    async changePassword(req: Request<any, any, ResetPassReqBody>, res: Response<UserResSuccess | UserResError>): Promise<any> {
+    async changePassword(req: Request<any, any, ChangePasswordReqBody>, res: Response<UserResSuccess | UserResError>): Promise<any> {
         const { token, password } = req.body;
         const checkedPassword: boolean = isValidatorPassword(req.body, res);
         if (checkedPassword === false) {
@@ -322,13 +322,13 @@ class UserController {
             return;
         }
         const newHashedPassword: string = bcrypt.hashSync(password, user.passwordSalt);
-        const updateResetPassword: UpdateResetPassword = {
+        const changeNewPassword: ChangeNewPassword = {
             hashedPassword: newHashedPassword,
             status: 1,
             forgetPasswordToken: '',
         };
 
-        await UserModel.update({ _id: user._id }, updateResetPassword);
+        await UserModel.update({ _id: user._id }, changeNewPassword);
 
         res.status(HttpStatus.OK).json({
             message: 'Successfully',
