@@ -87,7 +87,6 @@ const isValidatorPassword = (validatorPass: ValidatorPass, res: Response<UserRes
 
         return false;
     }
-
     return true;
 };
 
@@ -292,7 +291,7 @@ class UserController {
         });
     }
 
-    async resetPassword(req: Request<any, any, ResetPassReqBody>, res: Response<UserResSuccess | UserResError>): Promise<any> {
+    async changePassword(req: Request<any, any, ResetPassReqBody>, res: Response<UserResSuccess | UserResError>): Promise<any> {
         const { token, password } = req.body;
         const checkedPassword: boolean = isValidatorPassword(req.body, res);
         if (checkedPassword === false) {
@@ -316,6 +315,12 @@ class UserController {
             return;
         }
 
+        if (bcrypt.compareSync(password, user.hashedPassword) === true) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: 'Create a new password that isn\'t your current password.',
+            });
+            return;
+        }
         const newHashedPassword: string = bcrypt.hashSync(password, user.passwordSalt);
         const updateResetPassword: UpdateResetPassword = {
             hashedPassword: newHashedPassword,
