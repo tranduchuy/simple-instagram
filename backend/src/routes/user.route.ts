@@ -7,6 +7,6 @@ router.post('/register', userCtrl.registerNewUser);
 router.post('/login', userCtrl.userLogin);
 router.post('/confirm', userCtrl.confirmUser);
 router.post('/forgot', userCtrl.forgotPassword);
-router.post('/reset', userCtrl.changePassword);
+router.post('/change-pass', userCtrl.changePassword);
 
 export const UserRoute = router;
