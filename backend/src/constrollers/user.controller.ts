@@ -51,6 +51,18 @@ type UpdateForgetPassword = {
     status: number;
 };
 
+type ChangePasswordReqBody = {
+    token: string;
+    password: string;
+    confirmPassword: string;
+};
+
+type ChangeNewPassword = {
+    hashedPassword: string;
+    status: number;
+    forgetPasswordToken: string;
+};
+
 const validateEmailAddress = (email: string): boolean => {
     const filter = new RegExp('^[a-z0-9]+([_a-z0-9]+)*@[a-z0-9-]+([a-z0-9-]+)*([a-z]{2,15})$', 'i');
     return filter.test(email);
@@ -75,7 +87,6 @@ const isValidatorPassword = (validatorPass: ValidatorPass, res: Response<UserRes
 
         return false;
     }
-
     return true;
 };
 
@@ -277,6 +288,50 @@ class UserController {
         await sendMailVerify(mailOptions);
         res.status(HttpStatus.OK).json({
             message: `Thanks! Please check ${user.email} for a link to reset your password.`,
+        });
+    }
+
+    async changePassword(req: Request<any, any, ChangePasswordReqBody>, res: Response<UserResSuccess | UserResError>): Promise<any> {
+        const { token, password } = req.body;
+        const checkedPassword: boolean = isValidatorPassword(req.body, res);
+        if (checkedPassword === false) {
+            return;
+        }
+
+        const user: User | null = await UserModel.findOne({ forgetPasswordToken: token })
+            .lean();
+
+        if (!user) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: 'User not found.',
+            });
+            return;
+        }
+
+        if (user.status === 1) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: 'Reset Password token invalid.',
+            });
+            return;
+        }
+
+        if (bcrypt.compareSync(password, user.hashedPassword) === true) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: 'Create a new password that isn\'t your current password.',
+            });
+            return;
+        }
+        const newHashedPassword: string = bcrypt.hashSync(password, user.passwordSalt);
+        const changeNewPassword: ChangeNewPassword = {
+            hashedPassword: newHashedPassword,
+            status: 1,
+            forgetPasswordToken: '',
+        };
+
+        await UserModel.update({ _id: user._id }, changeNewPassword);
+
+        res.status(HttpStatus.OK).json({
+            message: 'Successfully',
         });
     }
 }
