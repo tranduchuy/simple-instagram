@@ -4,3 +4,4 @@ export const Register = `${host}/auth/register`;
 export const Login = `${host}/auth/login`;
 export const Confirm = `${host}/auth/confirm`;
 export const ForgotPass = `${host}/auth/forgot`;
+export const ChangePass = `${host}/auth/change-pass`;

@@ -1,3 +1,4 @@
+import { ChangePassword } from '../pages/ChangePassword';
 import { Confirm } from '../pages/Confirm';
 import { ForgotPassword } from '../pages/Forgot';
 import { Login } from '../pages/Login';
@@ -23,5 +24,10 @@ export const routes = [
         path: '/forgot-password',
         name: 'Forgot Password',
         component: ForgotPassword,
+    },
+    {
+        path: '/change-password',
+        name: 'Change Password',
+        component: ChangePassword,
     },
 ];
