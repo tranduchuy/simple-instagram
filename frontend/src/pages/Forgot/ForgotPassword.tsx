@@ -44,7 +44,7 @@ export class ForgotPassword extends React.Component<ForgotPasswordProps, ForgotP
                     successMessage: res.data.message,
                 });
 
-                setTimeout(() => this.props.history.push('/'), 3000);
+                setTimeout(() => this.props.history.push('/login'), 3000);
             })
             .catch((err) => {
                 if (err) {
