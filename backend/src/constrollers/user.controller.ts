@@ -64,7 +64,7 @@ type ChangeNewPassword = {
 };
 
 const validateEmailAddress = (email: string): boolean => {
-    const filter = new RegExp('^[a-z0-9]+([_a-z0-9]+)*@[a-z0-9-]+([a-z0-9-]+)*([a-z]{2,15})$', 'i');
+    const filter = new RegExp('^[a-z0-9]+(.[_a-z0-9]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,15})$', 'i');
     return filter.test(email);
 };
 
@@ -259,6 +259,8 @@ class UserController {
             res.status(HttpStatus.BAD_REQUEST).json({
                 message: 'Email is invalid.',
             });
+
+            return;
         }
 
         const updateForgetPassword: UpdateForgetPassword = {
@@ -281,7 +283,7 @@ class UserController {
             from: process.env.config_user,
             subject: 'no-reply email',
             to: email,
-            html: `<a href="http://localhost:3000/reset?forgetPasswordToken=${user.forgetPasswordToken}">
+            html: `<a href="http://localhost:3000/reset?forgetPasswordToken=${updateForgetPassword.forgetPasswordToken}">
                     Hi ${user.name},We got a request to reset your Instagram password.</a>`,
         };
 
