@@ -52,7 +52,7 @@ type UpdateForgetPassword = {
 };
 
 type ChangePasswordReqBody = {
-    token: string;
+    forgotPasswordToken: string;
     password: string;
     confirmPassword: string;
 };
@@ -82,7 +82,7 @@ const isValidatorPassword = (validatorPass: ValidatorPass, res: Response<UserRes
 
     if (password !== confirmPassword) {
         res.status(HttpStatus.BAD_REQUEST).json({
-            message: 'Passwords do not match !',
+            message: 'Please make sure both passwords match.',
         });
 
         return false;
@@ -283,7 +283,7 @@ class UserController {
             from: process.env.config_user,
             subject: 'no-reply email',
             to: email,
-            html: `<a href="http://localhost:3000/reset?forgetPasswordToken=${updateForgetPassword.forgetPasswordToken}">
+            html: `<a href="http://localhost:3000/change-password?forgotPasswordToken=${updateForgetPassword.forgetPasswordToken}">
                     Hi ${user.name},We got a request to reset your Instagram password.</a>`,
         };
 
@@ -294,26 +294,32 @@ class UserController {
     }
 
     async changePassword(req: Request<any, any, ChangePasswordReqBody>, res: Response<UserResSuccess | UserResError>): Promise<any> {
-        const { token, password } = req.body;
-        const checkedPassword: boolean = isValidatorPassword(req.body, res);
-        if (checkedPassword === false) {
-            return;
+        const { forgotPasswordToken, password } = req.body;
+        if (!forgotPasswordToken) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: 'Token is invalid.',
+            });
         }
 
-        const user: User | null = await UserModel.findOne({ forgetPasswordToken: token })
+        const user: User | null = await UserModel.findOne({ forgetPasswordToken: forgotPasswordToken })
             .lean();
 
         if (!user) {
             res.status(HttpStatus.BAD_REQUEST).json({
-                message: 'User not found.',
+                message: 'Token is invalid.',
             });
             return;
         }
 
         if (user.status === 1) {
             res.status(HttpStatus.BAD_REQUEST).json({
-                message: 'Reset Password token invalid.',
+                message: 'Token is invalid.',
             });
+            return;
+        }
+
+        const checkedPassword: boolean = isValidatorPassword(req.body, res);
+        if (checkedPassword === false) {
             return;
         }
 
