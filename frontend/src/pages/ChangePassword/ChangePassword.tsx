@@ -62,20 +62,19 @@ export class ChangePassword extends React.Component<ChangePasswordProps, ChangeP
         event.preventDefault();
         const { password, confirmPassword } = this.state;
         const value = queryString.parse(this.props.location.search);
-        const query: string = value.forgotPasswordToken as string;
 
         const formData: ChangePasswordFormData = {
-            forgotPasswordToken: query,
+            forgotPasswordToken: value.forgotPasswordToken as string,
             password,
             confirmPassword,
         };
 
-        if (password.length < 6) {
-            this.setState({
-                errorMessage: 'Create a password at least 6 characters long.',
-            });
-            return;
-        }
+        // if (password.length < 6) {
+        //     this.setState({
+        //         errorMessage: 'Create a password at least 6 characters long.',
+        //     });
+        //     return;
+        // }
 
         axios.post<ChangePasswordResSuccess, AxiosResponse<ChangePasswordResSuccess>>(API.ChangePass, formData)
             .then(() => {
@@ -88,7 +87,7 @@ export class ChangePassword extends React.Component<ChangePasswordProps, ChangeP
                     });
                 }
             });
-    }
+    };
 
     handlePasswordInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState({
@@ -109,52 +108,47 @@ export class ChangePassword extends React.Component<ChangePasswordProps, ChangeP
             handlePasswordInputChange,
             handleConfirmPasswordInputChange,
         } = this;
-        const showContentInput = (
-            <Col sm={{ offset: 1, span: '7' }}>
-                <Form.Group controlId="formBasicEmail">
-                    <Form.Label>New password:</Form.Label>
-                    <Form.Control
-                        type="password"
-                        value={state.password}
-                        onChange={handlePasswordInputChange}
-                    />
-                </Form.Group>
-                <Form.Group controlId="formBasicPassword">
-                    <Form.Label>New password confirmation:</Form.Label>
-                    <Form.Control
-                        type="password"
-                        value={state.confirmPassword}
-                        onChange={handleConfirmPasswordInputChange}
-                    />
-                </Form.Group>
-                <Button variant="primary" type="submit">
-                    Change Password
-                </Button>
-            </Col>
+        const hasError = !!(state.errorTokenMessage || state.errorMessage);
+        const showContent = (
+            <>
+                {
+                    hasError && (
+                        <Col sm={{ offset: 1, span: '7' }}>
+                            <Alert variant="danger">
+                                <p className="mb-0">{state.errorTokenMessage || state.errorMessage}</p>
+                            </Alert>
+                        </Col>
+                    )
+                }
+
+                {
+                    !state.errorTokenMessage && (
+                        <Col sm={{ offset: 1, span: '7' }}>
+                            <Form.Group controlId="formBasicEmail">
+                                <Form.Label>New password:</Form.Label>
+                                <Form.Control
+                                    type="password"
+                                    value={state.password}
+                                    onChange={handlePasswordInputChange}
+                                />
+                            </Form.Group>
+                            <Form.Group controlId="formBasicPassword">
+                                <Form.Label>New password confirmation:</Form.Label>
+                                <Form.Control
+                                    type="password"
+                                    value={state.confirmPassword}
+                                    onChange={handleConfirmPasswordInputChange}
+                                />
+                            </Form.Group>
+                            <Button variant="primary" type="submit">
+                                Change Password
+                            </Button>
+                        </Col>
+                    )
+                }
+            </>
         );
-        let showContent;
-        if (state.errorTokenMessage) {
-            showContent = (
-                <Col sm={{ offset: 1, span: '7' }}>
-                    <Alert variant="danger">
-                        <p className="mb-0">{state.errorTokenMessage}</p>
-                    </Alert>
-                </Col>
-            );
-        } else if (state.errorMessage) {
-            showContent = (
-                <>
-                    <Col sm={{ offset: 1, span: '7' }}>
-                        <Alert variant="danger">
-                            <p className="mb-0">{state.errorMessage}</p>
-                        </Alert>
-                    </Col>
-                    {showContentInput}
-                </>
-            );
-        } else {
-            showContent = showContentInput;
-        }
+
         return (
             <div className={styles.pageBody}>
                 <div className={styles.content}>
