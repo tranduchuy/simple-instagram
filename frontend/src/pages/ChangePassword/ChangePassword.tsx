@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import queryString from 'query-string';
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import {
     Col, Container, Form, Button, Alert,
 } from 'react-bootstrap';
@@ -69,13 +69,6 @@ export class ChangePassword extends React.Component<ChangePasswordProps, ChangeP
             confirmPassword,
         };
 
-        // if (password.length < 6) {
-        //     this.setState({
-        //         errorMessage: 'Create a password at least 6 characters long.',
-        //     });
-        //     return;
-        // }
-
         axios.post<ChangePasswordResSuccess, AxiosResponse<ChangePasswordResSuccess>>(API.ChangePass, formData)
             .then(() => {
                 setTimeout(() => this.props.history.push('/'), 1000);
@@ -89,24 +82,18 @@ export class ChangePassword extends React.Component<ChangePasswordProps, ChangeP
             });
     };
 
-    handlePasswordInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        this.setState({
-            password: event.target.value,
-        });
-    };
-
-    handleConfirmPasswordInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        this.setState({
-            confirmPassword: event.target.value,
-        });
+    handleInputChange = (key: keyof ChangePasswordState, value: string): void => {
+        this.setState((prevState) => ({
+            ...prevState,
+            [key]: value,
+        }));
     };
 
     render(): JSX.Element {
         const {
             state,
             onSubmit,
-            handlePasswordInputChange,
-            handleConfirmPasswordInputChange,
+            handleInputChange,
         } = this;
         const hasError = !!(state.errorTokenMessage || state.errorMessage);
         const showContent = (
@@ -129,7 +116,9 @@ export class ChangePassword extends React.Component<ChangePasswordProps, ChangeP
                                 <Form.Control
                                     type="password"
                                     value={state.password}
-                                    onChange={handlePasswordInputChange}
+                                    onChange={(event: ChangeEvent<HTMLInputElement>): void => {
+                                        handleInputChange('password', event.currentTarget.value);
+                                    }}
                                 />
                             </Form.Group>
                             <Form.Group controlId="formBasicPassword">
@@ -137,7 +126,9 @@ export class ChangePassword extends React.Component<ChangePasswordProps, ChangeP
                                 <Form.Control
                                     type="password"
                                     value={state.confirmPassword}
-                                    onChange={handleConfirmPasswordInputChange}
+                                    onChange={(event: ChangeEvent<HTMLInputElement>): void => {
+                                        handleInputChange('confirmPassword', event.currentTarget.value);
+                                    }}
                                 />
                             </Form.Group>
                             <Button variant="primary" type="submit">
