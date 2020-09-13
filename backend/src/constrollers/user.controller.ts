@@ -72,7 +72,8 @@ export const isAlphabetAndNumber = (str: string): boolean => /[a-zA-Z0-9]+/.test
 
 const isValidatorPassword = (validatorPass: ValidatorPass, res: Response<UserResError>): boolean => {
     const { password, confirmPassword } = validatorPass;
-    if (password.length < 6 && confirmPassword.length < 6) {
+    const passwordLength = 6;
+    if (password.length < passwordLength || confirmPassword.length < passwordLength) {
         res.status(HttpStatus.BAD_REQUEST).json({
             message: 'Create a password at least 6 characters long.',
         });
