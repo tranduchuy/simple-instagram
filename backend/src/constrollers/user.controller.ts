@@ -154,7 +154,7 @@ class UserController {
             from: process.env.config_user,
             subject: 'Verification Email',
             to: email,
-            html: `<a href="http://localhost:3000/confirm?tokenRegister=${tokenRegister}">Click here to verify email</a>`,
+            html: `<a href="${process.env.client_url}/confirm?tokenRegister=${tokenRegister}">Click here to verify email</a>`,
         };
 
         await sendMailVerify(mailOptions);
@@ -290,7 +290,7 @@ class UserController {
             from: process.env.config_user,
             subject: 'no-reply email',
             to: email,
-            html: `<a href="http://localhost:3000/change-password?forgotPasswordToken=${updateForgetPassword.forgetPasswordToken}">
+            html: `<a href="${process.env.client_url}/change-password?forgotPasswordToken=${updateForgetPassword.forgetPasswordToken}">
                     Hi ${user.name},We got a request to reset your Instagram password.</a>`,
         };
 
