@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import * as HttpStatus from 'http-status-codes';
 import * as jwt from 'jsonwebtoken';
 import uniqueString from 'unique-string';
+import { PASSWORD_LENGTH } from '../constant';
 import { User, UserDoc, UserModel } from '../models/user.model';
 import { sendMailVerify } from '../services/sendMailVerify';
 
@@ -72,8 +73,7 @@ export const isAlphabetAndNumber = (str: string): boolean => /[a-zA-Z0-9]+/.test
 
 const isValidatorPassword = (validatorPass: ValidatorPass, res: Response<UserResError>): boolean => {
     const { password, confirmPassword } = validatorPass;
-    const passwordLength = 6;
-    if (password.length < passwordLength || confirmPassword.length < passwordLength) {
+    if (password.length < PASSWORD_LENGTH || confirmPassword.length < PASSWORD_LENGTH) {
         res.status(HttpStatus.BAD_REQUEST).json({
             message: 'Create a password at least 6 characters long.',
         });
