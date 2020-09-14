@@ -48,7 +48,6 @@ export class ResetPassword extends React.Component<ResetPasswordProps, ResetPass
         };
 
         axios.post<ResetPasswordResSuccess, AxiosResponse<ResetPasswordResSuccess>>(API.ResetPass, formDataCheckToken)
-            .then()
             .catch((err) => {
                 if (err.response.data.message) {
                     this.setState({
@@ -71,7 +70,7 @@ export class ResetPassword extends React.Component<ResetPasswordProps, ResetPass
 
         axios.post<ResetPasswordResSuccess, AxiosResponse<ResetPasswordResSuccess>>(API.ResetPass, formData)
             .then(() => {
-                setTimeout(() => this.props.history.push('/'), 1000);
+                setTimeout(() => this.props.history.push('/login'), 1000);
             })
             .catch((err) => {
                 if (err.response.data.message) {
