@@ -51,13 +51,13 @@ type UpdateForgetPassword = {
     status: number;
 };
 
-type ChangePasswordReqBody = {
+type ResetPasswordReqBody = {
     forgotPasswordToken: string;
     password: string;
     confirmPassword: string;
 };
 
-type ChangeNewPassword = {
+type ResetNewPassword = {
     hashedPassword: string;
     status: number;
     forgetPasswordToken: string;
@@ -290,7 +290,7 @@ class UserController {
             from: process.env.config_user,
             subject: 'no-reply email',
             to: email,
-            html: `<a href="${process.env.client_url}/change-password?forgotPasswordToken=${updateForgetPassword.forgetPasswordToken}">
+            html: `<a href="${process.env.client_url}/reset-password?forgotPasswordToken=${updateForgetPassword.forgetPasswordToken}">
                     Hi ${user.name},We got a request to reset your Instagram password.</a>`,
         };
 
@@ -300,7 +300,7 @@ class UserController {
         });
     }
 
-    async changePassword(req: Request<any, any, ChangePasswordReqBody>, res: Response<UserResSuccess | UserResError>): Promise<any> {
+    async resetPassword(req: Request<any, any, ResetPasswordReqBody>, res: Response<UserResSuccess | UserResError>): Promise<any> {
         const { forgotPasswordToken, password } = req.body;
         if (!forgotPasswordToken) {
             res.status(HttpStatus.BAD_REQUEST).json({
@@ -337,13 +337,13 @@ class UserController {
             return;
         }
         const newHashedPassword: string = bcrypt.hashSync(password, user.passwordSalt);
-        const changeNewPassword: ChangeNewPassword = {
+        const resetNewPassword: ResetNewPassword = {
             hashedPassword: newHashedPassword,
             status: 1,
             forgetPasswordToken: '',
         };
 
-        await UserModel.update({ _id: user._id }, changeNewPassword);
+        await UserModel.update({ _id: user._id }, resetNewPassword);
 
         res.status(HttpStatus.OK).json({
             message: 'Successfully',
