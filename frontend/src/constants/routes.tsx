@@ -1,8 +1,8 @@
-import { ChangePassword } from '../pages/ChangePassword';
 import { Confirm } from '../pages/Confirm';
 import { ForgotPassword } from '../pages/Forgot';
 import { Login } from '../pages/Login';
 import { Register } from '../pages/Register';
+import { ResetPassword } from '../pages/ResetPassword';
 
 export const routes = [
     {
@@ -26,8 +26,8 @@ export const routes = [
         component: ForgotPassword,
     },
     {
-        path: '/change-password',
-        name: 'Change Password',
-        component: ChangePassword,
+        path: '/reset-password',
+        name: 'Reset Password',
+        component: ResetPassword,
     },
 ];

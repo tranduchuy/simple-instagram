@@ -6,29 +6,29 @@ import {
 } from 'react-bootstrap';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import * as API from '../../constants/api';
-import styles from './ChangePassword.module.scss';
+import styles from './ResetPassword.module.scss';
 
-type ChangePasswordProps = RouteComponentProps;
+type ResetPasswordProps = RouteComponentProps;
 
-type ChangePasswordState = {
+type ResetPasswordState = {
     password: string;
     confirmPassword: string;
     errorMessage: string;
     errorTokenMessage: string;
 };
 
-type ChangePasswordFormData = {
+type ResetPasswordFormData = {
     forgotPasswordToken: string;
     password: string;
     confirmPassword: string;
 };
 
-type ChangePasswordResSuccess = {
+type ResetPasswordResSuccess = {
     message: string;
 };
 
-export class ChangePassword extends React.Component<ChangePasswordProps, ChangePasswordState> {
-    state: ChangePasswordState = {
+export class ResetPassword extends React.Component<ResetPasswordProps, ResetPasswordState> {
+    state: ResetPasswordState = {
         password: '',
         confirmPassword: '',
         errorMessage: '',
@@ -47,7 +47,7 @@ export class ChangePassword extends React.Component<ChangePasswordProps, ChangeP
             forgotPasswordToken: query,
         };
 
-        axios.post<ChangePasswordResSuccess, AxiosResponse<ChangePasswordResSuccess>>(API.ChangePass, formDataCheckToken)
+        axios.post<ResetPasswordResSuccess, AxiosResponse<ResetPasswordResSuccess>>(API.ResetPass, formDataCheckToken)
             .then()
             .catch((err) => {
                 if (err.response.data.message) {
@@ -63,13 +63,13 @@ export class ChangePassword extends React.Component<ChangePasswordProps, ChangeP
         const { password, confirmPassword } = this.state;
         const value = queryString.parse(this.props.location.search);
 
-        const formData: ChangePasswordFormData = {
+        const formData: ResetPasswordFormData = {
             forgotPasswordToken: value.forgotPasswordToken as string,
             password,
             confirmPassword,
         };
 
-        axios.post<ChangePasswordResSuccess, AxiosResponse<ChangePasswordResSuccess>>(API.ChangePass, formData)
+        axios.post<ResetPasswordResSuccess, AxiosResponse<ResetPasswordResSuccess>>(API.ResetPass, formData)
             .then(() => {
                 setTimeout(() => this.props.history.push('/'), 1000);
             })
@@ -82,7 +82,7 @@ export class ChangePassword extends React.Component<ChangePasswordProps, ChangeP
             });
     };
 
-    handleInputChange = (key: keyof ChangePasswordState, value: string): void => {
+    handleInputChange = (key: keyof ResetPasswordState, value: string): void => {
         this.setState((prevState) => ({
             ...prevState,
             [key]: value,
