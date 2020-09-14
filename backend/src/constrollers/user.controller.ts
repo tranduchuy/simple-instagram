@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import * as HttpStatus from 'http-status-codes';
 import * as jwt from 'jsonwebtoken';
 import uniqueString from 'unique-string';
+import { PASSWORD_LENGTH } from '../constant';
 import { User, UserDoc, UserModel } from '../models/user.model';
 import { sendMailVerify } from '../services/sendMailVerify';
 
@@ -51,20 +52,20 @@ type UpdateForgetPassword = {
     status: number;
 };
 
-type ChangePasswordReqBody = {
-    token: string;
+type ResetPasswordReqBody = {
+    forgotPasswordToken: string;
     password: string;
     confirmPassword: string;
 };
 
-type ChangeNewPassword = {
+type ResetNewPassword = {
     hashedPassword: string;
     status: number;
     forgetPasswordToken: string;
 };
 
 const validateEmailAddress = (email: string): boolean => {
-    const filter = new RegExp('^[a-z0-9]+([_a-z0-9]+)*@[a-z0-9-]+([a-z0-9-]+)*([a-z]{2,15})$', 'i');
+    const filter = new RegExp('^[a-z0-9]+(.[_a-z0-9]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,15})$', 'i');
     return filter.test(email);
 };
 
@@ -72,6 +73,12 @@ export const isAlphabetAndNumber = (str: string): boolean => /[a-zA-Z0-9]+/.test
 
 const isValidatorPassword = (validatorPass: ValidatorPass, res: Response<UserResError>): boolean => {
     const { password, confirmPassword } = validatorPass;
+    if (password.length < PASSWORD_LENGTH || confirmPassword.length < PASSWORD_LENGTH) {
+        res.status(HttpStatus.BAD_REQUEST).json({
+            message: 'Create a password at least 6 characters long.',
+        });
+    }
+
     if (!isAlphabetAndNumber(password) && !isAlphabetAndNumber(confirmPassword)) {
         res.status(HttpStatus.BAD_REQUEST).json({
             message: 'Password Invalid !',
@@ -82,7 +89,7 @@ const isValidatorPassword = (validatorPass: ValidatorPass, res: Response<UserRes
 
     if (password !== confirmPassword) {
         res.status(HttpStatus.BAD_REQUEST).json({
-            message: 'Passwords do not match !',
+            message: 'Please make sure both passwords match.',
         });
 
         return false;
@@ -147,7 +154,7 @@ class UserController {
             from: process.env.config_user,
             subject: 'Verification Email',
             to: email,
-            html: `<a href="http://localhost:3000/confirm?tokenRegister=${tokenRegister}">Click here to verify email</a>`,
+            html: `<a href="${process.env.client_url}/confirm?tokenRegister=${tokenRegister}">Click here to verify email</a>`,
         };
 
         await sendMailVerify(mailOptions);
@@ -259,6 +266,8 @@ class UserController {
             res.status(HttpStatus.BAD_REQUEST).json({
                 message: 'Email is invalid.',
             });
+
+            return;
         }
 
         const updateForgetPassword: UpdateForgetPassword = {
@@ -281,7 +290,7 @@ class UserController {
             from: process.env.config_user,
             subject: 'no-reply email',
             to: email,
-            html: `<a href="http://localhost:3000/reset?forgetPasswordToken=${user.forgetPasswordToken}">
+            html: `<a href="${process.env.client_url}/reset-password?forgotPasswordToken=${updateForgetPassword.forgetPasswordToken}">
                     Hi ${user.name},We got a request to reset your Instagram password.</a>`,
         };
 
@@ -291,27 +300,33 @@ class UserController {
         });
     }
 
-    async changePassword(req: Request<any, any, ChangePasswordReqBody>, res: Response<UserResSuccess | UserResError>): Promise<any> {
-        const { token, password } = req.body;
-        const checkedPassword: boolean = isValidatorPassword(req.body, res);
-        if (checkedPassword === false) {
-            return;
+    async resetPassword(req: Request<any, any, ResetPasswordReqBody>, res: Response<UserResSuccess | UserResError>): Promise<any> {
+        const { forgotPasswordToken, password } = req.body;
+        if (!forgotPasswordToken) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: 'Token is invalid.',
+            });
         }
 
-        const user: User | null = await UserModel.findOne({ forgetPasswordToken: token })
+        const user: User | null = await UserModel.findOne({ forgetPasswordToken: forgotPasswordToken })
             .lean();
 
         if (!user) {
             res.status(HttpStatus.BAD_REQUEST).json({
-                message: 'User not found.',
+                message: 'Token is invalid.',
             });
             return;
         }
 
         if (user.status === 1) {
             res.status(HttpStatus.BAD_REQUEST).json({
-                message: 'Reset Password token invalid.',
+                message: 'Token is invalid.',
             });
+            return;
+        }
+
+        const checkedPassword: boolean = isValidatorPassword(req.body, res);
+        if (checkedPassword === false) {
             return;
         }
 
@@ -322,13 +337,13 @@ class UserController {
             return;
         }
         const newHashedPassword: string = bcrypt.hashSync(password, user.passwordSalt);
-        const changeNewPassword: ChangeNewPassword = {
+        const resetNewPassword: ResetNewPassword = {
             hashedPassword: newHashedPassword,
             status: 1,
             forgetPasswordToken: '',
         };
 
-        await UserModel.update({ _id: user._id }, changeNewPassword);
+        await UserModel.update({ _id: user._id }, resetNewPassword);
 
         res.status(HttpStatus.OK).json({
             message: 'Successfully',

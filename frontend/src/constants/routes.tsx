@@ -2,6 +2,7 @@ import { Confirm } from '../pages/Confirm';
 import { ForgotPassword } from '../pages/Forgot';
 import { Login } from '../pages/Login';
 import { Register } from '../pages/Register';
+import { ResetPassword } from '../pages/ResetPassword';
 
 export const routes = [
     {
@@ -23,5 +24,10 @@ export const routes = [
         path: '/forgot-password',
         name: 'Forgot Password',
         component: ForgotPassword,
+    },
+    {
+        path: '/reset-password',
+        name: 'Reset Password',
+        component: ResetPassword,
     },
 ];
