@@ -1,10 +1,16 @@
 import { Confirm } from '../pages/Confirm';
 import { ForgotPassword } from '../pages/Forgot';
+import { Home } from '../pages/Home';
 import { Login } from '../pages/Login';
 import { Register } from '../pages/Register';
 import { ResetPassword } from '../pages/ResetPassword';
 
 export const routes = [
+    {
+        path: '/',
+        name: 'Home',
+        component: Home,
+    },
     {
         path: '/register',
         name: 'Register',
