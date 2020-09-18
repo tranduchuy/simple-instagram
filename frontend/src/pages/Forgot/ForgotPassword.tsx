@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import React, { ChangeEvent } from 'react';
 import './ForgotPassword.css';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import { AuthPageContainer } from '../../components/authPageContainer';
+import { AuthPageContainer } from '../../components/AuthPageContainer';
 import * as API from '../../constants/api';
 
 type ForgotPasswordProps = RouteComponentProps

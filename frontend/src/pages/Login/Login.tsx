@@ -1,9 +1,9 @@
 import axios, { AxiosResponse } from 'axios';
 import Cookies from 'js-cookie';
 import React from 'react';
-import './style.css';
+import './Login.css';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import { AuthPageContainer } from '../../components/authPageContainer';
+import { AuthPageContainer } from '../../components/AuthPageContainer';
 import * as API from '../../constants/api';
 import * as CookieNames from '../../constants/cookie';
 
