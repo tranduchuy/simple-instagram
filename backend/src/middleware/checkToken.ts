@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+// eslint-disable-next-line import/no-unresolved
 import * as core from 'express-serve-static-core';
 import HttpStatus from 'http-status-codes';
 import * as jwt from 'jsonwebtoken';
