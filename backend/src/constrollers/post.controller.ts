@@ -3,15 +3,11 @@ import path from 'path';
 import { Request, Response } from 'express';
 import * as HttpStatus from 'http-status-codes';
 import { IMAGE_JPG_TYPES, IMAGE_PNG_TYPES } from '../constant';
-import { PostDoc } from '../models/post.model';
-
-type PostReqBody = {
-    title?: string;
-};
+import { RequestCustom } from '../middleware/checkToken';
+import { PostDoc, PostModel } from '../models/post.model';
 
 type PostReqQuery = {
     title?: string;
-    image: string;
 };
 
 type PostResSuccess = {
@@ -28,8 +24,8 @@ const removeImg = (req: Request<any, any, any, PostReqQuery>): void => {
 };
 
 class PostController {
-    async Post(req: Request<any, any, PostReqBody, PostReqQuery>, res: Response<PostResSuccess | PostResError>): Promise<any> {
-        const { title } = req.body;
+    async Post(req: RequestCustom<any, any, any, PostReqQuery>, res: Response<PostResSuccess | PostResError>): Promise<any> {
+        const { title } = req.query;
         const image = req.file;
         if (!image) {
             res.status(HttpStatus.BAD_REQUEST).json({
@@ -50,11 +46,11 @@ class PostController {
         const uploads = path.join(__dirname, newPath);
         fs.renameSync(tmp, uploads);
 
-        const postDoc: PostDoc = {
-            userId:
+        const postDoc: PostDoc = new PostModel({
+            userId: req.user._id,
             title,
             image: `uploads/${req.file.filename}`,
-        };
+        });
 
         await postDoc.save();
         return res.status(200).json({
