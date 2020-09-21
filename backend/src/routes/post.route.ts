@@ -2,6 +2,7 @@ import fs from 'fs';
 import express from 'express';
 import multer from 'multer';
 import { postCtrl } from '../constrollers/post.controller';
+import { Middleware } from '../middleware/checkToken';
 
 const router = express.Router({});
 
@@ -27,6 +28,6 @@ const upload = multer({
     storage,
 });
 
-router.post('/', upload.single('image'), postCtrl.Post);
+router.post('/', Middleware, upload.single('image'), postCtrl.Post);
 
 export const PostRoute = router;
