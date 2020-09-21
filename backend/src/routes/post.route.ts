@@ -7,12 +7,12 @@ const router = express.Router({});
 
 const storage = multer.diskStorage({
     destination(req, file, cb) {
-        const tmp = '../public/tmp';
+        const tmp = `${__dirname}/../public/tmp`;
         if (!fs.existsSync(tmp)) {
             fs.mkdirSync(tmp);
         }
 
-        const uploads = '../public/uploads';
+        const uploads = `${__dirname}/../public/uploads`;
         if (!fs.existsSync(uploads)) {
             fs.mkdirSync(uploads);
         }

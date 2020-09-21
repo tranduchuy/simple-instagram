@@ -2,16 +2,20 @@ import fs from 'fs';
 import path from 'path';
 import { Request, Response } from 'express';
 import * as HttpStatus from 'http-status-codes';
-import { IMAGE_FILE_TYPES } from '../constant';
+import { IMAGE_JPG_TYPES, IMAGE_PNG_TYPES } from '../constant';
+import { PostDoc } from '../models/post.model';
+
+type PostReqBody = {
+    title?: string;
+};
 
 type PostReqQuery = {
-    title: string;
+    title?: string;
     image: string;
 };
 
 type PostResSuccess = {
     message: string;
-    url: string;
 };
 
 type PostResError = {
@@ -24,7 +28,8 @@ const removeImg = (req: Request<any, any, any, PostReqQuery>): void => {
 };
 
 class PostController {
-    async Post(req: Request<any, any, any, PostReqQuery>, res: Response<PostResSuccess | PostResError>): Promise<any> {
+    async Post(req: Request<any, any, PostReqBody, PostReqQuery>, res: Response<PostResSuccess | PostResError>): Promise<any> {
+        const { title } = req.body;
         const image = req.file;
         if (!image) {
             res.status(HttpStatus.BAD_REQUEST).json({
@@ -32,7 +37,7 @@ class PostController {
             });
         }
 
-        if (image.mimetype !== IMAGE_FILE_TYPES) {
+        if (image.mimetype !== IMAGE_JPG_TYPES && image.mimetype !== IMAGE_PNG_TYPES) {
             removeImg(req);
             return res.status(400).json({
                 message: 'Type of image is invalid.',
@@ -41,13 +46,19 @@ class PostController {
 
         const oldPath = `/../public/tmp/${req.file.filename}`;
         const newPath = `/../public/uploads/${req.file.filename}`;
-        const oldFile = path.join(__dirname, oldPath);
-        const newFile = path.join(__dirname, newPath);
-        fs.renameSync(oldFile, newFile);
+        const tmp = path.join(__dirname, oldPath);
+        const uploads = path.join(__dirname, newPath);
+        fs.renameSync(tmp, uploads);
 
+        const postDoc: PostDoc = {
+            userId:
+            title,
+            image: `uploads/${req.file.filename}`,
+        };
+
+        await postDoc.save();
         return res.status(200).json({
             message: 'Success.',
-            url: `uploads/${req.file.filename}`,
         });
     }
 }

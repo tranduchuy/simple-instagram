@@ -4,7 +4,8 @@ import {
 
 export const PostSchema = createSchema({
     userId: Type.objectId(),
-    content: Type.string(),
+    title: Type.string(),
+    image: Type.string(),
 }, { timestamps: true });
 
 export const PostModel = typedModel('Post', PostSchema, 'posts');
