@@ -15,6 +15,7 @@ const init = (): void => {
         const corsOptions = { origin: true, credentials: true }; // reflect (enable) the requested origin in the CORS response
         callback(null, corsOptions); // callback expects two parameters: error and options
     };
+    app.use(express.static(path.join(SystemConfig.rootPath, 'public')));
     app.use(cors(corsOptionsDelegate));
     app.use(express.json());
     app.use('/api', api);

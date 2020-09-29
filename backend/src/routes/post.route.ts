@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
             fs.mkdirSync(uploads);
         }
 
-        cb(null, `${__dirname}/../public/tmp`);
+        cb(null, path.join(SystemConfig.rootPath, 'public', 'tmp'));
     },
     filename(req, file, cb) {
         cb(null, `${Date.now()}_${file.originalname}`);

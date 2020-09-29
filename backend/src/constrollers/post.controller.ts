@@ -39,12 +39,8 @@ class PostController {
             });
         }
 
-        // const oldPath = `/../public/tmp/${req.file.filename}`;
-        // const newPath = `/../public/uploads/${req.file.filename}`;
         const tmp = path.join(SystemConfig.rootPath, 'public', 'tmp', req.file.filename);
         const uploads = path.join(SystemConfig.rootPath, 'public', 'uploads', req.file.filename);
-        console.log('tmp: ', tmp);
-        console.log('uploads: ', uploads)
         fs.renameSync(tmp, uploads);
 
         const postDoc: PostDoc = new PostModel({
