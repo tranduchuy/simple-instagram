@@ -1,12 +1,15 @@
+import path from 'path';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { Request } from 'express';
+import { SystemConfig } from './constant';
 import connectDB from './db';
 import { api } from './routes/api';
 
 dotenv.config();
 
 const init = (): void => {
+    SystemConfig.rootPath = path.join(__dirname, '../');
     const app = express();
     const corsOptionsDelegate = (req: Request, callback: any): void => {
         const corsOptions = { origin: true, credentials: true }; // reflect (enable) the requested origin in the CORS response

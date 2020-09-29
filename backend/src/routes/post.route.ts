@@ -1,6 +1,8 @@
 import fs from 'fs';
+import path from 'path';
 import express from 'express';
 import multer from 'multer';
+import { SystemConfig } from '../constant';
 import { postCtrl } from '../constrollers/post.controller';
 import { Middleware } from '../middleware/checkToken';
 
@@ -8,12 +10,12 @@ const router = express.Router({});
 
 const storage = multer.diskStorage({
     destination(req, file, cb) {
-        const tmp = `${__dirname}/../public/tmp`;
+        const tmp = path.join(SystemConfig.rootPath, 'public', 'tmp');
         if (!fs.existsSync(tmp)) {
             fs.mkdirSync(tmp);
         }
 
-        const uploads = `${__dirname}/../public/uploads`;
+        const uploads = path.join(SystemConfig.rootPath, 'public', 'uploads');
         if (!fs.existsSync(uploads)) {
             fs.mkdirSync(uploads);
         }
