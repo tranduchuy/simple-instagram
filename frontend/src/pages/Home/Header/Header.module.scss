@@ -14,10 +14,11 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    width: $content_width;
+    width: 100%;
     position: relative;
     margin: 10px auto 0;
     align-items: center;
+    max-width: $content_width;
 
     .logo {
       flex: 1 9999 0;
