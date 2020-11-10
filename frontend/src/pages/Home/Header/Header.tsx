@@ -53,7 +53,9 @@ export class Header extends React.Component<{ }, { }> {
                                 </Link>
                             </div>
                             <div className={styles.fa} style={{ display: 'flex' }}>
-                                <img src={urlLogo} alt="" />
+                                <div className={styles.avatar}>
+                                    <img src={urlLogo} alt="" className={styles.avatarImg} />
+                                </div>
                                 <DropdownButton
                                     className={styles.btnAvatar}
                                     as={ButtonGroup}
