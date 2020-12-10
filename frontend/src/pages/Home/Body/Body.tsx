@@ -4,8 +4,8 @@ import {
     FaRegHeart,
     FaRegComment,
 } from 'react-icons/fa';
-import { VscBookmark } from 'react-icons/vsc';
 import { GoKebabHorizontal } from 'react-icons/go';
+import { VscBookmark } from 'react-icons/vsc';
 import { Link } from 'react-router-dom';
 import smallAvatar from '../RightSideBar/RightSide.module.scss';
 import styles from './Body.module.scss';
@@ -66,6 +66,25 @@ export class Body extends React.Component<{ }, { }> {
                                 </div>
                             </li>
                         </ul>
+                    </div>
+                </div>
+                <div className={styles.wrapInputPost}>
+                    <div className={styles.createPost}>
+                        <div className={smallAvatar.sWrapImg}>
+                            <Link to="/" className={smallAvatar.sLinkImg}>
+                                <img src={urlLogo} alt="" className={smallAvatar.imgWi} />
+                            </Link>
+                        </div>
+                        <div className={styles.wInputPost}>
+                            <input type="text" className={styles.inputPost} />
+                        </div>
+                        <div className={styles.inputLogoImg}>
+                            <input type="file" className={styles.inputFile} multiple />
+                            <div className={styles.wrapLogoImg}>
+                                <i className={styles.logoImg} />
+                                <div className={styles.inputTextImg}>Thêm Ảnh/video</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className={styles.article}>

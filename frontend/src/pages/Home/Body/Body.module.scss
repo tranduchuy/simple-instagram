@@ -109,8 +109,80 @@
       border: 1px solid #dbdbdb;
     }
   }
-  .post {
 
+  .wrapInputPost {
+    background: #fff;
+    border: 1px solid #dbdbdb;
+    border-radius: 3px;
+    margin-bottom: 24px;
+    margin-top: 0;
+    padding: 12px 16px;
+
+    .createPost {
+      display: flex;
+      align-items: center;
+      flex-grow: 1;
+
+      .wInputPost {
+        margin-right: 10px;
+        width: 65%;
+
+        .inputPost {
+          padding: 5px 15px;
+          border: solid 1px #dbdbdb;
+          width: 100%;
+          border-radius: 20px;
+          outline: 0;
+          background: #fafafa;
+          font-size: 14px;
+          line-height: 18px;
+        }
+      }
+
+      .inputLogoImg {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 160px;
+        height: 40px;
+
+        .inputFile {
+          display: none;
+        }
+
+        .wrapLogoImg {
+          display: flex;
+
+          .logoImg {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            background-position: 0 -208px;
+            background-image: url(../../../images/logoFB.png);
+            background-size: auto;
+            background-repeat: no-repeat;
+            display: inline-block;
+          }
+
+          .inputTextImg {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            font-size: 14px;
+          }
+        }
+      }
+
+      .inputLogoImg:hover {
+        cursor: pointer;
+        background-color: #e8e8e885;
+        border-radius: 8px;
+      }
+    }
+  }
+
+  .post {
+    background-color: #fff;
     .header {
       display: flex;
       align-items: center;
@@ -123,7 +195,7 @@
     .optionals {
       position: absolute;
       display: flex;
-      top: 142px;
+      top: 217px;
       right: 4px;
       width: 40px;
       height: 60px;
@@ -282,6 +354,10 @@
             cursor: pointer;
             font-weight: 600;
             background: 0 0;
+          }
+
+          .btnPost:focus {
+            outline: 0;
           }
         }
       }
