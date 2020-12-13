@@ -171,6 +171,10 @@
             font-size: 14px;
           }
         }
+
+        .wrapLogoImg:focus {
+          outline: 0;
+        }
       }
 
       .inputLogoImg:hover {

@@ -15,6 +15,12 @@ const urlCircleStory = '/circle-story.png';
 const background = '/kitty.jpg';
 
 export class Body extends React.Component<{ }, { }> {
+   inputFileRef: React.RefObject<HTMLInputElement> = React.createRef();
+
+    handleBtnClick = (): void => {
+        this.inputFileRef.current.click();
+    }
+
     render(): JSX.Element {
         return (
             <div className={styles.wrap}>
@@ -79,8 +85,14 @@ export class Body extends React.Component<{ }, { }> {
                             <input type="text" className={styles.inputPost} />
                         </div>
                         <div className={styles.inputLogoImg}>
-                            <input type="file" className={styles.inputFile} multiple />
-                            <div className={styles.wrapLogoImg}>
+                            <input type="file" className={styles.inputFile} multiple ref={this.inputFileRef} />
+                            <div
+                                role="button"
+                                tabIndex={0}
+                                className={styles.wrapLogoImg}
+                                onClick={this.handleBtnClick}
+                                onKeyUp={this.handleBtnClick}
+                            >
                                 <i className={styles.logoImg} />
                                 <div className={styles.inputTextImg}>Thêm Ảnh/video</div>
                             </div>
