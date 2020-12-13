@@ -34,6 +34,17 @@ export class Login extends React.Component<LoginProps, LoginState> {
         errMessage: '',
     };
 
+    componentDidMount(): void {
+        this.handleCheckToken();
+    }
+
+    handleCheckToken = (): void => {
+        const Token: string | undefined = Cookies.get('token');
+        if (Token) {
+            this.props.history.push('/');
+        }
+    }
+
     onSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
         event.preventDefault();
         const { email, password } = this.state;
