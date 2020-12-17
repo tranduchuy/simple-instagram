@@ -9,96 +9,18 @@ import { VscBookmark } from 'react-icons/vsc';
 import { Link } from 'react-router-dom';
 import smallAvatar from '../RightSideBar/RightSide.module.scss';
 import styles from './Body.module.scss';
+import { InputPost } from './InputPost';
+import { Story } from './Story';
 
 const urlLogo = '/home-logo.png';
-const urlCircleStory = '/circle-story.png';
 const background = '/kitty.jpg';
 
 export class Body extends React.Component<{ }, { }> {
-   inputFileRef: React.RefObject<HTMLInputElement> = React.createRef();
-
-    handleBtnClick = (): void => {
-        this.inputFileRef.current.click();
-    }
-
     render(): JSX.Element {
         return (
             <div className={styles.wrap}>
-                <div className={styles.wrapStory}>
-                    <div className={styles.story}>
-                        <ul className={styles.ulStory}>
-                            <li className={styles.liStory} style={{ transform: 'translateX(10px)' }}>
-                                <div className={styles.wrapButton}>
-                                    <button className={styles.btn} type="button">
-                                        <div className={styles.wrapImg}>
-                                            <img src={urlCircleStory} alt="" className={styles.circleStory} />
-                                            <img src={urlLogo} alt="" className={styles.urlImg} />
-                                        </div>
-                                        <div className={styles.storyName}>username</div>
-                                    </button>
-                                </div>
-                            </li>
-                            <li className={styles.liStory} style={{ transform: 'translateX(90px)' }}>
-                                <div className={styles.wrapButton}>
-                                    <button className={styles.btn} type="button">
-                                        <div className={styles.wrapImg}>
-                                            <img src={urlCircleStory} alt="" className={styles.circleStory} />
-                                            <img src={urlLogo} alt="" className={styles.urlImg} />
-                                        </div>
-                                        <div className={styles.storyName}>username</div>
-                                    </button>
-                                </div>
-                            </li>
-                            <li className={styles.liStory} style={{ transform: 'translateX(170px)' }}>
-                                <div className={styles.wrapButton}>
-                                    <button className={styles.btn} type="button">
-                                        <div className={styles.wrapImg}>
-                                            <img src={urlCircleStory} alt="" className={styles.circleStory} />
-                                            <img src={urlLogo} alt="" className={styles.urlImg} />
-                                        </div>
-                                        <div className={styles.storyName}>username</div>
-                                    </button>
-                                </div>
-                            </li>
-                            <li className={styles.liStory} style={{ transform: 'translateX(250px)' }}>
-                                <div className={styles.wrapButton}>
-                                    <button className={styles.btn} type="button">
-                                        <div className={styles.wrapImg}>
-                                            <img src={urlCircleStory} alt="" className={styles.circleStory} />
-                                            <img src={urlLogo} alt="" className={styles.urlImg} />
-                                        </div>
-                                        <div className={styles.storyName}>username</div>
-                                    </button>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div className={styles.wrapInputPost}>
-                    <div className={styles.createPost}>
-                        <div className={smallAvatar.sWrapImg}>
-                            <Link to="/" className={smallAvatar.sLinkImg}>
-                                <img src={urlLogo} alt="" className={smallAvatar.imgWi} />
-                            </Link>
-                        </div>
-                        <div className={styles.wInputPost}>
-                            <input type="text" className={styles.inputPost} />
-                        </div>
-                        <div className={styles.inputLogoImg}>
-                            <input type="file" className={styles.inputFile} multiple ref={this.inputFileRef} />
-                            <div
-                                role="button"
-                                tabIndex={0}
-                                className={styles.wrapLogoImg}
-                                onClick={this.handleBtnClick}
-                                onKeyUp={this.handleBtnClick}
-                            >
-                                <i className={styles.logoImg} />
-                                <div className={styles.inputTextImg}>Thêm Ảnh/video</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <Story />
+                <InputPost />
                 <div className={styles.article}>
                     <div className={styles.post}>
                         <div className={styles.header}>
