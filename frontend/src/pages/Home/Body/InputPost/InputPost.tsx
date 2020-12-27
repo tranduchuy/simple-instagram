@@ -6,7 +6,15 @@ import styles from './InputPost.module.scss';
 const urlLogo = '/home-logo.png';
 const background = '/kitty.jpg';
 
-export class InputPost extends React.Component<{ }, { }> {
+type selectedImagesState = {
+    selectedImages: string[];
+}
+
+export class InputPost extends React.Component<{ }, selectedImagesState> {
+    state = {
+        selectedImages: [],
+    }
+
     inputFileRef: React.RefObject<HTMLInputElement> = React.createRef();
 
     handleBtnClick = (): void => {
@@ -16,10 +24,21 @@ export class InputPost extends React.Component<{ }, { }> {
     }
 
     handleSelectedFile = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        console.log(event.target.files);
+        const reader = new FileReader();
+        reader.onload = () => {
+            if (reader.readyState === 2) {
+                this.setState({selectedImages: reader.result });
+
+            }
+        }
     }
 
-    render() {
+    uploadFiles = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        event.preventDefault()
+        console.log(this.state.file)
+    }
+
+    render(): JSX.Element {
         return (
             <div className={styles.wrapInputPost}>
                 <div className={styles.createPost}>
@@ -36,7 +55,7 @@ export class InputPost extends React.Component<{ }, { }> {
                             type="file"
                             className={styles.inputFile}
                             multiple
-                            ref={this.handleBtnClick}
+                            ref={this.inputFileRef}
                             onChange={this.handleSelectedFile}
                         />
                         <div
