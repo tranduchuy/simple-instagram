@@ -5,8 +5,13 @@ import styles from './InputPost.module.scss';
 
 const urlLogo = '/home-logo.png';
 
+type PreviewFile = {
+    file: File;
+    imageContent: string;
+    id: number;
+}
 type selectedImagesState = {
-    selectedImages: string[];
+    selectedImages: PreviewFile[];
     errorMessage: string;
 }
 
@@ -50,10 +55,14 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
             this.setState({ errorMessage: '' });
         }
 
-        const imageStrings: string [] = [];
+        const imageStrings: PreviewFile [] = [];
         await Promise.all(Array.from(files).map(async (file) => {
             const img = await this.loadPreviewImages(file);
-            imageStrings.push(img);
+            imageStrings.push({
+                file,
+                imageContent: img,
+                id: Math.random() * 100,
+            });
         }));
         const file = this.inputFileRef.current?.files?.item(0) || null;
         if (file) {
@@ -61,12 +70,19 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
         }
     }
 
-    uploadFiles = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    uploadFiles = (event: React.ChangeEvent<HTMLInputElement>, item: number): void => {
 
+    }
+
+    handleRemovePreImage = (event: React.MouseEvent<HTMLDivElement>, item: number): void => {
+        const arrImagesContent = [...this.state.selectedImages];
+        const newArrImages = arrImagesContent.filter((img: PreviewFile) => img.id !== item);
+        this.setState({ selectedImages: newArrImages });
     }
 
     render(): JSX.Element {
         const { selectedImages, errorMessage } = this.state;
+        const { handleRemovePreImage } = this;
         return (
             <div className={styles.wrapInputPost}>
                 <div className={styles.createPost}>
@@ -106,11 +122,19 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
                     ) : (
                         <div className={styles.wrapImgView}>
                             {
-                                selectedImages.map((img) => (
+                                selectedImages.map((img: PreviewFile) => (
                                     img ? (
                                         <div className={styles.imgView}>
-                                            <img className={styles.viewSide} src={img} alt="" />
-                                            <div className={styles.clearImg}>
+                                            <img className={styles.viewSide} src={img.imageContent} alt="" />
+                                            <div
+                                                className={styles.clearImg}
+                                                key={img.id}
+                                                onClick={(event): void => {
+                                                    handleRemovePreImage(event, img.id);
+                                                }}
+                                                role="button"
+                                                tabIndex={0}
+                                            >
                                                 <i className={styles.btnClear} />
                                             </div>
                                         </div>
