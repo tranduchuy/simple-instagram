@@ -4,15 +4,16 @@ import smallAvatar from '../../RightSideBar/RightSide.module.scss';
 import styles from './InputPost.module.scss';
 
 const urlLogo = '/home-logo.png';
-const background = '/kitty.jpg';
 
 type selectedImagesState = {
     selectedImages: string[];
+    errorMessage: string;
 }
 
 export class InputPost extends React.Component<{ }, selectedImagesState> {
     state = {
         selectedImages: [],
+        errorMessage: '',
     }
 
     inputFileRef: React.RefObject<HTMLInputElement> = React.createRef();
@@ -23,22 +24,49 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
         }
     }
 
-    handleSelectedFile = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    loadPreviewImages = (file: File): Promise<string> => new Promise((resolve) => {
         const reader = new FileReader();
-        reader.onload = () => {
-            if (reader.readyState === 2) {
-                this.setState({selectedImages: reader.result });
-
+        reader.onloadend = () => {
+            if (reader.result) {
+                resolve(reader.result.toString());
             }
+        };
+        reader.readAsDataURL(file);
+    })
+
+    handleSelectedFile = async (): Promise<void> => {
+        if (!this.inputFileRef.current) {
+            return;
+        }
+
+        const { files } = this.inputFileRef.current;
+        if (!files || files.length === 0) {
+            return;
+        }
+
+        if (files.length >= 9) {
+            this.setState({ errorMessage: 'Chỉ được phép đăng 8 bức ảnh một lần' });
+        } else {
+            this.setState({ errorMessage: '' });
+        }
+
+        const imageStrings: string [] = [];
+        await Promise.all(Array.from(files).map(async (file) => {
+            const img = await this.loadPreviewImages(file);
+            imageStrings.push(img);
+        }));
+        const file = this.inputFileRef.current?.files?.item(0) || null;
+        if (file) {
+            this.setState({ selectedImages: imageStrings });
         }
     }
 
     uploadFiles = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        event.preventDefault()
-        console.log(this.state.file)
+
     }
 
     render(): JSX.Element {
+        const { selectedImages, errorMessage } = this.state;
         return (
             <div className={styles.wrapInputPost}>
                 <div className={styles.createPost}>
@@ -70,17 +98,28 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
                         </div>
                     </div>
                 </div>
-                <div className={styles.wrapImgView}>
-                    <div className={styles.imgView}>
-                        <img className={styles.viewSide} src={background} alt="" />
-                        <div className={styles.clearImg}>
-                            <i className={styles.btnClear} />
+                {
+                    errorMessage ? (
+                        <div className={styles.errormessage}>
+                            <p aria-atomic="true" role="alert">{errorMessage}</p>
                         </div>
-                    </div>
-                    <div className={styles.imgView} style={{ marginLeft: '10px' }}>
-                        <img className={styles.viewSide} src={background} alt="" />
-                    </div>
-                </div>
+                    ) : (
+                        <div className={styles.wrapImgView}>
+                            {
+                                selectedImages.map((img) => (
+                                    img ? (
+                                        <div className={styles.imgView}>
+                                            <img className={styles.viewSide} src={img} alt="" />
+                                            <div className={styles.clearImg}>
+                                                <i className={styles.btnClear} />
+                                            </div>
+                                        </div>
+                                    ) : (<></>)
+                                ))
+                            }
+                        </div>
+                    )
+                }
                 <div className={styles.uploadImg}>
                     <button type="submit" className={styles.btnUpload}>Đăng</button>
                 </div>
