@@ -1,5 +1,8 @@
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import Cookies from 'js-cookie';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import * as API from '../../../../constants/api';
 import smallAvatar from '../../RightSideBar/RightSide.module.scss';
 import styles from './InputPost.module.scss';
 
@@ -12,16 +15,50 @@ type PreviewFile = {
 }
 type selectedImagesState = {
     selectedImages: PreviewFile[];
+    title: string;
     errorMessage: string;
+}
+
+type UploadResSuccess = {
+    message: string;
+}
+
+type UploadResErr = {
+    message: string;
 }
 
 export class InputPost extends React.Component<{ }, selectedImagesState> {
     state = {
         selectedImages: [],
+        title: '',
         errorMessage: '',
     }
 
     inputFileRef: React.RefObject<HTMLInputElement> = React.createRef();
+
+    onSubmitUploadPost = (event: React.FormEvent<HTMLFormElement>): void => {
+        const { selectedImages, title } = this.state;
+        event.preventDefault();
+        const formData = new FormData();
+        const token: string | undefined = Cookies.get('token');
+        selectedImages.forEach((file: File) => {
+            console.log(file);
+            formData.append('image', file);
+        });
+
+        const config: AxiosRequestConfig = {
+            params: title,
+            headers: {
+                token,
+            },
+
+        };
+
+        axios.post<UploadResSuccess, AxiosResponse<UploadResSuccess | UploadResErr>>(API.PostImg, formData, config)
+            .then((res) => {
+                console.log(res);
+            });
+    }
 
     handleBtnClick = (): void => {
         if (this.inputFileRef.current) {
@@ -39,7 +76,7 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
         reader.readAsDataURL(file);
     })
 
-    handleSelectedFile = async (): Promise<void> => {
+    handleOnSubmit = async (): Promise<void> => {
         if (!this.inputFileRef.current) {
             return;
         }
@@ -64,14 +101,8 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
                 id: Math.random() * 100,
             });
         }));
-        const file = this.inputFileRef.current?.files?.item(0) || null;
-        if (file) {
-            this.setState({ selectedImages: imageStrings });
-        }
-    }
 
-    uploadFiles = (event: React.ChangeEvent<HTMLInputElement>, item: number): void => {
-
+        this.setState({ selectedImages: imageStrings });
     }
 
     handleRemovePreImage = (event: React.MouseEvent<HTMLDivElement>, item: number): void => {
@@ -80,73 +111,92 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
         this.setState({ selectedImages: newArrImages });
     }
 
+    handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        this.setState({
+            title: event.target.value,
+        });
+    }
+
     render(): JSX.Element {
-        const { selectedImages, errorMessage } = this.state;
-        const { handleRemovePreImage } = this;
+        const { selectedImages, errorMessage, title } = this.state;
+        const { handleRemovePreImage, handleInputChange, onSubmitUploadPost } = this;
         return (
             <div className={styles.wrapInputPost}>
-                <div className={styles.createPost}>
-                    <div className={smallAvatar.sWrapImg}>
-                        <Link to="/" className={smallAvatar.sLinkImg}>
-                            <img src={urlLogo} alt="" className={smallAvatar.imgWi} />
-                        </Link>
-                    </div>
-                    <div className={styles.wInputPost}>
-                        <input type="text" className={styles.inputPost} />
-                    </div>
-                    <div className={styles.inputLogoImg}>
-                        <input
-                            type="file"
-                            className={styles.inputFile}
-                            multiple
-                            ref={this.inputFileRef}
-                            onChange={this.handleSelectedFile}
-                        />
-                        <div
-                            role="button"
-                            tabIndex={0}
-                            className={styles.wrapLogoImg}
-                            onClick={this.handleBtnClick}
-                            onKeyUp={this.handleBtnClick}
-                        >
-                            <i className={styles.logoImg} />
-                            <div className={styles.inputTextImg}>Thêm Ảnh/video</div>
+                <form action="" onSubmit={onSubmitUploadPost}>
+                    <div className={styles.createPost}>
+                        <div className={smallAvatar.sWrapImg}>
+                            <Link to="/" className={smallAvatar.sLinkImg}>
+                                <img src={urlLogo} alt="" className={smallAvatar.imgWi} />
+                            </Link>
+                        </div>
+                        <div className={styles.wInputPost}>
+                            <input
+                                type="text"
+                                className={styles.inputPost}
+                                placeholder="Bạn đang nghĩ gì ?"
+                                name="title"
+                                value={title}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                        <div className={styles.inputLogoImg}>
+                            <input
+                                type="file"
+                                className={styles.inputFile}
+                                multiple
+                                ref={this.inputFileRef}
+                                onChange={this.handleOnSubmit}
+                            />
+                            <div
+                                role="button"
+                                tabIndex={0}
+                                className={styles.wrapLogoImg}
+                                onClick={this.handleBtnClick}
+                                onKeyUp={this.handleBtnClick}
+                            >
+                                <i className={styles.logoImg} />
+                                <div className={styles.inputTextImg}>Thêm Ảnh/video</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                {
-                    errorMessage ? (
-                        <div className={styles.errormessage}>
-                            <p aria-atomic="true" role="alert">{errorMessage}</p>
-                        </div>
-                    ) : (
-                        <div className={styles.wrapImgView}>
-                            {
-                                selectedImages.map((img: PreviewFile) => (
-                                    img ? (
-                                        <div className={styles.imgView}>
-                                            <img className={styles.viewSide} src={img.imageContent} alt="" />
-                                            <div
-                                                className={styles.clearImg}
-                                                key={img.id}
-                                                onClick={(event): void => {
-                                                    handleRemovePreImage(event, img.id);
-                                                }}
-                                                role="button"
-                                                tabIndex={0}
-                                            >
-                                                <i className={styles.btnClear} />
+                    {
+                        errorMessage ? (
+                            <div className={styles.errormessage}>
+                                <p aria-atomic="true" role="alert">{errorMessage}</p>
+                            </div>
+                        ) : (
+                            <div className={styles.wrapImgView}>
+                                {
+                                    selectedImages.map((img: PreviewFile) => (
+                                        img ? (
+                                            <div className={styles.imgView}>
+                                                <img
+                                                    className={styles.viewSide}
+                                                    src={img.imageContent}
+                                                    alt=""
+                                                />
+                                                <div
+                                                    className={styles.clearImg}
+                                                    key={img.id}
+                                                    onClick={(event): void => {
+                                                        handleRemovePreImage(event, img.id);
+                                                    }}
+                                                    role="button"
+                                                    tabIndex={0}
+                                                >
+                                                    <i className={styles.btnClear} />
+                                                </div>
                                             </div>
-                                        </div>
-                                    ) : (<></>)
-                                ))
-                            }
-                        </div>
-                    )
-                }
-                <div className={styles.uploadImg}>
-                    <button type="submit" className={styles.btnUpload}>Đăng</button>
-                </div>
+                                        ) : (<></>)
+                                    ))
+                                }
+                            </div>
+                        )
+                    }
+                    <div className={styles.uploadImg}>
+                        <button type="submit" className={styles.btnUpload}>Đăng</button>
+                    </div>
+                </form>
             </div>
         );
     }
