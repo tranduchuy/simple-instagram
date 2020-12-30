@@ -41,9 +41,8 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
         event.preventDefault();
         const formData = new FormData();
         const token: string | undefined = Cookies.get('token');
-        selectedImages.forEach((file: File) => {
-            console.log(file);
-            formData.append('image', file);
+        selectedImages.forEach((file: PreviewFile) => {
+            formData.append('image[]', file.file);
         });
 
         const config: AxiosRequestConfig = {
@@ -105,7 +104,7 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
         this.setState({ selectedImages: imageStrings });
     }
 
-    handleRemovePreImage = (event: React.MouseEvent<HTMLDivElement>, item: number): void => {
+    handleRemovePreImage = (item: number): void => {
         const arrImagesContent = [...this.state.selectedImages];
         const newArrImages = arrImagesContent.filter((img: PreviewFile) => img.id !== item);
         this.setState({ selectedImages: newArrImages });
@@ -119,7 +118,14 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
 
     render(): JSX.Element {
         const { selectedImages, errorMessage, title } = this.state;
-        const { handleRemovePreImage, handleInputChange, onSubmitUploadPost } = this;
+        const {
+            handleRemovePreImage,
+            handleInputChange,
+            handleOnSubmit,
+            onSubmitUploadPost,
+            handleBtnClick,
+            inputFileRef,
+        } = this;
         return (
             <div className={styles.wrapInputPost}>
                 <form action="" onSubmit={onSubmitUploadPost}>
@@ -144,15 +150,19 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
                                 type="file"
                                 className={styles.inputFile}
                                 multiple
-                                ref={this.inputFileRef}
-                                onChange={this.handleOnSubmit}
+                                ref={inputFileRef}
+                                onChange={handleOnSubmit}
                             />
                             <div
                                 role="button"
                                 tabIndex={0}
                                 className={styles.wrapLogoImg}
-                                onClick={this.handleBtnClick}
-                                onKeyUp={this.handleBtnClick}
+                                onClick={handleBtnClick}
+                                onKeyPress={(e: React.KeyboardEvent): void => {
+                                    if (e.keyCode === 13) {
+                                        handleBtnClick();
+                                    }
+                                }}
                             >
                                 <i className={styles.logoImg} />
                                 <div className={styles.inputTextImg}>Thêm Ảnh/video</div>
@@ -169,7 +179,7 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
                                 {
                                     selectedImages.map((img: PreviewFile) => (
                                         img ? (
-                                            <div className={styles.imgView}>
+                                            <div className={styles.imgView} key={img.id}>
                                                 <img
                                                     className={styles.viewSide}
                                                     src={img.imageContent}
@@ -177,9 +187,13 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
                                                 />
                                                 <div
                                                     className={styles.clearImg}
-                                                    key={img.id}
-                                                    onClick={(event): void => {
-                                                        handleRemovePreImage(event, img.id);
+                                                    onClick={(): void => {
+                                                        handleRemovePreImage(img.id);
+                                                    }}
+                                                    onKeyPress={(e: React.KeyboardEvent): void => {
+                                                        if (e.keyCode === 13) {
+                                                            handleRemovePreImage(img.id);
+                                                        }
                                                     }}
                                                     role="button"
                                                     tabIndex={0}
@@ -194,7 +208,13 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
                         )
                     }
                     <div className={styles.uploadImg}>
-                        <button type="submit" className={styles.btnUpload}>Đăng</button>
+                        <button
+                            type="submit"
+                            disabled={selectedImages.length === 0 && title.trim() === ''}
+                            className={styles.btnUpload}
+                        >
+                            Đăng
+                        </button>
                     </div>
                 </form>
             </div>

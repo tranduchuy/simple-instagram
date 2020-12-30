@@ -41,6 +41,10 @@
       .wrapLogoImg {
         display: flex;
 
+        &:focus {
+          outline: 0;
+        }
+
         .logoImg {
           width: 24px;
           height: 24px;
@@ -58,10 +62,6 @@
           font-weight: 600;
           font-size: 14px;
         }
-      }
-
-      .wrapLogoImg:focus {
-        outline: 0;
       }
     }
 
@@ -86,7 +86,6 @@
     margin-top: 10px;
 
     .btnUpload {
-      opacity: .3;
       width: 350px;
       cursor: pointer;
       color: white;
@@ -96,10 +95,15 @@
       font-weight: 600;
       padding: 5px 9px;
       font-size: 14px;
-    }
 
-    .btnUpload:focus {
-      outline: 0;
+      &:focus {
+        outline: 0;
+      }
+
+      &:disabled {
+        background-color: rgba(175, 199, 222, 0.73);
+        cursor: not-allowed;
+      }
     }
   }
 
@@ -118,6 +122,45 @@
       margin-bottom: 5px;
       background-color: #eef2f5;
 
+      &:hover {
+        .clearImg {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: absolute;
+          width: 25px;
+          height: 25px;
+          border-radius: 50%;
+          background-color: #ffffff;
+          top: 5px;
+          left: 98px;
+          cursor: pointer;
+
+          &:focus {
+            outline: 0;
+          }
+
+          &:hover {
+            background-color: #e9ecef;
+          }
+
+          .btnClear {
+            background-position: 1px -470px;;
+            background-image: url(../../../../images/smallIcons.png);
+            background-size: auto;
+            background-repeat: no-repeat;
+            display: inline-block;
+            height: 18px;
+            width: 22px;
+            color: #65676b;
+
+            &:focus {
+              outline: 0;
+            }
+          }
+        }
+      }
+
       .viewSide {
         position: absolute;
         top: 50%;
@@ -127,47 +170,5 @@
         max-height: 100%;
       }
     }
-
-    .imgView:hover {
-
-      .clearImg {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: absolute;
-        width: 25px;
-        height: 25px;
-        border-radius: 50%;
-        background-color: #ffffff;
-        top: 5px;
-        left: 98px;
-        cursor: pointer;
-
-
-        .btnClear {
-          background-position: 1px -470px;;
-          background-image: url(../../../../images/smallIcons.png);
-          background-size: auto;
-          background-repeat: no-repeat;
-          display: inline-block;
-          height: 18px;
-          width: 22px;
-          color: #65676b;
-        }
-
-        .btnClear:focus {
-          outline: 0;
-        }
-      }
-
-      .clearImg:focus {
-        outline: 0;
-      }
-
-      .clearImg:hover {
-        background-color: #e9ecef;
-      }
-    }
   }
-
 }
