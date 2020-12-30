@@ -72,6 +72,14 @@
     }
   }
 
+  .errormessage {
+    color: #ed4956;
+    margin: 10px 40px;
+    font-size: 14px;
+    line-height: 18px;
+    text-align: center;
+  }
+
   .uploadImg {
     display: flex;
     justify-content: center;
@@ -98,6 +106,7 @@
   .wrapImgView {
     display: flex;
     margin-top: 10px;
+    flex-wrap: wrap;
 
     .imgView {
       position: relative;
@@ -105,10 +114,17 @@
       height: 170px;
       border-radius: 10px;
       overflow: hidden;
+      margin-right: 11px;
+      margin-bottom: 5px;
+      background-color: #eef2f5;
 
       .viewSide {
-        width: 100%;
-        height: 100%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 100%;
+        max-height: 100%;
       }
     }
 
@@ -138,6 +154,14 @@
           width: 22px;
           color: #65676b;
         }
+
+        .btnClear:focus {
+          outline: 0;
+        }
+      }
+
+      .clearImg:focus {
+        outline: 0;
       }
 
       .clearImg:hover {
