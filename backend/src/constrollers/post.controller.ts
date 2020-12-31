@@ -31,15 +31,24 @@ const removeImg = (req: Request<any, any, any, PostReqQuery>): void => {
 class PostController {
     async Post(req: RequestCustom<any, any, any, PostReqQuery>, res: Response<PostResSuccess | PostResError>): Promise<any> {
         const { title } = req.query;
-        const images = req.files;
+        let images: Express.Multer.File[] = [];
+        if (Array.isArray(req.files)) {
+            images = req.files;
+        } else {
+            images = req.files.images;
+        }
+
         if (!images) {
             res.status(HttpStatus.BAD_REQUEST).json({
                 message: 'This field cannot empty.',
             });
         }
-        images.forEach((img: any) => {
+        const invalidImages = images.filter((img) => {
+            return img.mimetype !== IMAGE_JPG_TYPES && img.mimetype !== IMAGE_PNG_TYPES
         });
-        if (images.mimetype !== IMAGE_JPG_TYPES && images.mimetype !== IMAGE_PNG_TYPES) {
+
+        // TODO: handle remove images in tmp folder
+        if (invalidImages.length !== 0) {
             removeImg(req);
             return res.status(400).json({
                 message: 'Type of image is invalid.',
