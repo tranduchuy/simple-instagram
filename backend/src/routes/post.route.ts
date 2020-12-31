@@ -30,6 +30,7 @@ const upload = multer({
     storage,
 });
 
-router.post('/', Middleware, upload.single('image'), postCtrl.Post);
+router.use(Middleware);
+router.post('/', upload.array('images[]'), postCtrl.Post);
 
 export const PostRoute = router;
