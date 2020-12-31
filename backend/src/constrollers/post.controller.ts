@@ -18,6 +18,12 @@ type PostResError = {
     message: string;
 };
 
+type UploadImages = {
+    file: File;
+    imageContent: string;
+    id: number;
+}
+
 const removeImg = (req: Request<any, any, any, PostReqQuery>): void => {
     fs.unlinkSync(path.join(SystemConfig.rootPath, 'public', 'tmp', req.file.filename));
 };
@@ -25,14 +31,15 @@ const removeImg = (req: Request<any, any, any, PostReqQuery>): void => {
 class PostController {
     async Post(req: RequestCustom<any, any, any, PostReqQuery>, res: Response<PostResSuccess | PostResError>): Promise<any> {
         const { title } = req.query;
-        const image = req.file;
-        if (!image) {
+        const images = req.files;
+        if (!images) {
             res.status(HttpStatus.BAD_REQUEST).json({
                 message: 'This field cannot empty.',
             });
         }
-
-        if (image.mimetype !== IMAGE_JPG_TYPES && image.mimetype !== IMAGE_PNG_TYPES) {
+        images.forEach((img: any) => {
+        });
+        if (images.mimetype !== IMAGE_JPG_TYPES && images.mimetype !== IMAGE_PNG_TYPES) {
             removeImg(req);
             return res.status(400).json({
                 message: 'Type of image is invalid.',
