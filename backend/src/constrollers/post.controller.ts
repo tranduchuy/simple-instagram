@@ -18,12 +18,6 @@ type PostResError = {
     message: string;
 };
 
-type UploadImages = {
-    file: File;
-    imageContent: string;
-    id: number;
-}
-
 const removeImg = (req: Request<any, any, any, PostReqQuery>): void => {
     fs.unlinkSync(path.join(SystemConfig.rootPath, 'public', 'tmp', req.file.filename));
 };
@@ -43,10 +37,7 @@ class PostController {
                 message: 'This field cannot empty.',
             });
         }
-        const invalidImages = images.filter((img) => {
-            return img.mimetype !== IMAGE_JPG_TYPES && img.mimetype !== IMAGE_PNG_TYPES
-        });
-
+        const invalidImages = images.filter((img) => img.mimetype !== IMAGE_JPG_TYPES && img.mimetype !== IMAGE_PNG_TYPES);
         // TODO: handle remove images in tmp folder
         if (invalidImages.length !== 0) {
             removeImg(req);
@@ -55,17 +46,19 @@ class PostController {
             });
         }
 
-        const tmp = path.join(SystemConfig.rootPath, 'public', 'tmp', req.file.filename);
-        const uploads = path.join(SystemConfig.rootPath, 'public', 'uploads', req.file.filename);
-        fs.renameSync(tmp, uploads);
+        await Promise.all(images.map(async (img) => {
+            const tmp = path.join(SystemConfig.rootPath, 'public', 'tmp', img.filename);
+            const uploads = path.join(SystemConfig.rootPath, 'public', 'uploads', img.filename);
+            fs.renameSync(tmp, uploads);
+            const postDoc: PostDoc = new PostModel({
+                userId: req.user._id,
+                title,
+                images: `uploads/${img.filename}`,
+            });
 
-        const postDoc: PostDoc = new PostModel({
-            userId: req.user._id,
-            title,
-            image: `uploads/${req.file.filename}`,
-        });
+            await postDoc.save();
+        }));
 
-        await postDoc.save();
         return res.status(200).json({
             message: 'Success.',
         });
