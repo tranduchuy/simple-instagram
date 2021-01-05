@@ -42,7 +42,7 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
         const formData = new FormData();
         const token: string | undefined = Cookies.get('token');
         selectedImages.forEach((file: PreviewFile) => {
-            formData.append('image[]', file.file);
+            formData.append('images[]', file.file);
         });
 
         const config: AxiosRequestConfig = {
@@ -54,8 +54,19 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
         };
 
         axios.post<UploadResSuccess, AxiosResponse<UploadResSuccess | UploadResErr>>(API.PostImg, formData, config)
-            .then((res) => {
-                console.log(res);
+            .then(() => {
+                this.setState({ selectedImages: [] });
+            })
+            .catch((err) => {
+                console.log(err);
+                if (err.response.data.message) {
+                    this.setState({
+                        errorMessage: err.response.data.message,
+                    });
+                }
+                this.setState({
+                    errorMessage: 'Something error',
+                });
             });
     }
 
