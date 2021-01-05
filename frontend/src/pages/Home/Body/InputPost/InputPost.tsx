@@ -46,16 +46,21 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
         });
 
         const config: AxiosRequestConfig = {
-            params: title,
+            params: {
+                title,
+            },
             headers: {
                 token,
             },
-
         };
 
+        console.log(config);
         axios.post<UploadResSuccess, AxiosResponse<UploadResSuccess | UploadResErr>>(API.PostImg, formData, config)
             .then(() => {
-                this.setState({ selectedImages: [] });
+                this.setState({
+                    selectedImages: [],
+                    title: '',
+                });
             })
             .catch((err) => {
                 console.log(err);
@@ -151,6 +156,7 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
                                 type="text"
                                 className={styles.inputPost}
                                 placeholder="Bạn đang nghĩ gì ?"
+                                autoComplete="off"
                                 name="title"
                                 value={title}
                                 onChange={handleInputChange}
