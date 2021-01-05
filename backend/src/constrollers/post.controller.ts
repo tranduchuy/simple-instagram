@@ -38,7 +38,6 @@ class PostController {
             });
         }
         const invalidImages = images.filter((img) => img.mimetype !== IMAGE_JPG_TYPES && img.mimetype !== IMAGE_PNG_TYPES);
-        // TODO: handle remove images in tmp folder
         if (invalidImages.length !== 0) {
             removeImg(req);
             return res.status(400).json({
