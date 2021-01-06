@@ -18,6 +18,13 @@ type PostResError = {
     message: string;
 };
 
+
+type getListPostReqQuery = {
+    limit?: string;
+    page?: string;
+    createAt?: string;
+    imag
+};
 const removeImg = (req: Request<any, any, any, PostReqQuery>): void => {
     fs.unlinkSync(path.join(SystemConfig.rootPath, 'public', 'tmp', req.file.filename));
 };
@@ -62,6 +69,8 @@ class PostController {
             message: 'Success.',
         });
     }
+
+    async getListPost(req: RequestCustom<any, any, any>)
 }
 
 export const postCtrl = new PostController();
