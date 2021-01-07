@@ -18,12 +18,10 @@ type PostResError = {
     message: string;
 };
 
-
 type getListPostReqQuery = {
     limit?: string;
     page?: string;
     createAt?: string;
-    imag
 };
 const removeImg = (req: Request<any, any, any, PostReqQuery>): void => {
     fs.unlinkSync(path.join(SystemConfig.rootPath, 'public', 'tmp', req.file.filename));
@@ -52,19 +50,20 @@ class PostController {
             });
         }
 
+        const imagesData: string[] = [];
         await Promise.all(images.map(async (img) => {
             const tmp = path.join(SystemConfig.rootPath, 'public', 'tmp', img.filename);
             const uploads = path.join(SystemConfig.rootPath, 'public', 'uploads', img.filename);
             fs.renameSync(tmp, uploads);
-            const postDoc: PostDoc = new PostModel({
-                userId: req.user._id,
-                title,
-                images: `uploads/${img.filename}`,
-            });
-
-            await postDoc.save();
+            imagesData.push(`uploads/${img.filename}`);
         }));
 
+        const postDoc: PostDoc = new PostModel({
+            userId: req.user._id,
+            title,
+            images: imagesData,
+        });
+        await postDoc.save();
         return res.status(200).json({
             message: 'Success.',
         });
