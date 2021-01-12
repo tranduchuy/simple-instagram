@@ -197,12 +197,10 @@ class PostController {
             images: p.images,
         }));
 
-        res.status(HttpStatus.OK).json({
+        return res.status(HttpStatus.OK).json({
             total,
             listPost: showList,
         });
-
-        return;
     }
 }
 
