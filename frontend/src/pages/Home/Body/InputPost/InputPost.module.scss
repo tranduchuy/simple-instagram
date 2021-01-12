@@ -1,0 +1,174 @@
+.wrapInputPost {
+  background: #fff;
+  border: 1px solid #dbdbdb;
+  border-radius: 3px;
+  margin-bottom: 24px;
+  margin-top: 0;
+  padding: 12px 16px;
+
+  .createPost {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+
+    .wInputPost {
+      margin-right: 10px;
+      width: 65%;
+
+      .inputPost {
+        padding: 5px 15px;
+        border: solid 1px #dbdbdb;
+        width: 100%;
+        border-radius: 20px;
+        outline: 0;
+        background: #fafafa;
+        font-size: 14px;
+        line-height: 18px;
+      }
+    }
+
+    .inputLogoImg {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 160px;
+      height: 40px;
+
+      .inputFile {
+        display: none;
+      }
+
+      .wrapLogoImg {
+        display: flex;
+
+        &:focus {
+          outline: 0;
+        }
+
+        .logoImg {
+          width: 24px;
+          height: 24px;
+          margin-right: 8px;
+          background-position: 0 -208px;
+          background-image: url(../../../../images/logoFB.png);
+          background-size: auto;
+          background-repeat: no-repeat;
+          display: inline-block;
+        }
+
+        .inputTextImg {
+          display: flex;
+          align-items: center;
+          font-weight: 600;
+          font-size: 14px;
+        }
+      }
+    }
+
+    .inputLogoImg:hover {
+      cursor: pointer;
+      background-color: #e8e8e885;
+      border-radius: 8px;
+    }
+  }
+
+  .errormessage {
+    color: #ed4956;
+    margin: 10px 40px;
+    font-size: 14px;
+    line-height: 18px;
+    text-align: center;
+  }
+
+  .uploadImg {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+
+    .btnUpload {
+      width: 350px;
+      cursor: pointer;
+      color: white;
+      border: none;
+      background: #3897f0;
+      border-radius: 3px;
+      font-weight: 600;
+      padding: 5px 9px;
+      font-size: 14px;
+
+      &:focus {
+        outline: 0;
+      }
+
+      &:disabled {
+        background-color: rgba(175, 199, 222, 0.73);
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .wrapImgView {
+    display: flex;
+    margin-top: 10px;
+    flex-wrap: wrap;
+
+    .imgView {
+      position: relative;
+      width: 130px;
+      height: 170px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-right: 11px;
+      margin-bottom: 5px;
+      background-color: #eef2f5;
+
+      &:hover {
+        .clearImg {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: absolute;
+          width: 25px;
+          height: 25px;
+          border-radius: 50%;
+          background-color: #ffffff;
+          top: 5px;
+          left: 98px;
+          cursor: pointer;
+
+          &:focus {
+            outline: 0;
+          }
+
+          &:hover {
+            background-color: #e9ecef;
+          }
+
+          .btnClear {
+            background-position: 1px -470px;;
+            background-image: url(../../../../images/smallIcons.png);
+            background-size: auto;
+            background-repeat: no-repeat;
+            display: inline-block;
+            height: 18px;
+            width: 22px;
+            color: #65676b;
+
+            &:focus {
+              outline: 0;
+            }
+          }
+        }
+      }
+
+      .viewSide {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 100%;
+        max-height: 100%;
+      }
+    }
+  }
+}

@@ -1,0 +1,182 @@
+.post {
+  display: grid;
+  background-color: #fff;
+  .header {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    height: 60px;
+    padding: 16px;
+    border-bottom: 1px solid #efefef;
+  }
+
+  .optionals {
+    position: absolute;
+    display: flex;
+    right: 4px;
+    width: 40px;
+    height: 60px;
+    align-items: center;
+    justify-content: center;
+
+    .optBtn {
+      background: 0 0;
+      border: 0;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    .optBtn:focus {
+      outline: 0;
+    }
+  }
+
+  .comments {
+
+    .wrapIcon {
+      display: flex;
+      padding: 0 16px;
+      margin-top: 4px;
+
+      .mgHeart {
+        margin-left: -8px;
+      }
+
+      .cmtIcon {
+        width: 40px;
+        height: 40px;
+        align-items: center;
+        background: 0 0;
+        border: 0;
+        cursor: pointer;
+        justify-content: center;
+        padding: 8px;
+
+        .iconSize {
+          width: 24px;
+          height: 24px;
+        }
+      }
+
+      .cmtIcon:focus {
+        outline: 0;
+      }
+
+      .bookmark {
+        margin-left: auto;
+        margin-right: -10px;
+      }
+    }
+
+    .countLike {
+      padding: 0 16px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .btnLike {
+      color: #262626;
+      border: 0;
+      background: 0 0;
+      cursor: pointer;
+      font-weight: 600;
+      padding: 0;
+    }
+
+    .btnLike:focus {
+      outline: 0;
+    }
+
+    .wrapComment {
+      padding: 0 16px;
+
+      .mgCmt {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 14px;
+        line-height: 18px;
+
+        .username {
+          color: #262626;
+          font-weight: 600;
+          overflow-x: hidden;
+        }
+
+        .comment {
+          overflow-wrap: break-word;
+        }
+      }
+    }
+
+    .timeStamp {
+      padding-left: 16px;
+      margin-bottom: 4px;
+
+      .wrapTime {
+        color: #8e8e8e;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+
+        .time {
+          font-size: 10px;
+          letter-spacing: .2px;
+        }
+      }
+
+      .wrapTime:hover {
+        text-decoration: none;
+      }
+    }
+
+    .wrapInput {
+      display: flex;
+      align-items: center;
+      margin-top: 4px;
+      padding: 0 16px;
+      border-top: 1px solid #efefef;
+      min-height: 56px;
+
+      .inputText {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+
+        .textArea {
+          overflow: hidden;
+          height: 18px;
+          background: 0 0;
+          border: 0;
+          color: #262626;
+          display: flex;
+          flex-grow: 1;
+          font-size: 14px;
+          line-height: 18px;
+          max-height: 80px;
+          padding: 0;
+          resize: none;
+        }
+
+        .textArea:focus {
+          outline: 0;
+        }
+
+        .btnPost {
+          opacity: .3;
+          border: 0;
+          color: #0095f6;
+          display: inline;
+          padding: 0;
+          position: relative;
+          cursor: pointer;
+          font-weight: 600;
+          background: 0 0;
+        }
+
+        .btnPost:focus {
+          outline: 0;
+        }
+      }
+    }
+  }
+}

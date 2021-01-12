@@ -158,6 +158,10 @@
   text-overflow: ellipsis;
 }
 
+.userName:hover {
+  color: #262626;
+}
+
 @media screen and (max-width: 999px) {
   .wrap {
     display: none;
