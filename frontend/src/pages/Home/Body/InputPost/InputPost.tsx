@@ -1,8 +1,8 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import Cookies from 'js-cookie';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import * as API from '../../../../constants/api';
+import * as Token from '../../../../constants/cookie';
 import smallAvatar from '../../RightSideBar/RightSide.module.scss';
 import styles from './InputPost.module.scss';
 
@@ -40,7 +40,6 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
         const { selectedImages, title } = this.state;
         event.preventDefault();
         const formData = new FormData();
-        const token: string | undefined = Cookies.get('token');
         selectedImages.forEach((file: PreviewFile) => {
             formData.append('images[]', file.file);
         });
@@ -50,11 +49,10 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
                 title,
             },
             headers: {
-                token,
+                token: Token.CheckToken,
             },
         };
 
-        console.log(config);
         axios.post<UploadResSuccess, AxiosResponse<UploadResSuccess | UploadResErr>>(API.PostImg, formData, config)
             .then(() => {
                 this.setState({
@@ -63,7 +61,6 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
                 });
             })
             .catch((err) => {
-                console.log(err);
                 if (err.response.data.message) {
                     this.setState({
                         errorMessage: err.response.data.message,
