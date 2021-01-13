@@ -167,24 +167,12 @@ class PostController {
         const { userId } = req.query;
         const pagination: PaginationObj = extractPagination(req.query);
 
-        if (!isAlphabetAndNumber(userId)) {
-            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-                message: 'Error invalid alphabet and number',
-            });
-        }
-
-        if (userId.length !== 24) {
-            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-                message: 'Error invalid object id length',
-            });
-        }
-
         const sortObj = extreactSortObj(req.query, res);
         if (sortObj === false) {
             return false;
         }
 
-        const post: Post[] = await PostModel.find({ userId })
+        const post: Post[] = await PostModel.find()
             .skip(pagination.page * pagination.limit)
             .sort(sortObj)
             .limit(pagination.limit)
