@@ -20,23 +20,30 @@ export interface RequestCustom<P extends core.Params = core.ParamsDictionary, Re
 }
 
 export const Middleware = async (req: RequestCustom, res: Response<CheckTokenResError>, next: NextFunction): Promise<any> => {
-    const token: string = req.headers.token || req.query.token || req.body.token;
-    if (!token) {
-        return res.status(HttpStatus.UNAUTHORIZED).json({
-            message: 'Please, you need login',
+    try {
+        const token: string = req.headers.token || req.query.token || req.body.token;
+        if (!token) {
+            return res.status(HttpStatus.UNAUTHORIZED).json({
+                message: 'Please, you need login',
+            });
+        }
+
+        const verifyToken = jwt.verify(token, process.env.private_key) as VerifyToken;
+        const user: User = await UserModel.findOne({ email: verifyToken.email })
+            .lean();
+
+        if (!user) {
+            return res.status(HttpStatus.UNAUTHORIZED).json({
+                message: 'Token is invalid.',
+            });
+        }
+
+        req.user = user;
+        return next();
+    } catch (e) {
+        console.log(e);
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+            message: JSON.stringify(e),
         });
     }
-
-    const verifyToken = jwt.verify(token, process.env.private_key) as VerifyToken;
-    const user: User = await UserModel.findOne({ email: verifyToken.email })
-        .lean();
-
-    if (!user) {
-        return res.status(HttpStatus.UNAUTHORIZED).json({
-            message: 'Token is invalid.',
-        });
-    }
-
-    req.user = user;
-    return next();
 };
