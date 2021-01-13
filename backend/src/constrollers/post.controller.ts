@@ -2,10 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import { Request, Response } from 'express';
 import * as HttpStatus from 'http-status-codes';
-import { ObjectID } from 'mongodb';
 import { IMAGE_JPG_TYPES, IMAGE_PNG_TYPES, SystemConfig } from '../constant';
 import { RequestCustom } from '../middleware/checkToken';
 import { Post, PostDoc, PostModel } from '../models/post.model';
+import { UserModel } from '../models/user.model';
 
 const POST_COLUMNS: string[] = Object.keys(PostModel.schema.paths);
 const indexOfV: number = POST_COLUMNS.indexOf('__v');
@@ -36,7 +36,7 @@ type GetListPostReqQuery = {
 type ListPost = {
     title: string;
     images: string[];
-    userId: ObjectID;
+    user: object;
 };
 
 type GetListPostResSuccess = {
@@ -164,7 +164,6 @@ class PostController {
         req: RequestCustom<any, any, any, GetListPostReqQuery>,
         res: Response<GetListPostResSuccess | PostResError>,
     ): Promise<any> {
-        const { userId } = req.query;
         const pagination: PaginationObj = extractPagination(req.query);
 
         const sortObj = extreactSortObj(req.query, res);
@@ -178,9 +177,18 @@ class PostController {
             .limit(pagination.limit)
             .lean();
 
-        const total = await PostModel.countDocuments({ userId });
+        const info = {
+            name: '',
+        };
+        await Promise.all(post.map(async (p): Promise<any> => {
+            const userInfo = await UserModel.findOne({ _id: p.userId }).lean();
+            if (userInfo !== null) {
+                info.name = userInfo.name;
+            }
+        }));
+        const total = await PostModel.countDocuments();
         const showList: ListPost[] = post.map((p) => ({
-            userId: p.userId,
+            user: info,
             title: p.title,
             images: p.images,
         }));
