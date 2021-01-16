@@ -178,11 +178,13 @@ class PostController {
             .lean();
 
         const info = {
+            id: '',
             name: '',
         };
         await Promise.all(post.map(async (p): Promise<any> => {
             const userInfo = await UserModel.findOne({ _id: p.userId }).lean();
             if (userInfo !== null) {
+                info.id = userInfo._id;
                 info.name = userInfo.name;
             }
         }));
