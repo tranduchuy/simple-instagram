@@ -1,8 +1,8 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import Cookies from 'js-cookie';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import * as API from '../../../../constants/api';
-import * as Token from '../../../../constants/cookie';
 import smallAvatar from '../../RightSideBar/RightSide.module.scss';
 import styles from './InputPost.module.scss';
 
@@ -39,6 +39,7 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
     onSubmitUploadPost = (event: React.FormEvent<HTMLFormElement>): void => {
         const { selectedImages, title } = this.state;
         event.preventDefault();
+        const token: string | undefined = Cookies.get('token');
         const formData = new FormData();
         selectedImages.forEach((file: PreviewFile) => {
             formData.append('images[]', file.file);
@@ -49,7 +50,7 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
                 title,
             },
             headers: {
-                token: Token.CheckToken,
+                token,
             },
         };
 

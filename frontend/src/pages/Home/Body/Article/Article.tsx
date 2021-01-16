@@ -13,8 +13,17 @@ import styles from './Article.module.scss';
 const urlLogo = '/home-logo.png';
 const background = '/kitty.jpg';
 
-export class Article extends React.Component<{ }, { }> {
+type ListPostProps = {
+    user: {
+        name: string;
+    };
+    title: string;
+    images: string[];
+
+};
+export class Article extends React.Component<ListPostProps, { }> {
     render(): JSX.Element {
+        const { user, title, images } = this.props;
         return (
             <div className={styles.article}>
                 <div className={styles.post}>
@@ -26,7 +35,7 @@ export class Article extends React.Component<{ }, { }> {
                         </div>
                         <div className={smallAvatar.wrapName}>
                             <div>
-                                <Link to="/" className={smallAvatar.userName}>Username</Link>
+                                <Link to="/" className={smallAvatar.userName}>{user.name}</Link>
                             </div>
                         </div>
                     </div>
@@ -64,7 +73,7 @@ export class Article extends React.Component<{ }, { }> {
                             <div className={styles.mgCmt}>
                                 <Link to="/" className={styles.username}>username</Link>
                                 &nbsp;
-                                <div className={styles.comment}>content aaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
+                                <div className={styles.comment}>{title}</div>
                             </div>
                         </div>
                         <div className={styles.timeStamp}>
