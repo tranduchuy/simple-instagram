@@ -2,10 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import { Request, Response } from 'express';
 import * as HttpStatus from 'http-status-codes';
+import { Types } from 'mongoose';
 import { IMAGE_JPG_TYPES, IMAGE_PNG_TYPES, SystemConfig } from '../constant';
 import { RequestCustom } from '../middleware/checkToken';
 import { Post, PostDoc, PostModel } from '../models/post.model';
 import { UserModel } from '../models/user.model';
+import joi from 'joi';
 
 const POST_COLUMNS: string[] = Object.keys(PostModel.schema.paths);
 const indexOfV: number = POST_COLUMNS.indexOf('__v');
@@ -33,15 +35,23 @@ type GetListPostReqQuery = {
     sortDirection?: string;
 };
 
-type ListPost = {
-    title: string;
-    images: string[];
-    user: object;
+// type ListPost = {
+//     title: string;
+//     images: string[];
+//     user: object;
+// };
+
+type PostWithUser = Post & {
+    user: {
+        _id: Types.ObjectId;
+        name: string;
+        avatar: string;
+    };
 };
 
 type GetListPostResSuccess = {
     total: number;
-    listPost: ListPost[];
+    listPost: PostWithUser[];
 };
 
 type SortObject = {
@@ -56,7 +66,7 @@ const removeImg = (req: Request<any, any, any, PostReqQuery>): void => {
     fs.unlinkSync(path.join(SystemConfig.rootPath, 'public', 'tmp', req.file.filename));
 };
 
-const isAlphabetAndNumber = (str: string): boolean => /[a-zA-Z0-9]+/.test(str);
+// const isAlphabetAndNumber = (str: string): boolean => /[a-zA-Z0-9]+/.test(str);
 
 const isNumberRegex = (number: string): boolean => /[0-9]+/.test(number);
 
@@ -86,23 +96,8 @@ const extractPagination = (queryPagination: GetListPostReqQuery): PaginationObj 
     return pagination;
 };
 
-const extreactSortObj = (querySortObj: GetListPostReqQuery, res: Response<PostResError>): SortObject | boolean => {
+const extreactSortObj = (querySortObj: GetListPostReqQuery): SortObject => {
     let { sortBy, sortDirection } = querySortObj;
-    if (!isAlphabetAndNumber(sortBy)) {
-        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-            message: 'Error invalid alphabet and number',
-        });
-
-        return false;
-    }
-
-    if (!isAlphabetAndNumber(sortDirection)) {
-        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-            message: 'Error invalid alphabet and number',
-        });
-
-        return false;
-    }
 
     sortBy = sortBy || 'createdAt';
     if (POST_COLUMNS.indexOf(sortBy) === -1) {
@@ -118,9 +113,15 @@ const extreactSortObj = (querySortObj: GetListPostReqQuery, res: Response<PostRe
     sortObj[sortBy] = sortDirection === 'desc' ? -1 : 1;
     return sortObj;
 };
+
+export const getListJoiSchema = joi.object({
+    sortBy: joi.string().valid(...POST_COLUMNS).default('createdAt'),
+    sortDirection: joi.string().valid('desc', 'asc'),
+});
+
 class PostController {
-    async Post(req: RequestCustom<any, any, any, PostReqQuery>, res: Response<PostResSuccess | PostResError>): Promise<any> {
-        const { title } = req.query;
+    async Post(req: RequestCustom<any, any, PostReqQuery, never>, res: Response<PostResSuccess | PostResError>): Promise<any> {
+        const { title } = req.body;
         let images: Express.Multer.File[] = [];
         if (Array.isArray(req.files)) {
             images = req.files;
@@ -166,38 +167,39 @@ class PostController {
     ): Promise<any> {
         const pagination: PaginationObj = extractPagination(req.query);
 
-        const sortObj = extreactSortObj(req.query, res);
-        if (sortObj === false) {
-            return false;
+        const validateSortResult = getListJoiSchema.validate(req.query);
+        if (validateSortResult.error) {
+            return res.status(HttpStatus.BAD_REQUEST).json(validateSortResult.error);
         }
 
-        const post: Post[] = await PostModel.find()
-            .skip(pagination.page * pagination.limit)
+        const sortObj = extreactSortObj(req.query);
+
+        const posts: Post[] = await PostModel.find()
             .sort(sortObj)
+            .skip(pagination.page * pagination.limit)
             .limit(pagination.limit)
             .lean();
 
-        const info = {
-            id: '',
-            name: '',
-        };
-        await Promise.all(post.map(async (p): Promise<any> => {
+        const postWithUserInfos: PostWithUser[] = [];
+
+        await Promise.all(posts.map(async (p): Promise<any> => {
             const userInfo = await UserModel.findOne({ _id: p.userId }).lean();
             if (userInfo !== null) {
-                info.id = userInfo._id;
-                info.name = userInfo.name;
+                postWithUserInfos.push({
+                    ...p,
+                    user: {
+                        avatar: userInfo.avatar,
+                        _id: userInfo._id,
+                        name: userInfo.name,
+                    },
+                });
             }
         }));
         const total = await PostModel.countDocuments();
-        const showList: ListPost[] = post.map((p) => ({
-            user: info,
-            title: p.title,
-            images: p.images,
-        }));
 
         return res.status(HttpStatus.OK).json({
             total,
-            listPost: showList,
+            listPost: postWithUserInfos,
         });
     }
 }

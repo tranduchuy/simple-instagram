@@ -1,6 +1,7 @@
 import * as bcrypt from 'bcryptjs';
 import { Request, Response } from 'express';
 import * as HttpStatus from 'http-status-codes';
+import Joi from 'joi';
 import * as jwt from 'jsonwebtoken';
 import uniqueString from 'unique-string';
 import { PASSWORD_LENGTH } from '../constant';
@@ -97,32 +98,24 @@ const isValidatorPassword = (validatorPass: ValidatorPass, res: Response<UserRes
     return true;
 };
 
+export const registerJoiSchema = Joi.object({
+    email: Joi.string().email().required(),
+    name: Joi.string(),
+    password: Joi.string().required().min(PASSWORD_LENGTH),
+    confirmPassword: Joi.any().valid(Joi.ref('password')).required().options({
+        messages: {
+            any: 'Two passwords is not match'
+        }
+    }),
+});
+
 class UserController {
     async registerNewUser(req: Request<any, any, RegisterReqBody>, res: Response<UserResSuccess | UserResError>): Promise<any> {
         const {
             email,
             name,
             password,
-            confirmPassword,
         } = req.body;
-        if (!email || !password || !confirmPassword) {
-            res.status(HttpStatus.BAD_REQUEST).json({
-                message: 'This field is require.',
-            });
-            return;
-        }
-
-        if (!validateEmailAddress(email)) {
-            res.status(HttpStatus.BAD_REQUEST).json({
-                message: 'Email address is invalid.',
-            });
-            return;
-        }
-
-        const checkedPassword: boolean = isValidatorPassword({ password, confirmPassword }, res);
-        if (checkedPassword === false) {
-            return;
-        }
 
         const user: User | null = await UserModel.findOne({ email })
             .lean();

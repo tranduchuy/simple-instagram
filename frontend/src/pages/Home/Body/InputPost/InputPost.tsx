@@ -45,10 +45,9 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
             formData.append('images[]', file.file);
         });
 
+        formData.append('title', title);
+
         const config: AxiosRequestConfig = {
-            params: {
-                title,
-            },
             headers: {
                 token,
             },

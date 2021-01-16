@@ -1,9 +1,10 @@
 import express from 'express';
-import { userCtrl } from '../constrollers/user.controller';
+import { registerJoiSchema, userCtrl } from '../constrollers/user.controller';
+import { validateData } from '../middleware/validateData';
 
 const router = express.Router({});
 
-router.post('/register', userCtrl.registerNewUser);
+router.post('/register', validateData(registerJoiSchema, 'body'), userCtrl.registerNewUser);
 router.post('/login', userCtrl.userLogin);
 router.post('/confirm', userCtrl.confirmUser);
 router.post('/forgot', userCtrl.forgotPassword);

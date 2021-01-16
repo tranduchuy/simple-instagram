@@ -49,10 +49,14 @@ export class Body extends React.Component<{ }, ListDataState> {
             .then((res) => {
                 if (res.status === 200) {
                     const db = res.data as GetListPostResSuccess;
+                    // this.setState({
+                    //     listData: db.listPost,
+                    // })
                     this.setState((state) => {
                         const listData = state.listData.concat(db.listPost);
 
                         return {
+                            ...state,
                             listData,
                         };
                     });
