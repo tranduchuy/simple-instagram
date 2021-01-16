@@ -8,19 +8,14 @@ import { GoKebabHorizontal } from 'react-icons/go';
 import { VscBookmark } from 'react-icons/vsc';
 import { Link } from 'react-router-dom';
 import smallAvatar from '../../RightSideBar/RightSide.module.scss';
+import { ListPostData } from '../Body';
 import styles from './Article.module.scss';
 
 const urlLogo = '/home-logo.png';
 const background = '/kitty.jpg';
 
-type ListPostProps = {
-    user: {
-        name: string;
-    };
-    title: string;
-    images: string[];
+type ListPostProps = ListPostData;
 
-};
 export class Article extends React.Component<ListPostProps, { }> {
     render(): JSX.Element {
         const { user, title, images } = this.props;

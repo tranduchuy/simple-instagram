@@ -6,10 +6,14 @@ import { Header } from './Header';
 import styles from './Home.module.scss';
 import { RightSideBar } from './RightSideBar';
 
-type LoginProps = RouteComponentProps;
+type HomeProps = RouteComponentProps;
 
-export class Home extends React.Component<LoginProps, {}> {
-    componentDidMount(): void {
+export class Home extends React.Component<HomeProps, {validToken: boolean}> {
+    state = {
+        validToken: false,
+    }
+
+    componentDidMount() {
         this.handleCheckToken();
     }
 
@@ -17,17 +21,28 @@ export class Home extends React.Component<LoginProps, {}> {
         const Token: string | undefined = Cookies.get('token');
         if (!Token) {
             this.props.history.push('/login');
+        } else {
+            this.setState({
+                validToken: true,
+            });
         }
     }
 
     render(): JSX.Element {
+        const { validToken } = this.state;
         return (
             <div>
-                <Header />
-                <div className={styles.content}>
-                    <Body />
-                    <RightSideBar />
-                </div>
+                {
+                    validToken && (
+                        <>
+                            <Header />
+                            <div className={styles.content}>
+                                <Body />
+                                <RightSideBar />
+                            </div>
+                        </>
+                    )
+                }
             </div>
         );
     }

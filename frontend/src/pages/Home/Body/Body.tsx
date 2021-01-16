@@ -20,7 +20,8 @@ type ListDataState = {
     listData: ListPostData[];
 }
 
-type ListPostData = {
+export type ListPostData = {
+    _id: string;
     user: {
         name: string;
     };
@@ -29,7 +30,7 @@ type ListPostData = {
 };
 
 export class Body extends React.Component<{ }, ListDataState> {
-    state = {
+    state: ListDataState = {
         listData: [],
     }
 
@@ -68,15 +69,15 @@ export class Body extends React.Component<{ }, ListDataState> {
     };
 
     render(): JSX.Element {
+        console.log('render');
         const { listData } = this.state;
         return (
             <div className={styles.wrap}>
                 <Story />
                 <InputPost />
-                {listData.map((l: ListPostData) => {
-                    console.log(l.user);
-                    return <Article key={Date.now()} user={l.user} title={l.title} images={l.images} />
-                })}
+                {
+                    listData.map((l: ListPostData) => <Article key={l._id} {...l} />)
+                }
             </div>
         );
     }
