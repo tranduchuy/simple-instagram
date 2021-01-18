@@ -32,13 +32,6 @@ type UserResError = {
     message: string;
 };
 
-type ValidatorPass = {
-    token?: string;
-    email?: string;
-    password: string;
-    confirmPassword: string;
-};
-
 type UpdateConfirm = {
     tokenRegister: string;
     status: number;
@@ -65,38 +58,7 @@ type ResetNewPassword = {
     forgetPasswordToken: string;
 };
 
-const validateEmailAddress = (email: string): boolean => {
-    const filter = new RegExp('^[a-z0-9]+(.[_a-z0-9]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,15})$', 'i');
-    return filter.test(email);
-};
-
 export const isAlphabetAndNumber = (str: string): boolean => /[a-zA-Z0-9]+/.test(str);
-
-const isValidatorPassword = (validatorPass: ValidatorPass, res: Response<UserResError>): boolean => {
-    const { password, confirmPassword } = validatorPass;
-    if (password.length < PASSWORD_LENGTH || confirmPassword.length < PASSWORD_LENGTH) {
-        res.status(HttpStatus.BAD_REQUEST).json({
-            message: 'Create a password at least 6 characters long.',
-        });
-    }
-
-    if (!isAlphabetAndNumber(password) && !isAlphabetAndNumber(confirmPassword)) {
-        res.status(HttpStatus.BAD_REQUEST).json({
-            message: 'Password Invalid !',
-        });
-
-        return false;
-    }
-
-    if (password !== confirmPassword) {
-        res.status(HttpStatus.BAD_REQUEST).json({
-            message: 'Please make sure both passwords match.',
-        });
-
-        return false;
-    }
-    return true;
-};
 
 export const registerJoiSchema = Joi.object({
     email: Joi.string().email().required(),
@@ -104,8 +66,27 @@ export const registerJoiSchema = Joi.object({
     password: Joi.string().required().min(PASSWORD_LENGTH),
     confirmPassword: Joi.any().valid(Joi.ref('password')).required().options({
         messages: {
-            any: 'Two passwords is not match'
-        }
+            any: 'Two passwords is not match',
+        },
+    }),
+});
+
+export const loginJoiSchema = Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().required().min(PASSWORD_LENGTH),
+});
+
+export const forgotPassJoiSchema = Joi.object({
+    email: Joi.string().email().required(),
+});
+
+export const resetPassJoiSchema = Joi.object({
+    forgotPasswordToken: Joi.string().required(),
+    password: Joi.string().required().min(PASSWORD_LENGTH),
+    confirmPassword: Joi.any().valid(Joi.ref('password')).required().options({
+        messages: {
+            any: 'Two passwords is not match',
+        },
     }),
 });
 
@@ -158,29 +139,6 @@ class UserController {
 
     async userLogin(req: Request<any, any, LoginReqBody>, res: Response<LoginResSuccess | UserResError>): Promise<any> {
         const { email, password } = req.body;
-        if (!email || !password) {
-            res.status(HttpStatus.BAD_REQUEST).json({
-                message: 'This field is require.',
-            });
-
-            return;
-        }
-
-        if (!validateEmailAddress(email)) {
-            res.status(HttpStatus.BAD_REQUEST).json({
-                message: 'Email is invalid.',
-            });
-
-            return;
-        }
-
-        if (!isAlphabetAndNumber(password)) {
-            res.status(HttpStatus.BAD_REQUEST).json({
-                message: 'Password is invalid',
-            });
-
-            return;
-        }
 
         const user: User | null = await UserModel.findOne({ email })
             .lean();
@@ -247,21 +205,6 @@ class UserController {
 
     async forgotPassword(req: Request<any, any, ForgotPasswordReqBody>, res: Response<UserResSuccess | UserResError>): Promise<any> {
         const { email } = req.body;
-        if (!email) {
-            res.status(HttpStatus.BAD_REQUEST).json({
-                message: 'Email field is require.',
-            });
-
-            return;
-        }
-
-        if (!validateEmailAddress(email)) {
-            res.status(HttpStatus.BAD_REQUEST).json({
-                message: 'Email is invalid.',
-            });
-
-            return;
-        }
 
         const updateForgetPassword: UpdateForgetPassword = {
             forgetPasswordToken: uniqueString(),
@@ -295,11 +238,6 @@ class UserController {
 
     async resetPassword(req: Request<any, any, ResetPasswordReqBody>, res: Response<UserResSuccess | UserResError>): Promise<any> {
         const { forgotPasswordToken, password } = req.body;
-        if (!forgotPasswordToken) {
-            res.status(HttpStatus.BAD_REQUEST).json({
-                message: 'Token is invalid.',
-            });
-        }
 
         const user: User | null = await UserModel.findOne({ forgetPasswordToken: forgotPasswordToken })
             .lean();
@@ -315,11 +253,6 @@ class UserController {
             res.status(HttpStatus.BAD_REQUEST).json({
                 message: 'Token is invalid.',
             });
-            return;
-        }
-
-        const checkedPassword: boolean = isValidatorPassword(req.body, res);
-        if (checkedPassword === false) {
             return;
         }
 

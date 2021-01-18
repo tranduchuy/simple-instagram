@@ -3,9 +3,9 @@ import path from 'path';
 import express from 'express';
 import multer from 'multer';
 import { SystemConfig } from '../constant';
-import {getListJoiSchema, postCtrl} from '../constrollers/post.controller';
+import { getListJoiSchema, postCtrl } from '../constrollers/post.controller';
 import { Middleware } from '../middleware/checkToken';
-import {validateData} from "../middleware/validateData";
+import { validateData } from '../middleware/validateData';
 
 const router = express.Router({});
 

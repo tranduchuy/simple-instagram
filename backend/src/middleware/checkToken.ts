@@ -21,7 +21,7 @@ export interface RequestCustom<P extends core.Params = core.ParamsDictionary, Re
 
 export const Middleware = async (req: RequestCustom, res: Response<CheckTokenResError>, next: NextFunction): Promise<any> => {
     try {
-        const token: string = req.headers.token || req.query.token || req.body.token;
+        const { token } = req.headers || req.body;
         if (!token) {
             return res.status(HttpStatus.UNAUTHORIZED).json({
                 message: 'Please, you need login',

@@ -2,12 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import { Request, Response } from 'express';
 import * as HttpStatus from 'http-status-codes';
+import joi from 'joi';
 import { Types } from 'mongoose';
 import { IMAGE_JPG_TYPES, IMAGE_PNG_TYPES, SystemConfig } from '../constant';
 import { RequestCustom } from '../middleware/checkToken';
 import { Post, PostDoc, PostModel } from '../models/post.model';
 import { UserModel } from '../models/user.model';
-import joi from 'joi';
 
 const POST_COLUMNS: string[] = Object.keys(PostModel.schema.paths);
 const indexOfV: number = POST_COLUMNS.indexOf('__v');
@@ -66,29 +66,17 @@ const removeImg = (req: Request<any, any, any, PostReqQuery>): void => {
     fs.unlinkSync(path.join(SystemConfig.rootPath, 'public', 'tmp', req.file.filename));
 };
 
-// const isAlphabetAndNumber = (str: string): boolean => /[a-zA-Z0-9]+/.test(str);
-
-const isNumberRegex = (number: string): boolean => /[0-9]+/.test(number);
-
 const extractPagination = (queryPagination: GetListPostReqQuery): PaginationObj => {
     const { limit, page } = queryPagination;
     const pagination: PaginationObj = {};
-    if (limit !== undefined) {
-        if (!isNumberRegex(limit)) {
-            pagination.limit = 10;
-        } else {
-            pagination.limit = parseInt(limit, 10);
-        }
+    if (limit) {
+        pagination.limit = Number(limit);
     } else {
         pagination.limit = 10;
     }
 
-    if (page !== undefined) {
-        if (!isNumberRegex(page)) {
-            pagination.page = 0;
-        } else {
-            pagination.page = parseInt(page, 10);
-        }
+    if (page) {
+        pagination.page = Number(page);
     } else {
         pagination.page = 0;
     }
@@ -96,7 +84,7 @@ const extractPagination = (queryPagination: GetListPostReqQuery): PaginationObj 
     return pagination;
 };
 
-const extreactSortObj = (querySortObj: GetListPostReqQuery): SortObject => {
+const extractSortObj = (querySortObj: GetListPostReqQuery): SortObject => {
     let { sortBy, sortDirection } = querySortObj;
 
     sortBy = sortBy || 'createdAt';
@@ -117,6 +105,8 @@ const extreactSortObj = (querySortObj: GetListPostReqQuery): SortObject => {
 export const getListJoiSchema = joi.object({
     sortBy: joi.string().valid(...POST_COLUMNS).default('createdAt'),
     sortDirection: joi.string().valid('desc', 'asc'),
+    limit: joi.number().default(10),
+    page: joi.number().default(0),
 });
 
 class PostController {
@@ -165,14 +155,13 @@ class PostController {
         req: RequestCustom<any, any, any, GetListPostReqQuery>,
         res: Response<GetListPostResSuccess | PostResError>,
     ): Promise<any> {
-        const pagination: PaginationObj = extractPagination(req.query);
-
         const validateSortResult = getListJoiSchema.validate(req.query);
         if (validateSortResult.error) {
             return res.status(HttpStatus.BAD_REQUEST).json(validateSortResult.error);
         }
 
-        const sortObj = extreactSortObj(req.query);
+        const pagination: PaginationObj = extractPagination(req.query);
+        const sortObj = extractSortObj(req.query);
 
         const posts: Post[] = await PostModel.find()
             .sort(sortObj)
