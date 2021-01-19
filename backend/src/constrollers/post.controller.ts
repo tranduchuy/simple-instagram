@@ -7,6 +7,7 @@ import { IMAGE_JPG_TYPES, IMAGE_PNG_TYPES, SystemConfig } from '../constant';
 import { Post, PostDoc, PostModel } from '../models/post.model';
 import 'ts-mongoose/plugin';
 import { UserDoc } from '../models/user.model';
+// import { Types } from 'mongoose';
 
 const POST_COLUMNS: string[] = Object.keys(PostModel.schema.paths);
 const indexOfV: number = POST_COLUMNS.indexOf('__v');
@@ -21,7 +22,7 @@ type PostResSuccess = {
 };
 
 type PostResError = {
-    message: string;
+    message: string | number;
 };
 
 type GetListPostReqQuery = {
@@ -54,6 +55,10 @@ type SortObject = {
 type PaginationObj = {
     [key: string]: number;
 };
+
+type DeletePostParams = {
+    postId: string;
+}
 
 const removeImg = (req: Request<any, any, any, PostReqQuery>): void => {
     fs.unlinkSync(path.join(SystemConfig.rootPath, 'public', 'tmp', req.file.filename));
@@ -98,6 +103,10 @@ export const getListJoiSchema = joi.object({
     sortDirection: joi.string().valid('desc', 'asc').default('desc'),
     limit: joi.number().default(10),
     page: joi.number().default(0),
+});
+
+export const deletePostJoiSchema = joi.object({
+    postId: joi.string().required(),
 });
 
 class PostController {
@@ -176,7 +185,27 @@ class PostController {
         });
     }
 
-    // async deletePost (req:)
+    async deletePost(req: Request<DeletePostParams, any, any, any>, res: Response<PostResSuccess | PostResError>): Promise<any> {
+        const { postId } = req.params;
+        const userId = req.user._id;
+
+        const authority: Post | null = await PostModel.findOne({ userId });
+        if (authority === null) {
+            return res.status(HttpStatus.BAD_REQUEST).json({
+                message: 'You have not permission to delete this post !!!',
+            });
+        }
+        const updatePost: Post | null = await PostModel.findOneAndDelete({ _id: postId }).lean();
+        if (updatePost === null) {
+            return res.status(HttpStatus.BAD_REQUEST).json({
+                message: 'Post does not exist',
+            });
+        }
+
+        return res.status(HttpStatus.OK).json({
+            message: 'Deleted !!!',
+        });
+    }
 }
 
 export const postCtrl = new PostController();

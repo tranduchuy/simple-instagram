@@ -83,11 +83,11 @@ export const forgotPassJoiSchema = Joi.object({
 export const resetPassJoiSchema = Joi.object({
     forgotPasswordToken: Joi.string().required(),
     password: Joi.string().required().min(PASSWORD_LENGTH),
-    confirmPassword: Joi.any().valid(Joi.ref('password')).required().options({
-        messages: {
-            any: 'Two passwords is not match',
+    confirmPassword: Joi.any().valid(Joi.ref('password')).required().messages(
+        {
+            'any.required': 'Two passwords is not match',
         },
-    }),
+    ),
 });
 
 class UserController {

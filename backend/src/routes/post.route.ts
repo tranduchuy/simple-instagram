@@ -3,7 +3,7 @@ import path from 'path';
 import express from 'express';
 import multer from 'multer';
 import { SystemConfig } from '../constant';
-import { getListJoiSchema, postCtrl } from '../constrollers/post.controller';
+import { deletePostJoiSchema, getListJoiSchema, postCtrl } from '../constrollers/post.controller';
 import { Middleware } from '../middleware/checkToken';
 import { validateData } from '../middleware/validateData';
 
@@ -34,5 +34,6 @@ const upload = multer({
 router.use(Middleware);
 router.post('/', upload.array('images[]'), postCtrl.Post);
 router.get('/', validateData(getListJoiSchema, 'query'), postCtrl.getListPost);
+router.delete('/:postId', validateData(deletePostJoiSchema, 'params'), postCtrl.deletePost);
 
 export const PostRoute = router;
