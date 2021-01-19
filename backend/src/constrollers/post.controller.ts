@@ -3,11 +3,11 @@ import path from 'path';
 import { Request, Response } from 'express';
 import * as HttpStatus from 'http-status-codes';
 import joi from 'joi';
-import { Types } from 'mongoose';
 import { IMAGE_JPG_TYPES, IMAGE_PNG_TYPES, SystemConfig } from '../constant';
 import { RequestCustom } from '../middleware/checkToken';
 import { Post, PostDoc, PostModel } from '../models/post.model';
-import { UserModel } from '../models/user.model';
+import 'ts-mongoose/plugin';
+import { UserDoc } from '../models/user.model';
 
 const POST_COLUMNS: string[] = Object.keys(PostModel.schema.paths);
 const indexOfV: number = POST_COLUMNS.indexOf('__v');
@@ -35,23 +35,17 @@ type GetListPostReqQuery = {
     sortDirection?: string;
 };
 
-// type ListPost = {
-//     title: string;
-//     images: string[];
-//     user: object;
-// };
-
 type PostWithUser = Post & {
-    user: {
-        _id: Types.ObjectId;
-        name: string;
-        avatar: string;
-    };
+    userId: UserDoc;
 };
+
+type PostWithUserResponseDTO = Post & {
+    user: Pick<UserDoc, '_id' | 'name' | 'avatar'>;
+}
 
 type GetListPostResSuccess = {
     total: number;
-    listPost: PostWithUser[];
+    listPost: PostWithUserResponseDTO[];
 };
 
 type SortObject = {
@@ -87,12 +81,10 @@ const extractPagination = (queryPagination: GetListPostReqQuery): PaginationObj 
 const extractSortObj = (querySortObj: GetListPostReqQuery): SortObject => {
     let { sortBy, sortDirection } = querySortObj;
 
-    sortBy = sortBy || 'createdAt';
     if (POST_COLUMNS.indexOf(sortBy) === -1) {
         sortBy = 'createdAt';
     }
 
-    sortDirection = sortDirection || 'desc';
     if (['asc', 'desc'].indexOf(sortDirection) === -1) {
         sortDirection = 'desc';
     }
@@ -104,7 +96,7 @@ const extractSortObj = (querySortObj: GetListPostReqQuery): SortObject => {
 
 export const getListJoiSchema = joi.object({
     sortBy: joi.string().valid(...POST_COLUMNS).default('createdAt'),
-    sortDirection: joi.string().valid('desc', 'asc'),
+    sortDirection: joi.string().valid('desc', 'asc').default('desc'),
     limit: joi.number().default(10),
     page: joi.number().default(0),
 });
@@ -163,32 +155,25 @@ class PostController {
         const pagination: PaginationObj = extractPagination(req.query);
         const sortObj = extractSortObj(req.query);
 
-        const posts: Post[] = await PostModel.find()
+        const posts: PostWithUser[] = await PostModel.find()
             .sort(sortObj)
             .skip(pagination.page * pagination.limit)
             .limit(pagination.limit)
+            .populateTs('userId')
             .lean();
 
-        const postWithUserInfos: PostWithUser[] = [];
-
-        await Promise.all(posts.map(async (p): Promise<any> => {
-            const userInfo = await UserModel.findOne({ _id: p.userId }).lean();
-            if (userInfo !== null) {
-                postWithUserInfos.push({
-                    ...p,
-                    user: {
-                        avatar: userInfo.avatar,
-                        _id: userInfo._id,
-                        name: userInfo.name,
-                    },
-                });
-            }
-        }));
         const total = await PostModel.countDocuments();
 
         return res.status(HttpStatus.OK).json({
             total,
-            listPost: postWithUserInfos,
+            listPost: posts.map((p) => {
+                const { _id, name, avatar } = p.userId;
+                return {
+                    ...p,
+                    user: { _id, name, avatar },
+                    userId: undefined,
+                };
+            }),
         });
     }
 }

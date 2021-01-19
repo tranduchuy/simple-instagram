@@ -1,9 +1,10 @@
 import {
     createSchema, ExtractDoc, ExtractProps, Type, typedModel,
 } from 'ts-mongoose';
+import { UserSchema } from './user.model';
 
 export const PostSchema = createSchema({
-    userId: Type.objectId(),
+    userId: Type.ref(Type.objectId()).to('User', UserSchema),
     title: Type.string(),
     images: Type.array().of(Type.string()),
 }, { timestamps: true });
