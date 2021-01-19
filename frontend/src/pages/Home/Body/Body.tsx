@@ -27,6 +27,7 @@ export type ListPostData = {
     };
     title: string;
     images: string[];
+    createdAt: string;
 };
 
 export class Body extends React.Component<{ }, ListDataState> {
@@ -50,9 +51,6 @@ export class Body extends React.Component<{ }, ListDataState> {
             .then((res) => {
                 if (res.status === 200) {
                     const db = res.data as GetListPostResSuccess;
-                    // this.setState({
-                    //     listData: db.listPost,
-                    // })
                     this.setState((state) => {
                         const listData = state.listData.concat(db.listPost);
 
@@ -69,7 +67,6 @@ export class Body extends React.Component<{ }, ListDataState> {
     };
 
     render(): JSX.Element {
-        console.log('render');
         const { listData } = this.state;
         return (
             <div className={styles.wrap}>

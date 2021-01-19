@@ -1,24 +1,33 @@
 import React from 'react';
+import { Carousel } from 'react-bootstrap';
 import {
     FaRegPaperPlane,
     FaRegHeart,
     FaRegComment,
+    FaHeart,
 } from 'react-icons/fa';
 import { GoKebabHorizontal } from 'react-icons/go';
 import { VscBookmark } from 'react-icons/vsc';
 import { Link } from 'react-router-dom';
+import { timeAgo } from '../../../../utils/time';
 import smallAvatar from '../../RightSideBar/RightSide.module.scss';
 import { ListPostData } from '../Body';
 import styles from './Article.module.scss';
 
 const urlLogo = '/home-logo.png';
-const background = '/kitty.jpg';
 
 type ListPostProps = ListPostData;
 
 export class Article extends React.Component<ListPostProps, { }> {
     render(): JSX.Element {
-        const { user, title, images } = this.props;
+        const {
+            user,
+            title,
+            images,
+            createdAt,
+        } = this.props;
+        const newDateData: number = new Date(createdAt).getTime();
+        const listImages = Array.from(images);
         return (
             <div className={styles.article}>
                 <div className={styles.post}>
@@ -40,13 +49,30 @@ export class Article extends React.Component<ListPostProps, { }> {
                         </button>
                     </div>
                     <div className={styles.contentImg}>
-                        <img src={background} alt="" className={smallAvatar.imgWi} />
+                        {
+                            listImages.length > 1 && (
+                                <Carousel className={styles.carousel} interval={null}>
+                                    {
+                                        listImages.map((img) => (
+                                            <Carousel.Item className={styles.carouselItem} key={img}>
+                                                <img src={`${process.env.REACT_APP_API_URL}/${img}`} alt="" className={smallAvatar.imgWi} />
+                                            </Carousel.Item>
+                                        ))
+                                    }
+                                </Carousel>
+                            )
+                        }
+
+                        {
+                            listImages.length === 1
+                            && <img src={`${process.env.REACT_APP_API_URL}/${listImages[0]}`} alt="" className={smallAvatar.imgWi} />
+                        }
                     </div>
                     <div className={styles.comments}>
                         <div className={styles.wrapIcon}>
                             <div className={styles.mgHeart}>
                                 <button type="button" className={styles.cmtIcon}>
-                                    <FaRegHeart className={styles.iconSize} />
+                                    <FaHeart className={styles.iconSize} color="#ed5455" />
                                 </button>
                             </div>
                             <button type="button" className={styles.cmtIcon}>
@@ -66,14 +92,14 @@ export class Article extends React.Component<ListPostProps, { }> {
                         </div>
                         <div className={styles.wrapComment}>
                             <div className={styles.mgCmt}>
-                                <Link to="/" className={styles.username}>username</Link>
+                                <Link to="/" className={styles.username}>{user.name}</Link>
                                 &nbsp;
                                 <div className={styles.comment}>{title}</div>
                             </div>
                         </div>
                         <div className={styles.timeStamp}>
                             <Link to="/" className={styles.wrapTime}>
-                                <time className={styles.time}>time stamp</time>
+                                <time className={styles.time}>{timeAgo(newDateData)}</time>
                             </Link>
                         </div>
                         <div className={styles.wrapInput}>

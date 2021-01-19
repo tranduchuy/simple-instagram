@@ -38,6 +38,15 @@
         }
       }
 
+      .carousel {
+        .carouselItem {
+          height: 600px;
+          img {
+            object-fit: cover;
+          }
+        }
+      }
+
       .comments {
 
         .wrapIcon {
@@ -126,7 +135,7 @@
             text-transform: uppercase;
 
             .time {
-              font-size: 10px;
+              font-size: 15px;
               letter-spacing: .2px;
             }
           }
