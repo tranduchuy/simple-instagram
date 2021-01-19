@@ -4,7 +4,6 @@ import { Request, Response } from 'express';
 import * as HttpStatus from 'http-status-codes';
 import joi from 'joi';
 import { IMAGE_JPG_TYPES, IMAGE_PNG_TYPES, SystemConfig } from '../constant';
-import { RequestCustom } from '../middleware/checkToken';
 import { Post, PostDoc, PostModel } from '../models/post.model';
 import 'ts-mongoose/plugin';
 import { UserDoc } from '../models/user.model';
@@ -102,7 +101,7 @@ export const getListJoiSchema = joi.object({
 });
 
 class PostController {
-    async Post(req: RequestCustom<any, any, PostReqQuery, never>, res: Response<PostResSuccess | PostResError>): Promise<any> {
+    async Post(req: Request<any, any, PostReqQuery, never>, res: Response<PostResSuccess | PostResError>): Promise<any> {
         const { title } = req.body;
         let images: Express.Multer.File[] = [];
         if (Array.isArray(req.files)) {
@@ -144,7 +143,7 @@ class PostController {
     }
 
     async getListPost(
-        req: RequestCustom<any, any, any, GetListPostReqQuery>,
+        req: Request<any, any, any, GetListPostReqQuery>,
         res: Response<GetListPostResSuccess | PostResError>,
     ): Promise<any> {
         const validateSortResult = getListJoiSchema.validate(req.query);
@@ -176,6 +175,8 @@ class PostController {
             }),
         });
     }
+
+    // async deletePost (req:)
 }
 
 export const postCtrl = new PostController();

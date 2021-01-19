@@ -1,6 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-// eslint-disable-next-line import/no-unresolved
-import * as core from 'express-serve-static-core';
 import HttpStatus from 'http-status-codes';
 import * as jwt from 'jsonwebtoken';
 import { User, UserModel } from '../models/user.model';
@@ -13,13 +11,7 @@ type CheckTokenResError = {
     message: string;
 };
 
-export interface RequestCustom<P extends core.Params = core.ParamsDictionary, ResBody = any, ReqBody = any, ReqQuery = core.Query>
-    extends Request<P, ResBody, ReqBody, ReqQuery>
-{
-    user?: User;
-}
-
-export const Middleware = async (req: RequestCustom, res: Response<CheckTokenResError>, next: NextFunction): Promise<any> => {
+export const Middleware = async (req: Request, res: Response<CheckTokenResError>, next: NextFunction): Promise<any> => {
     try {
         const { token } = req.headers || req.body;
         if (!token) {
