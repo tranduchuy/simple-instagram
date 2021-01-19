@@ -64,6 +64,7 @@ export class Header extends React.Component<{ }, { }> {
                                     drop="down"
                                     variant="secondary"
                                     title=""
+                                    alignRight
                                 >
                                     <Link to="/login" className={styles.dropdownItem}>
                                         <Dropdown>

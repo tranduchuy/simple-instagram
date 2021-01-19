@@ -86,6 +86,7 @@ export class ForgotPassword extends React.Component<ForgotPasswordProps, ForgotP
                                                 name="email"
                                                 type="text"
                                                 className="input-text"
+                                                autoComplete="off"
                                                 value={state.email}
                                                 onChange={handleChangeEmailInput}
                                             />

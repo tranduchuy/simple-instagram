@@ -103,6 +103,7 @@ export class Register extends React.Component<RegisterProps, RegisterState> {
                                                     name="email"
                                                     type="text"
                                                     className="input-text"
+                                                    autoComplete="off"
                                                     value={state.email}
                                                     onChange={
                                                         (event: ChangeEvent<HTMLInputElement>): void => {
@@ -119,6 +120,7 @@ export class Register extends React.Component<RegisterProps, RegisterState> {
                                                     name="fullname"
                                                     type="text"
                                                     className="input-text"
+                                                    autoComplete="off"
                                                     value={state.name}
                                                     onChange={
                                                         (event: ChangeEvent<HTMLInputElement>): void => {
@@ -135,6 +137,7 @@ export class Register extends React.Component<RegisterProps, RegisterState> {
                                                     name="password"
                                                     type="password"
                                                     className="input-text"
+                                                    autoComplete="off"
                                                     value={state.password}
                                                     onChange={
                                                         (event: ChangeEvent<HTMLInputElement>): void => {
@@ -151,6 +154,7 @@ export class Register extends React.Component<RegisterProps, RegisterState> {
                                                     name="confirm password"
                                                     type="password"
                                                     className="input-text"
+                                                    autoComplete="off"
                                                     value={state.confirmPassword}
                                                     onChange={
                                                         (event: ChangeEvent<HTMLInputElement>): void => {

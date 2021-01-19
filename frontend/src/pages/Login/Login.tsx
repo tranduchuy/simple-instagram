@@ -117,6 +117,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
                                                     className="input-text"
                                                     value={state.email}
                                                     onChange={handleEmailInputChange}
+                                                    autoComplete="off"
                                                 />
                                             </div>
                                         </div>
@@ -127,6 +128,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
                                                     name="username"
                                                     type="password"
                                                     className="input-text"
+                                                    autoComplete="off"
                                                     value={state.password}
                                                     onChange={handlePasswordInputChange}
                                                 />
