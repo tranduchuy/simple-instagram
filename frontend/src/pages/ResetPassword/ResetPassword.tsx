@@ -57,7 +57,7 @@ export class ResetPassword extends React.Component<ResetPasswordProps, ResetPass
             });
     };
 
-    onSubmit = (event: React.FormEvent<HTMLInputElement>): void => {
+    onSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
         event.preventDefault();
         const { password, confirmPassword } = this.state;
         const value = queryString.parse(this.props.location.search);

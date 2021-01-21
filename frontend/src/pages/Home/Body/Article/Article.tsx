@@ -1,10 +1,14 @@
 import React from 'react';
-import { Carousel } from 'react-bootstrap';
+import {
+    ButtonGroup, Carousel, Dropdown, DropdownButton,
+} from 'react-bootstrap';
 import {
     FaRegPaperPlane,
     FaRegHeart,
     FaRegComment,
     FaHeart,
+    FaRegUserCircle,
+    FaRegBookmark,
 } from 'react-icons/fa';
 import { GoKebabHorizontal } from 'react-icons/go';
 import { VscBookmark } from 'react-icons/vsc';
@@ -47,6 +51,28 @@ export class Article extends React.Component<ListPostProps, { }> {
                         <button className={styles.optBtn} type="button">
                             <GoKebabHorizontal />
                         </button>
+                        <DropdownButton
+                            as={ButtonGroup}
+                            className={styles.btnDeleteAndEdit}
+                            key="down"
+                            id="dropdown-button-drop-down"
+                            drop="down"
+                            variant=""
+                            title=""
+                            alignRight
+                        >
+                            <Link to="/login" className={styles.btnDelete}>
+                                <Dropdown>
+                                    Edit
+                                </Dropdown>
+                            </Link>
+                            <hr className={styles.hrLine} />
+                            <Link to="/" className={styles.btnDelete}>
+                                <Dropdown>
+                                    Delete
+                                </Dropdown>
+                            </Link>
+                        </DropdownButton>
                     </div>
                     <div className={styles.contentImg}>
                         {

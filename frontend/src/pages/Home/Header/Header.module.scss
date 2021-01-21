@@ -133,28 +133,28 @@
           button {
             background-color: unset;
             border-color: unset;
-          }
 
-          button:hover {
-            background-color: unset;
-            border-color: unset;
-          }
+            &:hover {
+              background-color: unset;
+              border-color: unset;
+            }
 
-          button:visited {
-            background-color: unset;
-            border-color: unset;
-          }
+            &:visited {
+              background-color: unset;
+              border-color: unset;
+            }
 
-          button:focus {
-            box-shadow: none;
-            background-color: unset;
-            border-color: unset;
-          }
+            &:focus {
+              box-shadow: none;
+              background-color: unset;
+              border-color: unset;
+            }
 
-          button::after {
-            content: none;
-            background-color: unset;
-            border-color: unset;
+            &::after {
+              content: none;
+              background-color: unset;
+              border-color: unset;
+            }
           }
 
     }
