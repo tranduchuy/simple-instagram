@@ -23,6 +23,12 @@ const urlLogo = '/home-logo.png';
 type ListPostProps = ListPostData;
 
 export class Article extends React.Component<ListPostProps, { }> {
+
+    onSubmit = () => {
+
+    }
+
+
     render(): JSX.Element {
         const {
             user,
