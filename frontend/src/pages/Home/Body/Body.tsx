@@ -8,7 +8,7 @@ import { InputPost } from './InputPost';
 import { Story } from './Story';
 
 type GetListPostResSuccess = {
-    listPost: ListPostData[];
+    listPost: PostData[];
     message: string;
 }
 
@@ -17,10 +17,10 @@ type GetListPostResErr = {
 }
 
 type ListDataState = {
-    listData: ListPostData[];
+    listData: PostData[];
 }
 
-export type ListPostData = {
+export type PostData = {
     _id: string;
     user: {
         name: string;
@@ -73,7 +73,16 @@ export class Body extends React.Component<{ }, ListDataState> {
                 <Story />
                 <InputPost />
                 {
-                    listData.map((l: ListPostData) => <Article key={l._id} {...l} />)
+                    listData.map((l: PostData) => (
+                        <Article
+                            onFinishDeleting={(): void => {
+                                const listAfterDeleted = listData.filter((value) => value._id !== l._id);
+                                this.setState({ listData: listAfterDeleted });
+                            }}
+                            key={l._id}
+                            {...l}
+                        />
+                    ))
                 }
             </div>
         );

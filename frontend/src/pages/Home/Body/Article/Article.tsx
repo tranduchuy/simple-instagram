@@ -1,3 +1,5 @@
+import axios from 'axios';
+import Cookies from 'js-cookie';
 import React from 'react';
 import {
     ButtonGroup, Carousel, Dropdown, DropdownButton,
@@ -13,21 +15,48 @@ import {
 import { GoKebabHorizontal } from 'react-icons/go';
 import { VscBookmark } from 'react-icons/vsc';
 import { Link } from 'react-router-dom';
+import * as API from '../../../../constants/api';
 import { timeAgo } from '../../../../utils/time';
 import smallAvatar from '../../RightSideBar/RightSide.module.scss';
-import { ListPostData } from '../Body';
+import { PostData } from '../Body';
 import styles from './Article.module.scss';
 
 const urlLogo = '/home-logo.png';
 
-type ListPostProps = ListPostData;
+type ArticleProps = PostData & {
+   onFinishDeleting: () => void;
+};
 
-export class Article extends React.Component<ListPostProps, { }> {
+type DeleteResSuccess = {
+    message: string;
+}
 
-    onSubmit = () => {
+type DeleteResErr = {
+    message: string;
+}
+export class Article extends React.Component<ArticleProps, { }> {
+    onSubmitDeletePost = (): void => {
+        const postId = this.props._id;
+        const token: string | undefined = Cookies.get('token');
+        const config = {
+            headers: {
+                token,
+            },
+        };
 
+        axios.delete<DeleteResSuccess | DeleteResErr>(`${API.DeleteImg}/${postId}`, config)
+            .then(() => {
+                this.props.onFinishDeleting();
+            });
     }
 
+    confirmDeletingPost = (): void => {
+        // eslint-disable-next-line no-restricted-globals
+        const confirmMessage: boolean = confirm('Are you sure ?');
+        if (confirmMessage) {
+            this.onSubmitDeletePost();
+        }
+    }
 
     render(): JSX.Element {
         const {
@@ -36,6 +65,7 @@ export class Article extends React.Component<ListPostProps, { }> {
             images,
             createdAt,
         } = this.props;
+        const { confirmDeletingPost } = this;
         const newDateData: number = new Date(createdAt).getTime();
         const listImages = Array.from(images);
         return (
@@ -67,17 +97,15 @@ export class Article extends React.Component<ListPostProps, { }> {
                             title=""
                             alignRight
                         >
-                            <Link to="/login" className={styles.btnDelete}>
-                                <Dropdown>
-                                    Edit
-                                </Dropdown>
-                            </Link>
+
+                            <Dropdown.Item className={styles.btnDelete}>
+                                Edit
+                            </Dropdown.Item>
                             <hr className={styles.hrLine} />
-                            <Link to="/" className={styles.btnDelete}>
-                                <Dropdown>
-                                    Delete
-                                </Dropdown>
-                            </Link>
+
+                            <Dropdown.Item className={styles.btnDelete} onClick={confirmDeletingPost}>
+                                Delete
+                            </Dropdown.Item>
                         </DropdownButton>
                     </div>
                     <div className={styles.contentImg}>
