@@ -2,11 +2,14 @@ const path = require('path');
 
 module.exports = {
     context: __dirname,
-    entry: './src/app.ts',
+    entry: './src/index.ts',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js',
-        publicPath: '/dist'
+        filename: 'index.js',
+        // publicPath: '/dist',
+        library: 'si/core',
+        libraryTarget: "umd",
+        globalObject: 'this'
     },
     module: {
         rules: [
@@ -21,5 +24,5 @@ module.exports = {
     },
     resolve: {
         extensions: ['.ts', '.js']
-    }
+    },
 }

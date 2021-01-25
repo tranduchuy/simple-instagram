@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
     "sourceMap": true,
-    "target": "ES5",
-    "outDir": "../backend/dist",
+    "target": "ES6",
+    "outDir": "dist",
     "baseUrl": "./src",
     "types": ["reflect-metadata"],
+    "lib": ["ESNext"],
     "alwaysStrict": true,
     "noImplicitAny": true,
     "noUnusedLocals": true,

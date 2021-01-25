@@ -16,7 +16,7 @@ export const sendMailVerify = async (mailOptions: MailOptions): Promise<any> => 
         },
     });
 
-    await transporter.sendMail(mailOptions, (error) => {
+    await transporter.sendMail(mailOptions, (error: any) => {
         if (error) {
             return error;
         }

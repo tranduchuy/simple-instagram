@@ -1,4 +1,5 @@
 import path from 'path';
+import { demo } from '@si/core';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { Request } from 'express';
@@ -9,6 +10,7 @@ import { api } from './routes/api';
 dotenv.config();
 
 const init = (): void => {
+    console.log(demo());
     SystemConfig.rootPath = path.join(__dirname, '../');
     const app = express();
     const corsOptionsDelegate = (req: Request, callback: any): void => {
