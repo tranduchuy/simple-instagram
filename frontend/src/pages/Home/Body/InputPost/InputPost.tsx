@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import Cookies from 'js-cookie';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -53,7 +53,7 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
             },
         };
 
-        axios.post<UploadResSuccess, AxiosResponse<UploadResSuccess | UploadResErr>>(API.PostImg, formData, config)
+        axios.post<UploadResSuccess | UploadResErr>(API.PostImg, formData, config)
             .then(() => {
                 this.setState({
                     selectedImages: [],

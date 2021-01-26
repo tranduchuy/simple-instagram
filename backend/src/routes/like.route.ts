@@ -1,9 +1,11 @@
 import express from 'express';
-import { like } from '../constrollers/like.controller';
-// import { validateData } from '../middleware/validateData';
+import { insertLikeJoiSchema, like } from '../constrollers/like.controller';
+import { Middleware } from '../middleware/checkToken';
+import { validateData } from '../middleware/validateData';
 
 const router = express.Router({});
 
-router.post('/', like);
+router.use(Middleware);
+router.post('/', validateData(insertLikeJoiSchema, 'body'), like);
 
-export const UserRoute = router;
+export const LikeRoute = router;
