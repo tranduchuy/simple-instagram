@@ -41,7 +41,7 @@ export const like = async (
     const checkPost = await PostModel.findById({ _id: postId });
     if (checkPost === null) {
         res.status(HttpStatus.BAD_REQUEST).json({
-            message: 'Post is not exist !!!',
+            message: 'Post does not exist !!!',
         });
 
         return;
