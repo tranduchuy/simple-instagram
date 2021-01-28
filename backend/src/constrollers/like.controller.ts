@@ -1,20 +1,44 @@
 import { Request, Response } from 'express';
 import * as HttpStatus from 'http-status-codes';
 import Joi from 'joi';
-import { LikeDoc, LikeModel } from '../models/like.model';
+import { Like, LikeDoc, LikeModel } from '../models/like.model';
 import { PostModel } from '../models/post.model';
+import { UserDoc } from '../models/user.model';
+import { extractPagination, extractSortObj, PaginationObj } from './post.controller';
 
 type InsertLikeReqBody = {
     userId: string;
     postId: string;
 }
 
-type InsertLikeResSuccess = {
+type LikeResSuccess = {
     message: string;
 }
 
-type InsertLikeResError = {
+type LikeResError = {
     message: string;
+}
+
+type GetListLikeReqQuery = {
+    postId?: string;
+    limit?: string;
+    page?: string;
+    createdAt?: Date;
+    sortBy?: string;
+    sortDirection?: string;
+}
+
+type LikeWithUser = Like & {
+    userId: UserDoc;
+};
+
+type LikeWithUserResponseDTO = Like & {
+    user: Pick<UserDoc, '_id' | 'name' | 'avatar'>;
+}
+
+type GetListResSuccess = {
+    total: number;
+    listLikes: LikeWithUserResponseDTO[];
 }
 
 export const insertLikeJoiSchema = Joi.object({
@@ -23,7 +47,7 @@ export const insertLikeJoiSchema = Joi.object({
 
 export const like = async (
     req: Request<any, any, InsertLikeReqBody>,
-    res: Response<InsertLikeResSuccess | InsertLikeResError>): Promise<void> => {
+    res: Response<LikeResSuccess | LikeResError>): Promise<void> => {
     try {
         const { postId } = req.body;
         const userId = req.user._id;
@@ -56,6 +80,45 @@ export const like = async (
         await likeDoc.save();
         res.status(HttpStatus.OK).json({
             message: 'Liked',
+        });
+
+        return;
+    } catch (e) {
+        console.log(e);
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+            message: JSON.stringify(e),
+        });
+
+        return;
+    }
+};
+
+export const getListLikePost = async (
+    req: Request<any, any, any, GetListLikeReqQuery>,
+    res: Response<GetListResSuccess | LikeResError>): Promise<void> => {
+    try {
+        const pagination: PaginationObj = extractPagination(req.query);
+        const sortObj = extractSortObj(req.query);
+
+        const likes: LikeWithUser[] = await LikeModel.find()
+            .sort(sortObj)
+            .skip(pagination.page * pagination.limit)
+            .limit(pagination.limit)
+            .populateTs('userId')
+            .lean();
+
+        const total = await LikeModel.countDocuments();
+
+        res.status(HttpStatus.OK).json({
+            total,
+            listLikes: likes.map((p) => {
+                const { _id, name, avatar } = p.userId;
+                return {
+                    ...p,
+                    user: { _id, name, avatar },
+                    userId: undefined,
+                };
+            }),
         });
 
         return;

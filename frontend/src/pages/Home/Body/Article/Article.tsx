@@ -160,12 +160,8 @@ export class Article extends React.Component<ArticleProps, ArticleState> {
                                 <button type="button" className={styles.cmtIcon} onClick={onClickLikePost}>
                                     {
                                         state.likeStatus === 'Liked'
-                                        && <FaHeart className={styles.iconSize} color="#ed5455" />
-                                    }
-
-                                    {
-                                        state.likeStatus !== 'Liked'
-                                        && <FaRegHeart className={styles.iconSize} />
+                                            ? (<FaHeart className={styles.iconSize} color="#ed5455" />)
+                                            : (<FaRegHeart className={styles.iconSize} />)
                                     }
                                 </button>
                             </div>

@@ -48,11 +48,11 @@ type GetListPostResSuccess = {
     listPost: PostWithUserResponseDTO[];
 };
 
-type SortObject = {
+export type SortObject = {
     [key: string]: string | number | SortObject;
 };
 
-type PaginationObj = {
+export type PaginationObj = {
     [key: string]: number;
 };
 
@@ -155,11 +155,6 @@ class PostController {
         req: Request<any, any, any, GetListPostReqQuery>,
         res: Response<GetListPostResSuccess | PostResError>,
     ): Promise<any> {
-        const validateSortResult = getListJoiSchema.validate(req.query);
-        if (validateSortResult.error) {
-            return res.status(HttpStatus.BAD_REQUEST).json(validateSortResult.error);
-        }
-
         const pagination: PaginationObj = extractPagination(req.query);
         const sortObj = extractSortObj(req.query);
 
