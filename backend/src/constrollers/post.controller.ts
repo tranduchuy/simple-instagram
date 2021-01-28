@@ -64,17 +64,17 @@ const removeImg = (req: Request<any, any, any, PostReqQuery>): void => {
     fs.unlinkSync(path.join(SystemConfig.rootPath, 'public', 'tmp', req.file.filename));
 };
 
-const extractPagination = (queryPagination: GetListPostReqQuery): PaginationObj => {
+export const extractPagination = (queryPagination: GetListPostReqQuery): PaginationObj => {
     const { limit, page } = queryPagination;
     const pagination: PaginationObj = {};
     if (limit) {
-        pagination.limit = Number(limit);
+        pagination.limit = parseInt(limit, 10);
     } else {
         pagination.limit = 10;
     }
 
     if (page) {
-        pagination.page = Number(page);
+        pagination.page = parseInt(page, 10);
     } else {
         pagination.page = 0;
     }
@@ -82,7 +82,7 @@ const extractPagination = (queryPagination: GetListPostReqQuery): PaginationObj 
     return pagination;
 };
 
-const extractSortObj = (querySortObj: GetListPostReqQuery): SortObject => {
+export const extractSortObj = (querySortObj: GetListPostReqQuery): SortObject => {
     let { sortBy, sortDirection } = querySortObj;
 
     if (POST_COLUMNS.indexOf(sortBy) === -1) {
