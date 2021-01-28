@@ -33,7 +33,7 @@ export const like = async (
         if (checkDataLike) {
             await checkDataLike.deleteOne();
             res.status(HttpStatus.OK).json({
-                message: 'Deleted !!!',
+                message: 'Unlike',
             });
 
             return;
@@ -55,7 +55,7 @@ export const like = async (
 
         await likeDoc.save();
         res.status(HttpStatus.OK).json({
-            message: 'Liked !!!',
+            message: 'Liked',
         });
 
         return;

@@ -27,24 +27,38 @@ type ArticleProps = PostData & {
    onFinishDeleting: () => void;
 };
 
-type DeleteResSuccess = {
+type ArticleResSuccess = {
     message: string;
 }
 
-type DeleteResErr = {
+type ArticleResErr = {
     message: string;
 }
-export class Article extends React.Component<ArticleProps, { }> {
+
+type LikeFormData = {
+    postId: string;
+}
+
+type ArticleState = {
+    likeStatus: string;
+}
+
+const token: string | undefined = Cookies.get('token');
+const config = {
+    headers: {
+        token,
+    },
+};
+
+export class Article extends React.Component<ArticleProps, ArticleState> {
+    state = {
+        likeStatus: '',
+    }
+
     onSubmitDeletePost = (): void => {
         const postId = this.props._id;
-        const token: string | undefined = Cookies.get('token');
-        const config = {
-            headers: {
-                token,
-            },
-        };
 
-        axios.delete<DeleteResSuccess | DeleteResErr>(`${API.DeleteImg}/${postId}`, config)
+        axios.delete<ArticleResSuccess | ArticleResErr>(`${API.DeleteImg}/${postId}`, config)
             .then(() => {
                 this.props.onFinishDeleting();
             });
@@ -58,6 +72,18 @@ export class Article extends React.Component<ArticleProps, { }> {
         }
     }
 
+    onClickLikePost = (): void => {
+        const postId = this.props._id;
+        const formData: LikeFormData = {
+            postId,
+        };
+
+        axios.post<ArticleResSuccess | ArticleResErr>(API.LikePost, formData, config)
+            .then((res) => {
+                this.setState({ likeStatus: res.data.message });
+            });
+    }
+
     render(): JSX.Element {
         const {
             user,
@@ -65,7 +91,7 @@ export class Article extends React.Component<ArticleProps, { }> {
             images,
             createdAt,
         } = this.props;
-        const { confirmDeletingPost } = this;
+        const { confirmDeletingPost, onClickLikePost, state } = this;
         const newDateData: number = new Date(createdAt).getTime();
         const listImages = Array.from(images);
         return (
@@ -131,8 +157,16 @@ export class Article extends React.Component<ArticleProps, { }> {
                     <div className={styles.comments}>
                         <div className={styles.wrapIcon}>
                             <div className={styles.mgHeart}>
-                                <button type="button" className={styles.cmtIcon}>
-                                    <FaHeart className={styles.iconSize} color="#ed5455" />
+                                <button type="button" className={styles.cmtIcon} onClick={onClickLikePost}>
+                                    {
+                                        state.likeStatus === 'Liked'
+                                        && <FaHeart className={styles.iconSize} color="#ed5455" />
+                                    }
+
+                                    {
+                                        state.likeStatus !== 'Liked'
+                                        && <FaRegHeart className={styles.iconSize} />
+                                    }
                                 </button>
                             </div>
                             <button type="button" className={styles.cmtIcon}>

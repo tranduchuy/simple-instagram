@@ -7,3 +7,4 @@ export const ForgotPass = `${host}/auth/forgot`;
 export const ResetPass = `${host}/auth/reset-pass`;
 export const PostImg = `${host}/post`;
 export const DeleteImg = `${host}/post`;
+export const LikePost = `${host}/like`;
