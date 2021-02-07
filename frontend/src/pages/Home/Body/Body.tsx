@@ -28,6 +28,7 @@ export type PostData = {
     title: string;
     images: string[];
     createdAt: string;
+    userIdLike: string[];
 };
 
 export class Body extends React.Component<{ }, ListDataState> {
@@ -39,7 +40,7 @@ export class Body extends React.Component<{ }, ListDataState> {
         this.handleGetListPost();
     }
 
-    handleGetListPost = (): void => {
+    handleGetListPost = (reNewList = false): void => {
         const token: string | undefined = Cookies.get('token');
         const config: AxiosRequestConfig = {
             headers: {
@@ -51,6 +52,13 @@ export class Body extends React.Component<{ }, ListDataState> {
             .then((res) => {
                 if (res.status === 200) {
                     const db = res.data as GetListPostResSuccess;
+                    if (reNewList) {
+                        this.setState({
+                            listData: db.listPost,
+                        });
+
+                        return;
+                    }
                     this.setState((state) => {
                         const listData = state.listData.concat(db.listPost);
 
@@ -81,6 +89,9 @@ export class Body extends React.Component<{ }, ListDataState> {
                             }}
                             key={l._id}
                             {...l}
+                            onRefreshGetListPost={(): void => {
+                                this.handleGetListPost(true);
+                            }}
                         />
                     ))
                 }

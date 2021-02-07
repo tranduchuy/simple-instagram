@@ -17,6 +17,7 @@ import { VscBookmark } from 'react-icons/vsc';
 import { Link } from 'react-router-dom';
 import * as API from '../../../../constants/api';
 import { timeAgo } from '../../../../utils/time';
+import { UserInfo } from '../../../Login';
 import smallAvatar from '../../RightSideBar/RightSide.module.scss';
 import { PostData } from '../Body';
 import styles from './Article.module.scss';
@@ -25,6 +26,7 @@ const urlLogo = '/home-logo.png';
 
 type ArticleProps = PostData & {
    onFinishDeleting: () => void;
+    onRefreshGetListPost: () => void;
 };
 
 type ArticleResSuccess = {
@@ -39,11 +41,31 @@ type LikeFormData = {
     postId: string;
 }
 
+type GetListLikeResSuccess = {
+    listLike: LikeData[];
+    message: string;
+}
+
+type LikeData = {
+    _id: string;
+    user: {
+        name: string;
+        avatar: string;
+    };
+    createdAt: string;
+}
+
 type ArticleState = {
-    likeStatus: string;
+    like: boolean;
+    countLike: number;
 }
 
 const token: string | undefined = Cookies.get('token');
+const userInfo: string | undefined = Cookies.get('user_info');
+let userObj: UserInfo;
+if (userInfo) {
+    userObj = JSON.parse(userInfo);
+}
 const config = {
     headers: {
         token,
@@ -51,16 +73,21 @@ const config = {
 };
 
 export class Article extends React.Component<ArticleProps, ArticleState> {
-    state = {
-        likeStatus: '',
+    state: ArticleState = {
+        like: this.props.userIdLike.indexOf(userObj._id) !== -1, // replace by user id who logging in
+        countLike: this.props.userIdLike.length,
     }
 
     onSubmitDeletePost = (): void => {
         const postId = this.props._id;
 
         axios.delete<ArticleResSuccess | ArticleResErr>(`${API.DeleteImg}/${postId}`, config)
-            .then(() => {
-                this.props.onFinishDeleting();
+            .then((res) => {
+                if (res.status === 200) {
+                    this.props.onFinishDeleting();
+                } else {
+                    alert(res.data.message);
+                }
             });
     }
 
@@ -74,15 +101,26 @@ export class Article extends React.Component<ArticleProps, ArticleState> {
 
     onClickLikePost = (): void => {
         const postId = this.props._id;
-        const formData: LikeFormData = {
+        const data: LikeFormData = {
             postId,
         };
 
-        axios.post<ArticleResSuccess | ArticleResErr>(API.LikePost, formData, config)
+        axios.post<ArticleResSuccess | ArticleResErr>(API.LikePost, data, config)
             .then((res) => {
-                this.setState({ likeStatus: res.data.message });
+                if (res.status === 200) {
+                    this.props.onRefreshGetListPost();
+                } else {
+                    alert(res.data.message);
+                }
             });
     }
+
+    // onClickShowListLike = (): void => {
+    //     axios.get<GetListLikeResSuccess | ArticleResErr>(API.LikePost, config)
+    //         .then((res) => {
+    //             console.log(res.data.message);
+    //         });
+    // }
 
     render(): JSX.Element {
         const {
@@ -159,7 +197,7 @@ export class Article extends React.Component<ArticleProps, ArticleState> {
                             <div className={styles.mgHeart}>
                                 <button type="button" className={styles.cmtIcon} onClick={onClickLikePost}>
                                     {
-                                        state.likeStatus === 'Liked'
+                                        state.like
                                             ? (<FaHeart className={styles.iconSize} color="#ed5455" />)
                                             : (<FaRegHeart className={styles.iconSize} />)
                                     }
@@ -178,7 +216,10 @@ export class Article extends React.Component<ArticleProps, ArticleState> {
                             </div>
                         </div>
                         <div className={styles.countLike}>
-                            <button type="button" className={styles.btnLike}>like</button>
+                            <button type="button" className={styles.btnLike}>
+                                {state.countLike}
+                                like
+                            </button>
                         </div>
                         <div className={styles.wrapComment}>
                             <div className={styles.mgCmt}>

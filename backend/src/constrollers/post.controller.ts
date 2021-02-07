@@ -4,10 +4,10 @@ import { Request, Response } from 'express';
 import * as HttpStatus from 'http-status-codes';
 import joi from 'joi';
 import { IMAGE_JPG_TYPES, IMAGE_PNG_TYPES, SystemConfig } from '../constant';
+import { LikeModel } from '../models/like.model';
 import { Post, PostDoc, PostModel } from '../models/post.model';
 import 'ts-mongoose/plugin';
 import { UserDoc } from '../models/user.model';
-// import { Types } from 'mongoose';
 
 const POST_COLUMNS: string[] = Object.keys(PostModel.schema.paths);
 const indexOfV: number = POST_COLUMNS.indexOf('__v');
@@ -41,6 +41,7 @@ type PostWithUser = Post & {
 
 type PostWithUserResponseDTO = Post & {
     user: Pick<UserDoc, '_id' | 'name' | 'avatar'>;
+    userIdLike: string[];
 }
 
 type GetListPostResSuccess = {
@@ -169,14 +170,18 @@ class PostController {
 
         return res.status(HttpStatus.OK).json({
             total,
-            listPost: posts.map((p) => {
+            listPost: await Promise.all(posts.map(async (p) => {
+                const likes = await LikeModel.find({ postId: p._id }).select('userId').lean();
+                const userIdLike: string[] = likes.map((l) => l.userId.toString());
+
                 const { _id, name, avatar } = p.userId;
                 return {
                     ...p,
                     user: { _id, name, avatar },
+                    userIdLike,
                     userId: undefined,
                 };
-            }),
+            })),
         });
     }
 
@@ -184,16 +189,10 @@ class PostController {
         const { postId } = req.params;
         const userId = req.user._id;
 
-        const authority: Post | null = await PostModel.findOne({ userId });
-        if (authority === null) {
-            return res.status(HttpStatus.BAD_REQUEST).json({
-                message: 'You have not permission to delete this post !!!',
-            });
-        }
-        const updatePost: Post | null = await PostModel.findOneAndDelete({ _id: postId }).lean();
+        const updatePost: Post | null = await PostModel.findOneAndDelete({ _id: postId, userId }).lean();
         if (updatePost === null) {
             return res.status(HttpStatus.BAD_REQUEST).json({
-                message: 'Post does not exist',
+                message: 'Permission denied',
             });
         }
 
