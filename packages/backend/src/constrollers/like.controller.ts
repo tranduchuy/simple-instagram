@@ -13,6 +13,7 @@ type InsertLikeReqBody = {
 
 type LikeResSuccess = {
     message: string;
+    countLike: number;
 }
 
 type LikeResError = {
@@ -78,8 +79,10 @@ export const like = async (
         });
 
         await likeDoc.save();
+        const countLike = await LikeModel.count({ postId });
         res.status(HttpStatus.OK).json({
             message: 'Liked',
+            countLike,
         });
 
         return;

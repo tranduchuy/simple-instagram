@@ -23,6 +23,7 @@ type LoginReqBody = {
 type LoginResSuccess = {
     message: string;
     token: string;
+    userInfo: Pick<UserDoc, '_id' | 'name' | 'avatar'>;
 }
 type UserResSuccess = {
     message: string;
@@ -171,6 +172,11 @@ class UserController {
         res.status(HttpStatus.OK).json({
             message: 'Successful.',
             token,
+            userInfo: {
+                _id: user._id,
+                name: user.name,
+                avatar: user.avatar,
+            },
         });
     }
 

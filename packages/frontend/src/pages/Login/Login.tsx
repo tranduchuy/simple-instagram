@@ -22,9 +22,16 @@ type LoginFormData = {
     password: string;
 };
 
+export type UserInfo = {
+    _id: string;
+    name: string;
+    avatar: string;
+};
+
 type LoginResSuccess = {
     message: string;
     token: string;
+    user: UserInfo;
 };
 
 export class Login extends React.Component<LoginProps, LoginState> {
@@ -55,7 +62,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
 
         axios.post<LoginResSuccess>(API.Login, formData)
             .then((res: AxiosResponse) => {
-                this.saveCookieToken(res.data.token);
+                this.saveCookieToken(res.data.token, res.data.userInfo);
                 this.props.history.push('/');
             })
             .catch((err) => {
@@ -70,8 +77,9 @@ export class Login extends React.Component<LoginProps, LoginState> {
             });
     };
 
-    saveCookieToken = (token: string): void => {
+    saveCookieToken = (token: string, user: UserInfo): void => {
         Cookies.set(CookieNames.Token, token, { expires: 1 });
+        Cookies.set(CookieNames.UserInfo, user, { expires: 1 });
     };
 
     handleEmailInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
