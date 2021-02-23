@@ -41,14 +41,7 @@ export class Body extends React.Component<{ }, ListDataState> {
     }
 
     handleGetListPost = (reNewList = false): void => {
-        const token: string | undefined = Cookies.get('token');
-        const config: AxiosRequestConfig = {
-            headers: {
-                token,
-            },
-        };
-
-        axios.get<GetListPostResSuccess | GetListPostResErr>(API.PostImg, config)
+        axios.get<GetListPostResSuccess | GetListPostResErr>(API.GetPostsUrl)
             .then((res) => {
                 if (res.status === 200) {
                     const db = res.data as GetListPostResSuccess;
