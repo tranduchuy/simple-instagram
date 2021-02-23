@@ -9,8 +9,6 @@ import {
     FaRegHeart,
     FaRegComment,
     FaHeart,
-    FaRegUserCircle,
-    FaRegBookmark,
 } from 'react-icons/fa';
 import { GoKebabHorizontal } from 'react-icons/go';
 import { VscBookmark } from 'react-icons/vsc';
@@ -62,26 +60,25 @@ type ArticleState = {
 
 const token: string | undefined = Cookies.get('token');
 const userInfo: string | undefined = Cookies.get('user_info');
-let userObj: UserInfo;
-if (userInfo) {
-    userObj = JSON.parse(userInfo);
-}
-const config = {
-    headers: {
-        token,
-    },
-};
 
 export class Article extends React.Component<ArticleProps, ArticleState> {
+    userObj: UserInfo | null = userInfo ? JSON.parse(userInfo) : null;
+
+    config = {
+        headers: {
+            token,
+        },
+    };
+
     state: ArticleState = {
-        like: this.props.userIdLike.indexOf(userObj._id) !== -1, // replace by user id who logging in
+        like: this.props.userIdLike.indexOf(this.userObj?._id || '') !== -1, // replace by user id who logging in
         countLike: this.props.userIdLike.length,
     }
 
     onSubmitDeletePost = (): void => {
         const postId = this.props._id;
 
-        axios.delete<ArticleResSuccess | ArticleResErr>(`${API.DeleteImg}/${postId}`, config)
+        axios.delete<ArticleResSuccess | ArticleResErr>(`${API.DeleteImg}/${postId}`, this.config)
             .then((res) => {
                 if (res.status === 200) {
                     this.props.onFinishDeleting();
@@ -105,7 +102,7 @@ export class Article extends React.Component<ArticleProps, ArticleState> {
             postId,
         };
 
-        axios.post<ArticleResSuccess | ArticleResErr>(API.LikePost, data, config)
+        axios.post<ArticleResSuccess | ArticleResErr>(API.LikePost, data, this.config)
             .then((res) => {
                 if (res.status === 200) {
                     this.props.onRefreshGetListPost();
