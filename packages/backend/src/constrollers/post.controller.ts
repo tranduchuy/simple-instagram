@@ -189,8 +189,8 @@ class PostController {
         const { postId } = req.params;
         const userId = req.user._id;
 
-        const updatePost: Post | null = await PostModel.findOneAndDelete({ _id: postId, userId }).lean();
-        if (updatePost === null) {
+        const postDataAfterDeleted: Post | null = await PostModel.findOneAndDelete({ _id: postId, userId }).lean();
+        if (postDataAfterDeleted === null) {
             return res.status(HttpStatus.BAD_REQUEST).json({
                 message: 'Permission denied',
             });

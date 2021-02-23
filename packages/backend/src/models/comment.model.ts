@@ -8,6 +8,7 @@ export const CommentSchema = createSchema({
     userId: Type.ref(Type.objectId()).to('User', UserSchema),
     postId: Type.ref(Type.objectId()).to('Post', PostSchema),
     content: Type.string(),
+    parentCommentId: Type.objectId(),
 }, { timestamps: true });
 
 export const CommentModel = typedModel('Comment', CommentSchema, 'comments');
