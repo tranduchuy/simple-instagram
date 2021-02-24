@@ -53,7 +53,7 @@ export class InputPost extends React.Component<{ }, selectedImagesState> {
             },
         };
 
-        axios.post<UploadResSuccess | UploadResErr>(API.PostImg, formData, config)
+        axios.post<UploadResSuccess | UploadResErr>(API.GetPostsUrl, formData, config)
             .then(() => {
                 this.setState({
                     selectedImages: [],

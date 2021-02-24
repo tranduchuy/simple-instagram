@@ -15,6 +15,7 @@ POST_COLUMNS.splice(indexOfV, 1);
 
 type PostReqQuery = {
     title?: string;
+    imageUrls?: string[];
 };
 
 type PostResSuccess = {
@@ -112,7 +113,7 @@ export const deletePostJoiSchema = joi.object({
 
 class PostController {
     async Post(req: Request<any, any, PostReqQuery, never>, res: Response<PostResSuccess | PostResError>): Promise<any> {
-        const { title } = req.body;
+        const { title, imageUrls } = req.body;
         let images: Express.Multer.File[] = [];
         if (Array.isArray(req.files)) {
             images = req.files;
@@ -144,7 +145,7 @@ class PostController {
         const postDoc: PostDoc = new PostModel({
             userId: req.user._id,
             title,
-            images: imagesData,
+            images: imagesData.concat(imageUrls),
         });
         await postDoc.save();
         return res.status(200).json({

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import Cookies from 'js-cookie';
 import React from 'react';
 import {
     ButtonGroup, Carousel, Dropdown, DropdownButton,
@@ -9,15 +8,13 @@ import {
     FaRegHeart,
     FaRegComment,
     FaHeart,
-    FaRegUserCircle,
-    FaRegBookmark,
 } from 'react-icons/fa';
 import { GoKebabHorizontal } from 'react-icons/go';
 import { VscBookmark } from 'react-icons/vsc';
 import { Link } from 'react-router-dom';
 import * as API from '../../../../constants/api';
+import { UserInfoContext } from '../../../../context/userInfo.context';
 import { timeAgo } from '../../../../utils/time';
-import { UserInfo } from '../../../Login';
 import smallAvatar from '../../RightSideBar/RightSide.module.scss';
 import { PostData } from '../Body';
 import styles from './Article.module.scss';
@@ -25,63 +22,26 @@ import styles from './Article.module.scss';
 const urlLogo = '/home-logo.png';
 
 type ArticleProps = PostData & {
-   onFinishDeleting: () => void;
+    onFinishDeleting: () => void;
     onRefreshGetListPost: () => void;
 };
 
-type ArticleResSuccess = {
+type ArticleResSuccessDTO = {
     message: string;
 }
 
-type ArticleResErr = {
+type ArticleResErrDTO = {
     message: string;
 }
 
-type LikeFormData = {
+type LikePostRequestDTO = {
     postId: string;
 }
-
-type GetListLikeResSuccess = {
-    listLike: LikeData[];
-    message: string;
-}
-
-type LikeData = {
-    _id: string;
-    user: {
-        name: string;
-        avatar: string;
-    };
-    createdAt: string;
-}
-
-type ArticleState = {
-    like: boolean;
-    countLike: number;
-}
-
-const token: string | undefined = Cookies.get('token');
-const userInfo: string | undefined = Cookies.get('user_info');
-let userObj: UserInfo;
-if (userInfo) {
-    userObj = JSON.parse(userInfo);
-}
-const config = {
-    headers: {
-        token,
-    },
-};
-
-export class Article extends React.Component<ArticleProps, ArticleState> {
-    state: ArticleState = {
-        like: this.props.userIdLike.indexOf(userObj._id) !== -1, // replace by user id who logging in
-        countLike: this.props.userIdLike.length,
-    }
-
+export class Article extends React.Component<ArticleProps, { }> {
     onSubmitDeletePost = (): void => {
         const postId = this.props._id;
 
-        axios.delete<ArticleResSuccess | ArticleResErr>(`${API.DeleteImg}/${postId}`, config)
+        axios.delete<ArticleResSuccessDTO | ArticleResErrDTO>(`${API.DeletePostUrl}/${postId}`)
             .then((res) => {
                 if (res.status === 200) {
                     this.props.onFinishDeleting();
@@ -101,11 +61,11 @@ export class Article extends React.Component<ArticleProps, ArticleState> {
 
     onClickLikePost = (): void => {
         const postId = this.props._id;
-        const data: LikeFormData = {
+        const data: LikePostRequestDTO = {
             postId,
         };
 
-        axios.post<ArticleResSuccess | ArticleResErr>(API.LikePost, data, config)
+        axios.post<ArticleResSuccessDTO | ArticleResErrDTO>(API.LikePostUrl, data)
             .then((res) => {
                 if (res.status === 200) {
                     this.props.onRefreshGetListPost();
@@ -113,6 +73,10 @@ export class Article extends React.Component<ArticleProps, ArticleState> {
                     alert(res.data.message);
                 }
             });
+    }
+
+    userLiked(userId: string): boolean {
+        return this.props.userIdLike.indexOf(userId) !== -1;
     }
 
     // onClickShowListLike = (): void => {
@@ -129,7 +93,7 @@ export class Article extends React.Component<ArticleProps, ArticleState> {
             images,
             createdAt,
         } = this.props;
-        const { confirmDeletingPost, onClickLikePost, state } = this;
+        const { confirmDeletingPost, onClickLikePost } = this;
         const newDateData: number = new Date(createdAt).getTime();
         const listImages = Array.from(images);
         return (
@@ -196,11 +160,13 @@ export class Article extends React.Component<ArticleProps, ArticleState> {
                         <div className={styles.wrapIcon}>
                             <div className={styles.mgHeart}>
                                 <button type="button" className={styles.cmtIcon} onClick={onClickLikePost}>
-                                    {
-                                        state.like
-                                            ? (<FaHeart className={styles.iconSize} color="#ed5455" />)
-                                            : (<FaRegHeart className={styles.iconSize} />)
-                                    }
+                                    <UserInfoContext.Consumer>
+                                        {
+                                            (value): JSX.Element => (this.userLiked(value.info?._id || '')
+                                                ? (<FaHeart className={styles.iconSize} color="#ed5455" />)
+                                                : (<FaRegHeart className={styles.iconSize} />))
+                                        }
+                                    </UserInfoContext.Consumer>
                                 </button>
                             </div>
                             <button type="button" className={styles.cmtIcon}>
@@ -217,7 +183,7 @@ export class Article extends React.Component<ArticleProps, ArticleState> {
                         </div>
                         <div className={styles.countLike}>
                             <button type="button" className={styles.btnLike}>
-                                {state.countLike}
+                                {this.props.userIdLike.length}
                                 like
                             </button>
                         </div>
