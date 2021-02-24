@@ -174,7 +174,8 @@ export const getListComment = async (
     try {
         const { type, commentId, postId } = req.query;
         const queryId: MongoQuery = {};
-        if (type !== 'POST' && type !== 'COMMENT') {
+        let total: number;
+        if (type !== GetCommentType.Post && type !== GetCommentType.Comment) {
             res.status(HttpStatus.BAD_REQUEST).json({
                 message: 'Type is invalid',
             });
@@ -184,12 +185,30 @@ export const getListComment = async (
 
         const pagination: PaginationObj = extractPagination(req.query);
 
-        if (type === 'POST') {
+        if (type === GetCommentType.Post) {
+            if (!postId) {
+                res.status(HttpStatus.BAD_REQUEST).json({
+                    message: 'Post id cannot empty',
+                });
+
+                return;
+            }
+
             queryId.postId = postId;
+            total = await CommentModel.countDocuments({ postId });
         }
 
-        if (type === 'COMMENT') {
+        if (type === GetCommentType.Comment) {
+            if (!commentId) {
+                res.status(HttpStatus.BAD_REQUEST).json({
+                    message: 'Comment id cannot empty',
+                });
+
+                return;
+            }
+
             queryId.parentCommentId = commentId;
+            total = await CommentModel.countDocuments({ parentCommentId: commentId });
         }
 
         const comments: CommentDTO[] = await CommentModel.find(queryId)
@@ -198,8 +217,6 @@ export const getListComment = async (
             .limit(pagination.limit)
             .populateTs('userId')
             .lean();
-
-        const total = await CommentModel.countDocuments();
 
         res.status(200)
             .json({
