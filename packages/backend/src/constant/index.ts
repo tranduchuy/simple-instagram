@@ -9,3 +9,8 @@ type SystemConfigVars = {
 export const SystemConfig: SystemConfigVars = {
     rootPath: '',
 };
+
+export enum GetCommentType {
+    Post = 'POST',
+    Comment = 'COMMENT',
+}

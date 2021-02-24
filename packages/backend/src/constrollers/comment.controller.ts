@@ -1,14 +1,18 @@
 import { Request, Response } from 'express';
 import * as HttpStatus from 'http-status-codes';
 import Joi from 'joi';
+import * as mongoose from 'mongoose';
+import { GetCommentType } from '../constant';
 import { Comment, CommentDoc, CommentModel } from '../models/comment.model';
-import { PostModel } from '../models/post.model';
+import { Post, PostModel } from '../models/post.model';
 import { UserDoc } from '../models/user.model';
 import { extractPagination, PaginationObj } from './post.controller';
 
 type CreateCommentReqBody = {
+    type: string;
     userId: string;
-    postId: string;
+    commentId?: string;
+    postId?: string;
     content: string;
 }
 
@@ -49,8 +53,16 @@ type MongoQuery = {
     [key: string]: string | number | MongoQuery;
 };
 
+interface CommentObj<IdType> {
+    [key: string]: string | number | IdType;
+}
+
+type MongoTypeComment = CommentObj<mongoose.Types.ObjectId>
+
 export const CreateCommentJoiSchema = Joi.object({
-    postId: Joi.string().required(),
+    type: Joi.string().required(),
+    postId: Joi.string(),
+    commentId: Joi.string(),
     content: Joi.string().required(),
 });
 
@@ -65,23 +77,53 @@ export const createComment = async (
     req: Request<any, any, CreateCommentReqBody>,
     res: Response<GetListCommentResSuccessDTO | CommentResError>): Promise<void> => {
     try {
-        const { postId, content } = req.body;
+        const {
+            type, postId, commentId, content,
+        } = req.body;
+        let commentData: MongoTypeComment = {};
         const userId = req.user._id;
 
-        const checkPost = await PostModel.findById({ _id: postId });
-        if (checkPost === null) {
+        if ((type !== GetCommentType.Post && type !== GetCommentType.Comment) || !content) {
             res.status(HttpStatus.BAD_REQUEST).json({
-                message: 'Post does not exist !!!',
+                message: 'Type or content invalid',
             });
-
-            return;
         }
 
-        const commentDoc: CommentDoc = new CommentModel({
-            userId,
-            postId,
-            content,
-        });
+        if (type === GetCommentType.Post) {
+            const post: Post = await PostModel.findOne({ _id: postId }).lean();
+            if (!post) {
+                res.status(HttpStatus.BAD_REQUEST).json({
+                    message: 'Post does not exist',
+                });
+
+                return;
+            }
+
+            commentData = {
+                userId,
+                postId,
+                content,
+            };
+        }
+
+        if (type === GetCommentType.Comment) {
+            const comment: Comment = await CommentModel.findOne({ _id: commentId }).lean();
+            if (!comment) {
+                res.status(HttpStatus.BAD_REQUEST).json({
+                    message: 'Comment does not exist',
+                });
+
+                return;
+            }
+
+            commentData = {
+                userId,
+                parentCommentId: commentId,
+                content,
+            };
+        }
+
+        const commentDoc: CommentDoc = new CommentModel(commentData);
 
         await commentDoc.save();
         res.status(HttpStatus.OK).json({
