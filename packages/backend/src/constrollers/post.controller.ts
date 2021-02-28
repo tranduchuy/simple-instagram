@@ -40,7 +40,7 @@ type PostWithUser = Post & {
     userId: UserDoc;
 };
 
-type PostWithUserResponseDTO = Post & {
+export type PostWithUserResponseDTO = Post & {
     user: Pick<UserDoc, '_id' | 'name' | 'avatar'>;
     userIdLike: string[];
 }
