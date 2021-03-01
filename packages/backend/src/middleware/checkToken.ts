@@ -22,6 +22,7 @@ export const Middleware = async (req: Request, res: Response<CheckTokenResError>
 
         const verifyToken = jwt.verify(token, process.env.private_key) as VerifyToken;
         const user: User = await UserModel.findOne({ email: verifyToken.email })
+            .select('-passwordSalt -hashedPassword -forgetPasswordToken -role -tokenRegister -status')
             .lean();
 
         if (!user) {

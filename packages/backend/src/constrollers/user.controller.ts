@@ -59,6 +59,14 @@ type ResetNewPassword = {
     forgetPasswordToken: string;
 };
 
+type GetUserInfo = {
+    token: string;
+}
+
+type GetUserInfoResSuccess = {
+    userInfo: User;
+}
+
 export const isAlphabetAndNumber = (str: string): boolean => /[a-zA-Z0-9]+/.test(str);
 
 export const registerJoiSchema = Joi.object({
@@ -89,6 +97,10 @@ export const resetPassJoiSchema = Joi.object({
             'any.required': 'Two passwords is not match',
         },
     ),
+});
+
+export const getUserInfoJoiSchema = Joi.object({
+    token: Joi.string().required(),
 });
 
 class UserController {
@@ -279,6 +291,13 @@ class UserController {
 
         res.status(HttpStatus.OK).json({
             message: 'Successfully',
+        });
+    }
+
+    async getUserInfo(req: Request<any, any, GetUserInfo>, res: Response<GetUserInfoResSuccess | UserResError>): Promise<void> {
+        const { user } = req;
+        res.status(HttpStatus.OK).json({
+            userInfo: user,
         });
     }
 }
