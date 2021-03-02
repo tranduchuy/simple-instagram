@@ -36,7 +36,7 @@ type GetListPostReqQuery = {
     sortDirection?: string;
 };
 
-type PostWithUser = Post & {
+export type PostWithUser = Post & {
     userId: UserDoc;
 };
 
@@ -111,6 +111,19 @@ export const deletePostJoiSchema = joi.object({
     postId: joi.string().required(),
 });
 
+export const detailPost = async (p: PostWithUser): Promise<any> => {
+    const likes = await LikeModel.find({ postId: p._id }).select('userId').lean();
+    const userIdLike: string[] = likes.map((l) => l.userId.toString());
+
+    const { _id, name, avatar } = p.userId;
+    return {
+        ...p,
+        user: { _id, name, avatar },
+        userIdLike,
+        userId: undefined,
+    };
+};
+
 class PostController {
     async Post(req: Request<any, any, PostReqQuery, never>, res: Response<PostResSuccess | PostResError>): Promise<any> {
         const { title, imageUrls } = req.body;
@@ -171,18 +184,7 @@ class PostController {
 
         return res.status(HttpStatus.OK).json({
             total,
-            listPost: await Promise.all(posts.map(async (p) => {
-                const likes = await LikeModel.find({ postId: p._id }).select('userId').lean();
-                const userIdLike: string[] = likes.map((l) => l.userId.toString());
-
-                const { _id, name, avatar } = p.userId;
-                return {
-                    ...p,
-                    user: { _id, name, avatar },
-                    userIdLike,
-                    userId: undefined,
-                };
-            })),
+            listPost: await Promise.all(posts.map(detailPost)),
         });
     }
 

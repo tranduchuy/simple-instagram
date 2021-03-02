@@ -43,6 +43,7 @@ type BookmarkResError = {
 export const SaveBookmarkJoiSchema = Joi.object({
     postId: Joi.string().required(),
 });
+
 export const saveBookmark = async (
     req: Request<any, any, SaveBookmarkReqBody>,
     res: Response<SaveBookmarkResSuccess | BookmarkResError>): Promise<void> => {

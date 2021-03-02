@@ -70,9 +70,6 @@ export const DeleteCommentJoiSchema = Joi.object({
     commentId: Joi.string().required(),
 });
 
-// const regex = /(@[a-zA-Z0-9]+)/;
-// const validateTagsSyntax = (inputContent: string): boolean => regex.test(inputContent);
-
 export const createComment = async (
     req: Request<any, any, CreateCommentReqBody>,
     res: Response<GetListCommentResSuccessDTO | CommentResError>): Promise<void> => {

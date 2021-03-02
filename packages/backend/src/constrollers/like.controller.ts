@@ -91,8 +91,6 @@ export const like = async (
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
             message: JSON.stringify(e),
         });
-
-        return;
     }
 };
 
@@ -130,7 +128,5 @@ export const getListLikePost = async (
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
             message: JSON.stringify(e),
         });
-
-        return;
     }
 };
