@@ -67,6 +67,17 @@ type GetUserInfoResSuccess = {
     userInfo: User;
 }
 
+type UpdatePasswordReqBody = {
+    currentPassword: string;
+    newPassword: string;
+    confirmNewPassword: string;
+}
+
+type UpdatePasswordDTO = {
+    hashedPassword: string;
+    password: string;
+}
+
 export const isAlphabetAndNumber = (str: string): boolean => /[a-zA-Z0-9]+/.test(str);
 
 export const registerJoiSchema = Joi.object({
@@ -93,6 +104,16 @@ export const resetPassJoiSchema = Joi.object({
     forgotPasswordToken: Joi.string().required(),
     password: Joi.string().required().min(PASSWORD_LENGTH),
     confirmPassword: Joi.any().valid(Joi.ref('password')).required().messages(
+        {
+            'any.required': 'Two passwords is not match',
+        },
+    ),
+});
+
+export const updatePassJoiSchema = Joi.object({
+    currentPassword: Joi.string().required(),
+    newPassword: Joi.string().required().min(PASSWORD_LENGTH),
+    confirmNewPassword: Joi.any().valid(Joi.ref('newPassword')).required().messages(
         {
             'any.required': 'Two passwords is not match',
         },
@@ -298,6 +319,41 @@ class UserController {
         const { user } = req;
         res.status(HttpStatus.OK).json({
             userInfo: user,
+        });
+    }
+
+    async updatePassword(req: Request<any, any, UpdatePasswordReqBody>, res: Response<UserResSuccess | UserResError>): Promise<void> {
+        const { newPassword } = req.body;
+        const userId = req.user._id;
+
+        const user: User = await UserModel.findOne({ _id: userId })
+            .lean();
+
+        if (!user) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: 'User does not exist',
+            });
+
+            return;
+        }
+
+        if (bcrypt.compareSync(newPassword, user.hashedPassword) === true) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: 'Create a new password that isn\'t your current password.',
+            });
+
+            return;
+        }
+
+        const newHashedPassword: string = bcrypt.hashSync(newPassword, user.passwordSalt);
+        const updateNewPassword: UpdatePasswordDTO = {
+            hashedPassword: newHashedPassword,
+            password: newPassword,
+        };
+
+        await UserModel.update({ _id: userId }, updateNewPassword);
+        res.status(HttpStatus.OK).json({
+            message: 'Updated',
         });
     }
 }

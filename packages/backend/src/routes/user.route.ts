@@ -3,7 +3,7 @@ import {
     forgotPassJoiSchema,
     loginJoiSchema,
     registerJoiSchema,
-    resetPassJoiSchema,
+    resetPassJoiSchema, updatePassJoiSchema,
     userCtrl,
 } from '../constrollers/user.controller';
 import { Middleware } from '../middleware/checkToken';
@@ -18,5 +18,6 @@ router.post('/forgot', validateData(forgotPassJoiSchema, 'body'), userCtrl.forgo
 router.post('/reset-pass', validateData(resetPassJoiSchema, 'body'), userCtrl.resetPassword);
 router.use(Middleware);
 router.get('/user-info', userCtrl.getUserInfo);
+router.post('/update-pass', validateData(updatePassJoiSchema, 'body'), userCtrl.updatePassword);
 
 export const UserRoute = router;
