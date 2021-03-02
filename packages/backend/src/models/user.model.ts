@@ -9,7 +9,9 @@ export const UserSchema = createSchema({
     forgetPasswordToken: Type.string(),
     address: Type.string(),
     name: Type.string(),
-    age: Type.number(),
+    age: Type.number({
+        required: true
+    }),
     phone: Type.number(),
     gender: Type.string(),
     avatar: Type.string(),

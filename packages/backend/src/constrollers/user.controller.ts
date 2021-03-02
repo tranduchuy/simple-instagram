@@ -78,6 +78,8 @@ type UpdatePasswordDTO = {
     password: string;
 }
 
+type UpdateBasicInfoReqBody = Pick<UserDoc, 'name' | 'address' | 'age' | 'avatar' | 'gender'>;
+
 export const isAlphabetAndNumber = (str: string): boolean => /[a-zA-Z0-9]+/.test(str);
 
 export const registerJoiSchema = Joi.object({
@@ -124,6 +126,14 @@ export const getUserInfoJoiSchema = Joi.object({
     token: Joi.string().required(),
 });
 
+export const updateBasicUserInfoJoiSchema = Joi.object({
+    address: Joi.string(),
+    name: Joi.string(),
+    age: Joi.number(),
+    phone: Joi.number(),
+    gender: Joi.string(),
+    avatar: Joi.string(),
+});
 class UserController {
     async registerNewUser(req: Request<any, any, RegisterReqBody>, res: Response<UserResSuccess | UserResError>): Promise<any> {
         const {
@@ -352,6 +362,40 @@ class UserController {
         };
 
         await UserModel.update({ _id: userId }, updateNewPassword);
+        res.status(HttpStatus.OK).json({
+            message: 'Updated',
+        });
+    }
+
+    async updateBasicUserInfo(req: Request<any, any, UpdateBasicInfoReqBody>, res: Response<UserResSuccess | UserResError>): Promise<void> {
+        const userId = req.user._id;
+
+        if (Object.keys(req.body).length === 0) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: 'Success',
+            });
+
+            return;
+        }
+        const user: UserDoc = await UserModel.findOne({ _id: userId });
+
+        if (!user) {
+            res.status(HttpStatus.BAD_REQUEST).json({
+                message: 'User does not exist',
+            });
+
+            return;
+        }
+
+        Object.keys(req.body).forEach((k: keyof UpdateBasicInfoReqBody) => {
+            if (req.body[k] === undefined) {
+                delete req.body[k];
+            }
+        });
+
+        Object.assign(user, req.body);
+        await user.save();
+
         res.status(HttpStatus.OK).json({
             message: 'Updated',
         });

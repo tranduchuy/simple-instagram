@@ -49,7 +49,7 @@ type GetListCommentResSuccessDTO = {
     comments: CommentWithUserResponseDTO[];
 }
 
-type MongoQuery = {
+export type MongoQuery = {
     [key: string]: string | number | MongoQuery;
 };
 
